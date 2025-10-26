@@ -1,0 +1,108 @@
+{% extends "base/admin_base.html" %}
+
+{% block title %}Results Dashboard - Career DNA Admin{% endblock %}
+
+{% block content %}
+<div class="results-dashboard">
+    <div class="page-header">
+        <h2>Assessment Results</h2>
+        <div class="header-actions">
+            <button class="btn btn-secondary" onclick="exportResults()">Export CSV</button>
+            <button class="btn btn-primary" onclick="refreshResults()">Refresh</button>
+        </div>
+    </div>
+    
+    <div class="statistics-cards">
+        <div class="stat-card">
+            <div class="stat-number">{{ statistics.total_responses }}</div>
+            <div class="stat-label">Total Responses</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-number">{{ statistics.completed_responses }}</div>
+            <div class="stat-label">Completed</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-number">{{ statistics.incomplete_responses }}</div>
+            <div class="stat-label">Incomplete</div>
+        </div>
+    </div>
+    
+    <div class="results-table">
+        <table class="admin-table">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Email</th>
+                    <th>Age Group</th>
+                    <th>Country</th>
+                    <th>Origin</th>
+                    <th>Started</th>
+                    <th>Completed</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for response in responses %}
+                <tr>
+                    <td>{{ response.full_name }}</td>
+                    <td>{{ response.email }}</td>
+                    <td>{{ response.age_group }}</td>
+                    <td>{{ response.country }}</td>
+                    <td>{{ response.origin_country }}</td>
+                    <td>{{ format_datetime(response.created_at) }}</td>
+                    <td>{{ format_datetime(response.completed_at) if response.completed_at else "In Progress" }}</td>
+                    <td>
+                        <span class="status {{ 'active' if response.completed_at else 'inactive' }}">
+                            {{ "Completed" if response.completed_at else "Incomplete" }}
+                        </span>
+                    </td>
+                    <td class="actions">
+                        <a href="/admin/results/{{ response.id }}" class="btn btn-sm btn-secondary">View</a>
+                        <form method="post" action="/admin/results/{{ response.id }}/delete" style="display: inline;" onsubmit="return confirm('Are you sure you want to delete this response?')">
+                            <button type="submit" class="btn btn-sm btn-danger">Delete</button>
+                        </form>
+                    </td>
+                </tr>
+                {% else %}
+                <tr>
+                    <td colspan="9" class="text-center">No responses yet</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<script>
+function refreshResults() {
+    window.location.reload();
+}
+
+function exportResults() {
+    // Simple CSV export functionality
+    const table = document.querySelector('.admin-table');
+    const rows = Array.from(table.querySelectorAll('tr'));
+    
+    const csvContent = rows.map(row => {
+        const cells = Array.from(row.querySelectorAll('th, td'));
+        return cells.slice(0, -1).map(cell => {
+            // Remove HTML tags and escape quotes
+            const text = cell.textContent.trim().replace(/"/g, '""');
+            return `"${text}"`;
+        }).join(',');
+    }).join('\n');
+    
+    const blob = new Blob([csvContent], { type: 'text/csv' });
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.setAttribute('hidden', '');
+    a.setAttribute('href', url);
+    a.setAttribute('download', `assessment-results-${new Date().toISOString().split('T')[0]}.csv`);
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    window.URL.revokeObjectURL(url);
+}
+</script>
+{% endblock %}

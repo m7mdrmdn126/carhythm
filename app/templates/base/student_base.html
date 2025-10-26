@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Career DNA Assessment{% endblock %}</title>
+    <link rel="stylesheet" href="/static/css/student.css">
+    <link rel="stylesheet" href="/static/css/common.css">
+    <script src="https://cdn.jsdelivr.net/npm/sortablejs@latest/Sortable.min.js"></script>
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <h1 class="logo">Career DNA</h1>
+            {% block progress %}{% endblock %}
+        </header>
+        
+        <main class="main-content">
+            {% block content %}{% endblock %}
+        </main>
+        
+        <footer class="footer">
+            <p>&copy; 2025 Career DNA Assessment. All rights reserved.</p>
+        </footer>
+    </div>
+    
+    <script src="/static/js/student.js"></script>
+</body>
+</html>

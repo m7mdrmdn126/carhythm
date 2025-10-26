@@ -1,0 +1,4 @@
+title,question_text,category_name,is_required,allow_multiple_selection,option_1,option_2,option_3,option_4,option_5,option_6,correct_answers
+Work Environment Preference,What is your preferred work environment?,Work Preferences,TRUE,FALSE,Remote/Home office,Traditional office,Hybrid (mix of both),Co-working space,Outdoor/Field work,,"1,3"
+Important Skills,Which skills are most important to you? (Select all that apply),Skills Evaluation,TRUE,TRUE,Leadership,Technical expertise,Communication,Creativity,Problem-solving,Teamwork,"2,3,5"
+Personality Type,Which personality trait best describes you?,Personality Assessment,TRUE,FALSE,Introverted,Extroverted,Analytical,Creative,Detail-oriented,Big-picture thinker,1

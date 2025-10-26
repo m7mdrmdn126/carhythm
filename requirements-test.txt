@@ -1,0 +1,48 @@
+# Testing Requirements for Career DNA Assessment Application
+
+# Core testing framework
+pytest>=7.4.0
+pytest-cov>=4.1.0
+pytest-asyncio>=0.21.0
+pytest-mock>=3.11.0
+pytest-timeout>=2.1.0
+
+# HTTP client for testing FastAPI endpoints
+httpx>=0.24.0
+requests>=2.31.0
+
+# Database testing (removed postgresql - using SQLite for tests)
+factory-boy>=3.3.0
+
+# Performance and load testing
+pytest-benchmark>=4.0.0
+
+# Code quality and linting (simplified)
+# pytest-pylint>=0.19.0  
+# pytest-flake8>=1.1.1
+# pytest-black>=0.3.12
+
+# Coverage reporting
+coverage>=7.2.0
+pytest-html>=3.2.0
+
+# Mock and fixtures
+responses>=0.23.0
+freezegun>=1.2.0
+
+# Async testing utilities
+pytest-trio>=0.8.0
+
+# Test data generation
+faker>=19.0.0
+
+# File upload testing
+aiofiles>=23.0.0
+
+# Security testing (simplified for Windows compatibility)
+# bandit>=1.7.0
+# safety>=2.3.0
+
+# Development dependencies (optional)
+pytest-watch>=4.2.0  # Auto-run tests on file changes
+pytest-xdist>=3.3.0  # Parallel test execution

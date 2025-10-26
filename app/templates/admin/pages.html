@@ -1,0 +1,142 @@
+{% extends "base/admin_base.html" %}
+
+{% block title %}Manage Pages - Career DNA Admin{% endblock %}
+
+{% block content %}
+<div class="page-management">
+    <div class="page-header">
+        <h2>Manage Pages</h2>
+        <button class="btn btn-primary" onclick="showCreatePageModal()">Add New Page</button>
+    </div>
+    
+    <div class="pages-list">
+        <table class="admin-table">
+            <thead>
+                <tr>
+                    <th>Order</th>
+                    <th>Title</th>
+                    <th>Description</th>
+                    <th>Status</th>
+                    <th>Questions</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for page in pages %}
+                <tr>
+                    <td>{{ page.order_index }}</td>
+                    <td>{{ page.title }}</td>
+                    <td>{{ page.description or "No description" }}</td>
+                    <td>
+                        <span class="status {{ 'active' if page.is_active else 'inactive' }}">
+                            {{ "Active" if page.is_active else "Inactive" }}
+                        </span>
+                    </td>
+                    <td>{{ page.questions|length }} questions</td>
+                    <td class="actions">
+                        <button class="btn btn-sm btn-secondary" onclick="editPage({{ page.id }}, '{{ page.title }}', '{{ page.description or '' }}', {{ page.order_index }}, {{ page.is_active|lower }})">Edit</button>
+                        <a href="/admin/questions?page_id={{ page.id }}" class="btn btn-sm btn-secondary">Questions</a>
+                        <form method="post" action="/admin/pages/{{ page.id }}/delete" style="display: inline;" onsubmit="return confirm('Are you sure?')">
+                            <button type="submit" class="btn btn-sm btn-danger">Delete</button>
+                        </form>
+                    </td>
+                </tr>
+                {% else %}
+                <tr>
+                    <td colspan="6" class="text-center">No pages created yet</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<!-- Create Page Modal -->
+<div id="createPageModal" class="modal" style="display: none;">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h3>Create New Page</h3>
+            <button class="close" onclick="hideCreatePageModal()">&times;</button>
+        </div>
+        <form method="post" action="/admin/pages">
+            <div class="modal-body">
+                <div class="form-group">
+                    <label for="title">Title</label>
+                    <input type="text" id="title" name="title" required>
+                </div>
+                <div class="form-group">
+                    <label for="description">Description</label>
+                    <textarea id="description" name="description" rows="3"></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="order_index">Order</label>
+                    <input type="number" id="order_index" name="order_index" value="{{ (pages|length) }}">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" onclick="hideCreatePageModal()">Cancel</button>
+                <button type="submit" class="btn btn-primary">Create Page</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Edit Page Modal -->
+<div id="editPageModal" class="modal" style="display: none;">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h3>Edit Page</h3>
+            <button class="close" onclick="hideEditPageModal()">&times;</button>
+        </div>
+        <form method="post" id="editPageForm">
+            <div class="modal-body">
+                <div class="form-group">
+                    <label for="edit_title">Title</label>
+                    <input type="text" id="edit_title" name="title" required>
+                </div>
+                <div class="form-group">
+                    <label for="edit_description">Description</label>
+                    <textarea id="edit_description" name="description" rows="3"></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="edit_order_index">Order</label>
+                    <input type="number" id="edit_order_index" name="order_index" required>
+                </div>
+                <div class="form-group">
+                    <label>
+                        <input type="checkbox" id="edit_is_active" name="is_active" value="true">
+                        Active
+                    </label>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" onclick="hideEditPageModal()">Cancel</button>
+                <button type="submit" class="btn btn-primary">Update Page</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+function showCreatePageModal() {
+    document.getElementById('createPageModal').style.display = 'flex';
+}
+
+function hideCreatePageModal() {
+    document.getElementById('createPageModal').style.display = 'none';
+}
+
+function editPage(id, title, description, orderIndex, isActive) {
+    document.getElementById('edit_title').value = title;
+    document.getElementById('edit_description').value = description;
+    document.getElementById('edit_order_index').value = orderIndex;
+    document.getElementById('edit_is_active').checked = isActive;
+    document.getElementById('editPageForm').action = `/admin/pages/${id}/edit`;
+    document.getElementById('editPageModal').style.display = 'flex';
+}
+
+function hideEditPageModal() {
+    document.getElementById('editPageModal').style.display = 'none';
+}
+</script>
+{% endblock %}

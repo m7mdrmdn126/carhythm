@@ -1,0 +1,146 @@
+{% extends "base/student_base.html" %}
+
+{% block title %}Your Information - Career DNA{% endblock %}
+
+{% block content %}
+<div class="student-info-container">
+    <div class="info-content">
+        <h2 class="info-title">Almost Done!</h2>
+        <p class="info-description">
+            Please provide your information to complete the assessment. 
+            This information will help us provide you with personalized results.
+        </p>
+        
+        <form method="post" class="student-info-form">
+            <input type="hidden" name="session_id" value="{{ session_id }}">
+            
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="full_name">Full Name *</label>
+                    <input type="text" id="full_name" name="full_name" required placeholder="Enter your full name">
+                </div>
+                
+                <div class="form-group">
+                    <label for="email">Email Address *</label>
+                    <input type="email" id="email" name="email" required placeholder="your.email@example.com">
+                </div>
+            </div>
+            
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="age_group">Age Group *</label>
+                    <select id="age_group" name="age_group" required>
+                        <option value="">Select your age group</option>
+                        <option value="16-18">16-18 years</option>
+                        <option value="19-22">19-22 years</option>
+                        <option value="23-25">23-25 years</option>
+                        <option value="26-30">26-30 years</option>
+                        <option value="31-35">31-35 years</option>
+                        <option value="36+">36+ years</option>
+                    </select>
+                </div>
+            </div>
+            
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="country">Current Country *</label>
+                    <select id="country" name="country" required>
+                        <option value="">Select your current country</option>
+                        <option value="United States">United States</option>
+                        <option value="Canada">Canada</option>
+                        <option value="United Kingdom">United Kingdom</option>
+                        <option value="Germany">Germany</option>
+                        <option value="France">France</option>
+                        <option value="Australia">Australia</option>
+                        <option value="Japan">Japan</option>
+                        <option value="South Korea">South Korea</option>
+                        <option value="India">India</option>
+                        <option value="Brazil">Brazil</option>
+                        <option value="Mexico">Mexico</option>
+                        <option value="Spain">Spain</option>
+                        <option value="Italy">Italy</option>
+                        <option value="Netherlands">Netherlands</option>
+                        <option value="Sweden">Sweden</option>
+                        <option value="Norway">Norway</option>
+                        <option value="Denmark">Denmark</option>
+                        <option value="Other">Other</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="origin_country">Country of Origin *</label>
+                    <select id="origin_country" name="origin_country" required>
+                        <option value="">Select your country of origin</option>
+                        <option value="United States">United States</option>
+                        <option value="Canada">Canada</option>
+                        <option value="United Kingdom">United Kingdom</option>
+                        <option value="Germany">Germany</option>
+                        <option value="France">France</option>
+                        <option value="Australia">Australia</option>
+                        <option value="Japan">Japan</option>
+                        <option value="South Korea">South Korea</option>
+                        <option value="India">India</option>
+                        <option value="Brazil">Brazil</option>
+                        <option value="Mexico">Mexico</option>
+                        <option value="Spain">Spain</option>
+                        <option value="Italy">Italy</option>
+                        <option value="Netherlands">Netherlands</option>
+                        <option value="Sweden">Sweden</option>
+                        <option value="Norway">Norway</option>
+                        <option value="Denmark">Denmark</option>
+                        <option value="Other">Other</option>
+                    </select>
+                </div>
+            </div>
+            
+            <div class="privacy-notice">
+                <p>
+                    <strong>Privacy Notice:</strong> Your information will be kept confidential and used solely for 
+                    assessment purposes. We respect your privacy and will not share your data with third parties.
+                </p>
+            </div>
+            
+            <div class="form-actions">
+                <button type="submit" class="btn btn-success btn-large">
+                    Complete Assessment
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+// Form validation
+document.querySelector('.student-info-form').addEventListener('submit', function(e) {
+    const requiredFields = this.querySelectorAll('[required]');
+    let allValid = true;
+    
+    requiredFields.forEach(field => {
+        if (!field.value.trim()) {
+            allValid = false;
+            field.classList.add('error');
+        } else {
+            field.classList.remove('error');
+        }
+    });
+    
+    if (!allValid) {
+        e.preventDefault();
+        alert('Please fill in all required fields.');
+    }
+});
+
+// Email validation
+document.getElementById('email').addEventListener('blur', function() {
+    const email = this.value;
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    
+    if (email && !emailRegex.test(email)) {
+        this.classList.add('error');
+        alert('Please enter a valid email address.');
+    } else {
+        this.classList.remove('error');
+    }
+});
+</script>
+{% endblock %}

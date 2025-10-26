@@ -1,0 +1,41 @@
+{% extends "base/student_base.html" %}
+
+{% block title %}Assessment Complete - Career DNA{% endblock %}
+
+{% block content %}
+<div class="completion-container">
+    <div class="completion-content">
+        <div class="completion-icon">
+            ✓
+        </div>
+        
+        <h2 class="completion-title">Assessment Complete!</h2>
+        
+        <div class="completion-message">
+            <p>Thank you for completing the Career DNA Assessment.</p>
+            <p>Your responses have been successfully submitted and will be reviewed by our team.</p>
+        </div>
+        
+        <div class="next-steps">
+            <h3>What happens next?</h3>
+            <ul>
+                <li>Your assessment will be analyzed by our experts</li>
+                <li>Results will be available within 2-3 business days</li>
+                <li>You'll receive an email notification when results are ready</li>
+                <li>A detailed report will be provided with career recommendations</li>
+            </ul>
+        </div>
+        
+        <div class="completion-actions">
+            <a href="/student/welcome" class="btn btn-secondary">Take Another Assessment</a>
+        </div>
+        
+        <div class="contact-info">
+            <p>
+                <strong>Questions or concerns?</strong><br>
+                Feel free to contact us at <a href="mailto:support@careerdna.com">support@careerdna.com</a>
+            </p>
+        </div>
+    </div>
+</div>
+{% endblock %}

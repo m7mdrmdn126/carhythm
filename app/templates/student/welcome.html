@@ -1,0 +1,37 @@
+{% extends "base/student_base.html" %}
+
+{% block title %}Welcome - Career DNA Assessment{% endblock %}
+
+{% block content %}
+<div class="welcome-container">
+    <div class="welcome-content">
+        <h2 class="welcome-title">Welcome to Career DNA Assessment</h2>
+        <p class="welcome-description">
+            This psychological assessment will help us understand your educational targets and career preferences. 
+            The assessment consists of multiple pages with questions designed to evaluate various aspects of your personality and interests.
+        </p>
+        
+        {% if error %}
+        <div class="error-message">{{ error }}</div>
+        {% endif %}
+        
+        <div class="welcome-info">
+            <h3>What to expect:</h3>
+            <ul>
+                <li>Multiple pages of carefully crafted questions</li>
+                <li>A mix of written responses and scale-based questions</li>
+                <li>Approximately 15-20 minutes to complete</li>
+                <li>Your personal information will be collected at the end</li>
+            </ul>
+        </div>
+        
+        <div class="welcome-actions">
+            <a href="/student/exam" class="btn btn-primary btn-large">Start Assessment</a>
+        </div>
+        
+        <div class="privacy-notice">
+            <p><small>Your responses will be kept confidential and used solely for assessment purposes.</small></p>
+        </div>
+    </div>
+</div>
+{% endblock %}

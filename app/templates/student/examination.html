@@ -1,0 +1,357 @@
+{% extends "base/student_base.html" %}
+
+{% block title %}Assessment - Career DNA{% endblock %}
+
+{% block progress %}
+<div class="progress-container">
+    <div class="progress-info">
+        <span>Page {{ current_page + 1 }} of {{ total_pages }}</span>
+    </div>
+    <div class="progress-bar">
+        <div class="progress-fill" style="width: {{ ((current_page + 1) / total_pages * 100) }}%"></div>
+    </div>
+</div>
+{% endblock %}
+
+{% block content %}
+<div class="examination-container">
+    <div class="page-content">
+        <h2 class="page-title">{{ page.title }}</h2>
+        {% if page.description %}
+        <p class="page-description">{{ page.description }}</p>
+        {% endif %}
+        
+        <form id="questionForm" class="question-form">
+            <input type="hidden" name="session_id" value="{{ session_id }}">
+            
+            {% for question in questions %}
+            <div class="question-card">
+                <div class="question-header">
+                    <h3 class="question-text">
+                        {{ question.question_text }}
+                        {% if question.is_required %}
+                        <span class="required">*</span>
+                        {% endif %}
+                    </h3>
+                </div>
+                
+                {% if question.image_path %}
+                <div class="question-image">
+                    <img src="/{{ question.image_path }}" alt="Question image" class="img-responsive">
+                </div>
+                {% endif %}
+                
+                <div class="question-input">
+                    {% if question.question_type.value == 'essay' %}
+                    <textarea 
+                        name="question_{{ question.id }}_text"
+                        class="essay-input"
+                        rows="5"
+                        {% if question.is_required %}required{% endif %}
+                        {% if question.essay_char_limit %}maxlength="{{ question.essay_char_limit }}"{% endif %}
+                        placeholder="Enter your response here..."
+                        onInput="updateCharCount(this)"
+                    >{{ existing_answers.get(question.id, {}).get('text', '') }}</textarea>
+                    
+                    {% if question.essay_char_limit %}
+                    <div class="char-count">
+                        <span class="current">{{ existing_answers.get(question.id, {}).get('text', '')|length }}</span>
+                        / {{ question.essay_char_limit }} characters
+                    </div>
+                    {% endif %}
+                    
+                    {% elif question.question_type.value == 'slider' %}
+                    <div class="slider-container">
+                        <div class="slider-labels">
+                            <span class="slider-label-min">{{ question.slider_min_label or "0%" }}</span>
+                            <span class="slider-label-max">{{ question.slider_max_label or "100%" }}</span>
+                        </div>
+                        <input 
+                            type="range" 
+                            name="question_{{ question.id }}_slider"
+                            min="0" 
+                            max="100" 
+                            value="{{ existing_answers.get(question.id, {}).get('value', 50) }}"
+                            class="slider-input"
+                            {% if question.is_required %}required{% endif %}
+                            oninput="updateSliderValue(this)"
+                        >
+                        <div class="slider-value">
+                            <span class="value-display">{{ existing_answers.get(question.id, {}).get('value', 50) }}%</span>
+                        </div>
+                    </div>
+                    
+                    {% elif question.question_type.value == 'mcq' %}
+                    <div class="mcq-container" data-question-id="{{ question.id }}" data-allow-multiple="{{ question.allow_multiple_selection|lower }}">
+                        {% set mcq_options = question.mcq_options_parsed %}
+                        {% set existing_json = existing_answers.get(question.id, {}).get('json') %}
+                        {% set existing_mcq = existing_json|from_json if existing_json else {} %}
+                        {% set selected_options = existing_mcq.get('selected_options', []) %}
+                        
+                        {% if question.allow_multiple_selection %}
+                        <div class="mcq-instructions">
+                            <small>Select all that apply</small>
+                        </div>
+                        {% endif %}
+                        
+                        {% for option_text in mcq_options %}
+                        <div class="mcq-option">
+                            <label class="mcq-label">
+                                <input 
+                                    type="{{ 'checkbox' if question.allow_multiple_selection else 'radio' }}" 
+                                    name="question_{{ question.id }}_mcq"
+                                    value="{{ loop.index0 }}"
+                                    {% if loop.index0 in selected_options %}checked{% endif %}
+                                    {% if not question.allow_multiple_selection %}
+                                        onclick="handleRadioSelection(this)"
+                                    {% endif %}
+                                >
+                                <span class="mcq-text">{{ option_text }}</span>
+                            </label>
+                        </div>
+                        {% endfor %}
+                    </div>
+                    
+                    {% elif question.question_type.value == 'ordering' %}
+                    <div class="ordering-container" data-question-id="{{ question.id }}">
+                        {% set ordering_options = question.ordering_options_parsed %}
+                        {% set existing_json = existing_answers.get(question.id, {}).get('json') %}
+                        {% set existing_ordering = existing_json|from_json if existing_json else {} %}
+                        {% set ordered_items = existing_ordering.get('ordered_items', []) %}
+                        
+                        {% if ordered_items %}
+                            {% set display_options = ordered_items %}
+                        {% else %}
+                            {% set display_options = ordering_options %}
+                        {% endif %}
+                        
+                        <input type="hidden" name="question_{{ question.id }}_ordering" class="ordering-result">
+                        <div class="ordering-instructions">
+                            <div class="instruction-header">
+                                <svg class="instruction-icon" viewBox="0 0 24 24" width="20" height="20">
+                                    <path fill="currentColor" d="M13,20H11V8L5.5,13.5L4.08,12.08L12,4.16L19.92,12.08L18.5,13.5L13,8V20Z"/>
+                                </svg>
+                                <span>Drag and drop to rank in order of preference</span>
+                            </div>
+                            <p>Most preferred at the top, least preferred at the bottom</p>
+                        </div>
+                        <div class="sortable-container">
+                            <ul class="sortable-list" id="sortable_{{ question.id }}">
+                                {% for item in display_options %}
+                                <li class="sortable-item" data-item="{{ item }}">
+                                    <div class="item-content">
+                                        <div class="drag-handle" title="Drag to reorder">
+                                            <svg viewBox="0 0 24 24" width="16" height="16">
+                                                <path fill="currentColor" d="M9,3H11V5H9V3M13,3H15V5H13V3M9,7H11V9H9V7M13,7H15V9H13V7M9,11H11V13H9V11M13,11H15V13H13V11M9,15H11V17H9V15M13,15H15V17H13V15M9,19H11V21H9V19M13,19H15V21H13V19Z"/>
+                                            </svg>
+                                        </div>
+                                        <div class="rank-number">{{ loop.index }}</div>
+                                        <div class="item-text">{{ item }}</div>
+                                        <div class="preference-label">
+                                            {% if loop.index == 1 %}
+                                                <span class="preference-badge high">Most Preferred</span>
+                                            {% elif loop.index == display_options|length %}
+                                                <span class="preference-badge low">Least Preferred</span>
+                                            {% else %}
+                                                <span class="preference-badge medium">{{ loop.index }}{{ ['st','nd','rd','th'][3 if loop.index > 3 else loop.index-1] }}</span>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                </li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+                        <div class="ordering-hint">
+                            <div class="hint-content">
+                                <svg class="hint-icon" viewBox="0 0 24 24" width="16" height="16">
+                                    <path fill="currentColor" d="M11,9H13V7H11M12,20C7.59,20 4,16.41 4,12C4,7.59 7.59,4 12,4C16.41,4 20,7.59 20,12C20,16.41 16.41,20 12,20M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2M11,17H13V11H11V17Z"/>
+                                </svg>
+                                <small>Click and drag any item to change its position. Rankings will update automatically.</small>
+                            </div>
+                        </div>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+            {% endfor %}
+            
+            <div class="navigation-buttons">
+                {% if not is_first_page %}
+                <button type="button" class="btn btn-secondary" onclick="goToPreviousPage()">
+                    ← Previous
+                </button>
+                {% endif %}
+                
+                <div class="nav-right">
+                    {% if not is_last_page %}
+                    <button type="button" class="btn btn-primary" onclick="submitAndNext()">
+                        Next →
+                    </button>
+                    {% else %}
+                    <button type="button" class="btn btn-success" onclick="submitAndFinish()">
+                        Complete Assessment
+                    </button>
+                    {% endif %}
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+function updateCharCount(textarea) {
+    const current = textarea.value.length;
+    const charCountElement = textarea.parentNode.querySelector('.char-count .current');
+    if (charCountElement) {
+        charCountElement.textContent = current;
+    }
+}
+
+function updateSliderValue(slider) {
+    const valueDisplay = slider.parentNode.querySelector('.value-display');
+    if (valueDisplay) {
+        valueDisplay.textContent = slider.value + '%';
+    }
+}
+
+function handleRadioSelection(radio) {
+    // For radio buttons, ensure only one is selected per question
+    const questionContainer = radio.closest('.mcq-container');
+    const otherRadios = questionContainer.querySelectorAll('input[type="radio"]');
+    otherRadios.forEach(r => {
+        if (r !== radio) r.checked = false;
+    });
+}
+
+// Enhanced drag and drop functionality for ordering questions
+function initializeDragAndDrop() {
+    document.querySelectorAll('.sortable-list').forEach(list => {
+        const sortable = new Sortable(list, {
+            animation: 300,
+            ghostClass: 'sortable-ghost',
+            chosenClass: 'sortable-chosen',
+            dragClass: 'sortable-drag',
+            handle: '.drag-handle',
+            onStart: function(evt) {
+                document.body.classList.add('dragging');
+            },
+            onEnd: function(evt) {
+                document.body.classList.remove('dragging');
+                updateOrderingResult(list);
+                updateRankNumbers(list);
+                // Add subtle animation to indicate change
+                evt.item.style.transform = 'scale(1.05)';
+                setTimeout(() => {
+                    evt.item.style.transform = '';
+                }, 200);
+            },
+            onMove: function(evt) {
+                // Add visual feedback during drag
+                return true;
+            }
+        });
+        // Initialize the ordering result and rank numbers
+        updateOrderingResult(list);
+        updateRankNumbers(list);
+    });
+}
+
+function updateOrderingResult(list) {
+    const questionId = list.closest('.ordering-container').dataset.questionId;
+    const items = Array.from(list.querySelectorAll('.sortable-item')).map(item => item.dataset.item);
+    const hiddenInput = list.closest('.ordering-container').querySelector('.ordering-result');
+    hiddenInput.value = JSON.stringify(items);
+}
+
+function updateRankNumbers(list) {
+    const items = list.querySelectorAll('.sortable-item');
+    items.forEach((item, index) => {
+        const rankNumber = item.querySelector('.rank-number');
+        const preferenceLabel = item.querySelector('.preference-badge');
+        
+        rankNumber.textContent = index + 1;
+        
+        // Update preference labels
+        const totalItems = items.length;
+        if (index === 0) {
+            preferenceLabel.textContent = 'Most Preferred';
+            preferenceLabel.className = 'preference-badge high';
+        } else if (index === totalItems - 1) {
+            preferenceLabel.textContent = 'Least Preferred';
+            preferenceLabel.className = 'preference-badge low';
+        } else {
+            const position = index + 1;
+            const suffix = position === 2 ? 'nd' : position === 3 ? 'rd' : 'th';
+            preferenceLabel.textContent = `${position}${suffix}`;
+            preferenceLabel.className = 'preference-badge medium';
+        }
+    });
+}
+
+function goToPreviousPage() {
+    const currentPage = {{ current_page }};
+    if (currentPage > 0) {
+        window.location.href = `/student/exam/page/${currentPage - 1}`;
+    }
+}
+
+async function submitAnswers() {
+    const form = document.getElementById('questionForm');
+    const formData = new FormData(form);
+    
+    try {
+        const response = await fetch('/student/exam/submit-answers', {
+            method: 'POST',
+            body: formData
+        });
+        
+        if (response.ok) {
+            return true;
+        } else {
+            alert('Error saving answers. Please try again.');
+            return false;
+        }
+    } catch (error) {
+        alert('Error saving answers. Please check your connection.');
+        return false;
+    }
+}
+
+async function submitAndNext() {
+    const success = await submitAnswers();
+    if (success) {
+        const currentPage = {{ current_page }};
+        const totalPages = {{ total_pages }};
+        if (currentPage + 1 < totalPages) {
+            window.location.href = `/student/exam/page/${currentPage + 1}`;
+        }
+    }
+}
+
+async function submitAndFinish() {
+    const success = await submitAnswers();
+    if (success) {
+        window.location.href = '/student/info';
+    }
+}
+
+// Auto-save functionality (optional)
+let autoSaveTimeout;
+function autoSave() {
+    clearTimeout(autoSaveTimeout);
+    autoSaveTimeout = setTimeout(async () => {
+        await submitAnswers();
+    }, 5000); // Save every 5 seconds of inactivity
+}
+
+// Add event listeners for auto-save
+document.querySelectorAll('textarea, input[type="range"], input[type="radio"], input[type="checkbox"]').forEach(element => {
+    element.addEventListener('input', autoSave);
+});
+
+// Initialize drag and drop when page loads
+document.addEventListener('DOMContentLoaded', function() {
+    initializeDragAndDrop();
+});
+</script>
+{% endblock %}

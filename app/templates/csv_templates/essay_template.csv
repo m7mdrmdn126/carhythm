@@ -1,0 +1,4 @@
+title,question_text,category_name,is_required,essay_char_limit
+Personal Goals Essay,Describe your long-term career goals and how you plan to achieve them.,Career Goals,TRUE,1000
+Work Experience Essay,Tell us about your most significant work experience and what you learned from it.,General Assessment,TRUE,800
+Leadership Example,Provide an example of a time when you demonstrated leadership skills.,Skills Evaluation,FALSE,500

@@ -1,0 +1,305 @@
+{% extends "base/admin_base.html" %}
+
+{% block title %}Manage Questions - Career DNA Admin{% endblock %}
+
+{% block content %}
+<div class="question-management">
+    <div class="page-header">
+        <h2>Manage Questions</h2>
+        <div class="page-selector">
+            <select id="pageSelect" onchange="selectPage()">
+                <option value="">Select a page...</option>
+                {% for page in pages %}
+                <option value="{{ page.id }}" {{ "selected" if selected_page and page.id == selected_page.id }}>
+                    {{ page.title }}
+                </option>
+                {% endfor %}
+            </select>
+            {% if selected_page %}
+            <div class="page-actions">
+                <button class="btn btn-primary" onclick="showCreateQuestionModal()">Add Question</button>
+                <a href="/admin/pages/{{ selected_page.id }}/assign-questions" class="btn btn-secondary">
+                    Assign from Pool
+                </a>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+    
+    {% if selected_page %}
+    <div class="page-info">
+        <h3>Questions for: {{ selected_page.title }}</h3>
+        <p>{{ selected_page.description or "No description" }}</p>
+        <div class="page-actions">
+            <a href="/admin/pages/{{ selected_page.id }}/assign-questions" class="btn btn-info btn-sm">
+                📋 Assign from Question Pool
+            </a>
+        </div>
+    </div>
+    
+    <div class="questions-list">
+        <table class="admin-table">
+            <thead>
+                <tr>
+                    <th>Order</th>
+                    <th>Question</th>
+                    <th>Type</th>
+                    <th>Required</th>
+                    <th>Image</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for question in questions %}
+                <tr>
+                    <td>{{ question.order_index }}</td>
+                    <td class="question-text">{{ question.question_text[:100] }}{% if question.question_text|length > 100 %}...{% endif %}</td>
+                    <td>
+                        <span class="question-type {{ question.question_type.value }}">
+                            {{ question.question_type.value.title() }}
+                        </span>
+                    </td>
+                    <td>
+                        <span class="status {{ 'active' if question.is_required else 'inactive' }}">
+                            {{ "Required" if question.is_required else "Optional" }}
+                        </span>
+                    </td>
+                    <td>
+                        {% if question.image_path %}
+                        <img src="/{{ question.image_path }}" alt="Question image" class="question-image-preview">
+                        {% else %}
+                        No image
+                        {% endif %}
+                    </td>
+                    <td class="actions">
+                        <button class="btn btn-sm btn-secondary" onclick="editQuestion({{ question.id }})">Edit</button>
+                        <form method="post" action="/admin/questions/{{ question.id }}/delete" style="display: inline;" onsubmit="return confirm('Are you sure?')">
+                            <button type="submit" class="btn btn-sm btn-danger">Delete</button>
+                        </form>
+                    </td>
+                </tr>
+                {% else %}
+                <tr>
+                    <td colspan="6" class="text-center">No questions created yet for this page</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% else %}
+    <div class="no-page-selected">
+        <p>Please select a page to manage its questions.</p>
+        <p>If no pages are available, <a href="/admin/pages">create a page first</a>.</p>
+    </div>
+    {% endif %}
+</div>
+
+<!-- Create Question Modal -->
+{% if selected_page %}
+<div id="createQuestionModal" class="modal" style="display: none;">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h3>Create New Question</h3>
+            <button class="close" onclick="hideCreateQuestionModal()">&times;</button>
+        </div>
+        <form method="post" action="/admin/questions" enctype="multipart/form-data">
+            <input type="hidden" name="page_id" value="{{ selected_page.id }}">
+            <div class="modal-body">
+                <div class="form-group">
+                    <label for="question_text">Question Text</label>
+                    <textarea id="question_text" name="question_text" rows="4" required></textarea>
+                </div>
+                
+                <div class="form-group">
+                    <label for="question_type">Question Type</label>
+                    <select id="question_type" name="question_type" required onchange="toggleQuestionTypeFields()">
+                        <option value="">Select type...</option>
+                        {% for type in question_types %}
+                        <option value="{{ type }}">{{ type.title() }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                
+                <div id="sliderFields" class="question-type-fields" style="display: none;">
+                    <div class="form-group">
+                        <label for="slider_min_label">Minimum Label (0%)</label>
+                        <input type="text" id="slider_min_label" name="slider_min_label" placeholder="e.g., Strongly Disagree">
+                    </div>
+                    <div class="form-group">
+                        <label for="slider_max_label">Maximum Label (100%)</label>
+                        <input type="text" id="slider_max_label" name="slider_max_label" placeholder="e.g., Strongly Agree">
+                    </div>
+                </div>
+                
+                <div id="essayFields" class="question-type-fields" style="display: none;">
+                    <div class="form-group">
+                        <label for="essay_char_limit">Character Limit (optional)</label>
+                        <input type="number" id="essay_char_limit" name="essay_char_limit" min="50" max="5000" placeholder="e.g., 500">
+                    </div>
+                </div>
+
+                <div id="mcqFields" class="question-type-fields" style="display: none;">
+                    <div class="form-group">
+                        <label>
+                            <input type="checkbox" id="allow_multiple_selection" name="allow_multiple_selection" value="true">
+                            Allow Multiple Selection
+                        </label>
+                    </div>
+                    <div class="form-group">
+                        <label for="mcq_options">Answer Options</label>
+                        <div id="mcqOptionsContainer">
+                            <div class="mcq-option">
+                                <input type="text" name="mcq_option" placeholder="Option 1" required>
+                                <input type="checkbox" name="mcq_correct" title="Mark as correct">
+                                <button type="button" onclick="removeMcqOption(this)" class="btn btn-sm btn-danger">×</button>
+                            </div>
+                            <div class="mcq-option">
+                                <input type="text" name="mcq_option" placeholder="Option 2" required>
+                                <input type="checkbox" name="mcq_correct" title="Mark as correct">
+                                <button type="button" onclick="removeMcqOption(this)" class="btn btn-sm btn-danger">×</button>
+                            </div>
+                        </div>
+                        <button type="button" onclick="addMcqOption()" class="btn btn-sm btn-secondary">Add Option</button>
+                    </div>
+                </div>
+
+                <div id="orderingFields" class="question-type-fields" style="display: none;">
+                    <div class="form-group">
+                        <label>
+                            <input type="checkbox" id="randomize_order" name="randomize_order" value="true" checked>
+                            Randomize Initial Order for Students
+                        </label>
+                    </div>
+                    <div class="form-group">
+                        <label for="ordering_options">Items to Order</label>
+                        <div id="orderingOptionsContainer">
+                            <div class="ordering-option">
+                                <input type="text" name="ordering_option" placeholder="Item 1" required>
+                                <button type="button" onclick="removeOrderingOption(this)" class="btn btn-sm btn-danger">×</button>
+                            </div>
+                            <div class="ordering-option">
+                                <input type="text" name="ordering_option" placeholder="Item 2" required>
+                                <button type="button" onclick="removeOrderingOption(this)" class="btn btn-sm btn-danger">×</button>
+                            </div>
+                        </div>
+                        <button type="button" onclick="addOrderingOption()" class="btn btn-sm btn-secondary">Add Item</button>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="order_index">Order</label>
+                    <input type="number" id="order_index" name="order_index" value="{{ questions|length }}" min="0">
+                </div>
+                
+                <div class="form-group">
+                    <label>
+                        <input type="checkbox" name="is_required" value="true" checked>
+                        Required Question
+                    </label>
+                </div>
+                
+                <div class="form-group">
+                    <label for="image">Question Image (optional)</label>
+                    <input type="file" id="image" name="image" accept="image/*">
+                    <small>Supported formats: JPG, PNG, GIF, WebP</small>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" onclick="hideCreateQuestionModal()">Cancel</button>
+                <button type="submit" class="btn btn-primary">Create Question</button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endif %}
+
+<script>
+function selectPage() {
+    const pageId = document.getElementById('pageSelect').value;
+    if (pageId) {
+        window.location.href = `/admin/questions?page_id=${pageId}`;
+    }
+}
+
+function showCreateQuestionModal() {
+    document.getElementById('createQuestionModal').style.display = 'flex';
+}
+
+function hideCreateQuestionModal() {
+    document.getElementById('createQuestionModal').style.display = 'none';
+}
+
+function toggleQuestionTypeFields() {
+    const type = document.getElementById('question_type').value;
+    const sliderFields = document.getElementById('sliderFields');
+    const essayFields = document.getElementById('essayFields');
+    const mcqFields = document.getElementById('mcqFields');
+    const orderingFields = document.getElementById('orderingFields');
+    
+    // Hide all fields first
+    sliderFields.style.display = 'none';
+    essayFields.style.display = 'none';
+    mcqFields.style.display = 'none';
+    orderingFields.style.display = 'none';
+    
+    // Show relevant fields
+    if (type === 'slider') {
+        sliderFields.style.display = 'block';
+    } else if (type === 'essay') {
+        essayFields.style.display = 'block';
+    } else if (type === 'mcq') {
+        mcqFields.style.display = 'block';
+    } else if (type === 'ordering') {
+        orderingFields.style.display = 'block';
+    }
+}
+
+function editQuestion(questionId) {
+    // This would open an edit modal - simplified for demo
+    alert('Edit question functionality would be implemented here');
+}
+
+function addMcqOption() {
+    const container = document.getElementById('mcqOptionsContainer');
+    const optionCount = container.children.length + 1;
+    const optionDiv = document.createElement('div');
+    optionDiv.className = 'mcq-option';
+    optionDiv.innerHTML = `
+        <input type="text" name="mcq_option" placeholder="Option ${optionCount}" required>
+        <input type="checkbox" name="mcq_correct" title="Mark as correct">
+        <button type="button" onclick="removeMcqOption(this)" class="btn btn-sm btn-danger">×</button>
+    `;
+    container.appendChild(optionDiv);
+}
+
+function removeMcqOption(button) {
+    const container = document.getElementById('mcqOptionsContainer');
+    if (container.children.length > 2) {
+        button.parentElement.remove();
+    } else {
+        alert('At least 2 options are required for MCQ questions.');
+    }
+}
+
+function addOrderingOption() {
+    const container = document.getElementById('orderingOptionsContainer');
+    const optionCount = container.children.length + 1;
+    const optionDiv = document.createElement('div');
+    optionDiv.className = 'ordering-option';
+    optionDiv.innerHTML = `
+        <input type="text" name="ordering_option" placeholder="Item ${optionCount}" required>
+        <button type="button" onclick="removeOrderingOption(this)" class="btn btn-sm btn-danger">×</button>
+    `;
+    container.appendChild(optionDiv);
+}
+
+function removeOrderingOption(button) {
+    const container = document.getElementById('orderingOptionsContainer');
+    if (container.children.length > 2) {
+        button.parentElement.remove();
+    } else {
+        alert('At least 2 items are required for ordering questions.');
+    }
+}
+</script>
+{% endblock %}

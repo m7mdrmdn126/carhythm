@@ -1,0 +1,4 @@
+title,question_text,category_name,is_required,randomize_order,item_1,item_2,item_3,item_4,item_5,item_6
+Career Priorities,Rank these career factors in order of importance to you,Work Preferences,TRUE,TRUE,High salary,Work-life balance,Job security,Career growth,Company culture,Flexible schedule
+Work Activities,Order these daily work activities by your preference (most preferred first),Work Preferences,TRUE,FALSE,Strategic planning,Hands-on execution,Team meetings,Individual work,Problem-solving,Learning new skills
+Leadership Styles,Rank these leadership styles from most to least appealing,Skills Evaluation,TRUE,TRUE,Democratic,Autocratic,Transformational,Servant Leadership,Laissez-faire,

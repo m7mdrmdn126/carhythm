@@ -1,0 +1,4 @@
+title,question_text,category_name,is_required,slider_min_label,slider_max_label
+Communication Skills,Rate your communication skills,Skills Evaluation,TRUE,Poor,Excellent
+Team Collaboration,How well do you work in team environments?,Work Preferences,TRUE,Prefer Solo Work,Love Team Work
+Risk Tolerance,How comfortable are you with taking risks?,Personality Assessment,TRUE,Very Conservative,High Risk Taker

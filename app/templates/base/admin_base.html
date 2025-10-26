@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Career DNA Assessment - Admin{% endblock %}</title>
+    <link rel="stylesheet" href="/static/css/admin.css">
+    <link rel="stylesheet" href="/static/css/common.css">
+</head>
+<body>
+    <nav class="admin-nav">
+        <div class="nav-container">
+            <h1 class="nav-title">Career DNA Admin</h1>
+            <div class="nav-links">
+                <a href="/admin/dashboard" class="nav-link">Dashboard</a>
+                <a href="/admin/pages" class="nav-link">Pages</a>
+                <a href="/admin/questions" class="nav-link">Questions</a>
+                <a href="/admin/question-pool" class="nav-link">Question Pool</a>
+                <a href="/admin/categories" class="nav-link">Categories</a>
+                <a href="/admin/results" class="nav-link">Results</a>
+                <a href="/admin/logout" class="nav-link logout">Logout</a>
+            </div>
+        </div>
+    </nav>
+    
+    <main class="main-content">
+        {% block content %}{% endblock %}
+    </main>
+    
+    <script src="/static/js/admin.js"></script>
+</body>
+</html>
