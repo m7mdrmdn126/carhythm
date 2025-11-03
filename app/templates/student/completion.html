@@ -1,39 +1,67 @@
 {% extends "base/student_base.html" %}
 
-{% block title %}Assessment Complete - Career DNA{% endblock %}
+{% block title %}Assessment Complete - CaRhythm{% endblock %}
 
 {% block content %}
 <div class="completion-container">
     <div class="completion-content">
         <div class="completion-icon">
-            ✓
+            🎉
         </div>
         
-        <h2 class="completion-title">Assessment Complete!</h2>
+        <h1 class="completion-title">You Found Your Rhythm!</h1>
         
         <div class="completion-message">
-            <p>Thank you for completing the Career DNA Assessment.</p>
-            <p>Your responses have been successfully submitted and will be reviewed by our team.</p>
+            <p style="font-size: 1.25rem; color: var(--primary-aubergine);">
+                Thank you for completing the <strong>CaRhythm Assessment</strong>.
+            </p>
+            <p style="color: var(--text-light); margin-top: 16px;">
+                Your responses have been successfully submitted and will be analyzed by our team to discover your unique career rhythm.
+            </p>
         </div>
         
-        <div class="next-steps">
-            <h3>What happens next?</h3>
-            <ul>
-                <li>Your assessment will be analyzed by our experts</li>
-                <li>Results will be available within 2-3 business days</li>
-                <li>You'll receive an email notification when results are ready</li>
-                <li>A detailed report will be provided with career recommendations</li>
+        <div class="card" style="margin: 32px 0; padding: 32px; background: linear-gradient(135deg, rgba(109, 59, 142, 0.05), rgba(109, 59, 142, 0.02)); border-left: 4px solid var(--accent-coral);">
+            <h3 style="color: var(--primary-aubergine-dark); margin-bottom: 20px; display: flex; align-items: center; gap: 12px;">
+                <span style="font-size: 1.5rem;">🎯</span>
+                What happens next?
+            </h3>
+            <ul style="list-style: none; padding: 0; margin: 0;">
+                <li style="padding: 12px 0; border-bottom: 1px solid var(--border-color); display: flex; gap: 12px;">
+                    <span style="color: var(--accent-coral); font-weight: 700; min-width: 24px;">1.</span>
+                    <span>Your assessment will be analyzed by our career intelligence system</span>
+                </li>
+                <li style="padding: 12px 0; border-bottom: 1px solid var(--border-color); display: flex; gap: 12px;">
+                    <span style="color: var(--accent-coral); font-weight: 700; min-width: 24px;">2.</span>
+                    <span>Results will be available within <strong>2-3 business days</strong></span>
+                </li>
+                <li style="padding: 12px 0; border-bottom: 1px solid var(--border-color); display: flex; gap: 12px;">
+                    <span style="color: var(--accent-coral); font-weight: 700; min-width: 24px;">3.</span>
+                    <span>You'll receive an <strong>email notification</strong> when results are ready</span>
+                </li>
+                <li style="padding: 12px 0; display: flex; gap: 12px;">
+                    <span style="color: var(--accent-coral); font-weight: 700; min-width: 24px;">4.</span>
+                    <span>A detailed report will be provided with <strong>personalized career recommendations</strong></span>
+                </li>
             </ul>
         </div>
         
-        <div class="completion-actions">
-            <a href="/student/welcome" class="btn btn-secondary">Take Another Assessment</a>
+        <div class="completion-actions" style="display: flex; gap: 16px; justify-content: center; margin-top: 32px;">
+            <a href="/student/welcome" class="btn btn-primary">
+                Take Another Assessment →
+            </a>
         </div>
         
-        <div class="contact-info">
-            <p>
-                <strong>Questions or concerns?</strong><br>
-                Feel free to contact us at <a href="mailto:support@careerdna.com">support@careerdna.com</a>
+        <div class="card" style="margin-top: 40px; padding: 24px; text-align: center; background: rgba(249, 199, 79, 0.1); border: 2px solid var(--accent-yellow);">
+            <p style="margin: 0; color: var(--text-body);">
+                <strong style="color: var(--primary-aubergine);">Questions or concerns?</strong><br>
+                <span style="font-size: 14px; color: var(--text-light);">Feel free to contact us at</span>
+                <a href="mailto:support@carhythm.com" style="color: var(--accent-coral); text-decoration: none; font-weight: 600; margin-left: 4px;">support@carhythm.com</a>
+            </p>
+        </div>
+        
+        <div style="text-align: center; margin-top: 32px; padding-top: 32px; border-top: 1px solid var(--border-color);">
+            <p style="color: var(--text-light); font-style: italic; margin: 0;">
+                <em>"Your Career, Your Rhythm"</em>
             </p>
         </div>
     </div>

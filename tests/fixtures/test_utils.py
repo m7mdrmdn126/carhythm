@@ -226,3 +226,124 @@ def create_test_assessment_flow(db_session):
         "pages": [page1, page2],
         "questions": [q1, q2, q3]
     }
+
+
+def create_sample_csv_content(question_type="essay"):
+    """Generate sample CSV content for testing CSV imports"""
+    if question_type == "essay":
+        return """title,question_text,category_name,is_required,essay_char_limit
+Sample Essay 1,What is your career goal?,Career Exploration,TRUE,500
+Sample Essay 2,Describe your ideal work environment,Work Style,TRUE,400"""
+    
+    elif question_type == "slider":
+        return """title,question_text,category_name,is_required,slider_min_label,slider_max_label
+Sample Slider 1,Rate your leadership interest,Skills Assessment,TRUE,Low,High
+Sample Slider 2,How do you rate your communication skills,Skills Assessment,TRUE,Poor,Excellent"""
+    
+    elif question_type == "mcq":
+        return """title,question_text,category_name,is_required,option_1,option_2,option_3,correct_answers,allow_multiple_selection
+Sample MCQ 1,What is your work preference?,Work Style,TRUE,Remote,Office,Hybrid,1,FALSE
+Sample MCQ 2,Which skills do you have?,Skills Assessment,TRUE,Technical,Leadership,Creative,"1,2",TRUE"""
+    
+    elif question_type == "ordering":
+        return """title,question_text,category_name,is_required,item_1,item_2,item_3,item_4,randomize_order
+Sample Ordering 1,Rank these factors,Career Exploration,TRUE,Salary,Growth,Balance,Culture,TRUE
+Sample Ordering 2,Prioritize these values,Work Style,TRUE,Impact,Recognition,Stability,Innovation,TRUE"""
+    
+    return ""
+
+
+def validate_question_structure(question, expected_type):
+    """Validate that a question has the correct structure for its type"""
+    assert question.question_text is not None
+    assert question.question_type is not None
+    assert question.order_index is not None
+    
+    if expected_type == "essay":
+        assert question.essay_char_limit is None or isinstance(question.essay_char_limit, int)
+    
+    elif expected_type == "slider":
+        assert isinstance(question.slider_min_label, (str, type(None)))
+        assert isinstance(question.slider_max_label, (str, type(None)))
+    
+    elif expected_type == "mcq":
+        assert question.mcq_options is not None
+        assert question.mcq_correct_answer is not None
+        assert isinstance(question.allow_multiple_selection, bool)
+    
+    elif expected_type == "ordering":
+        assert question.ordering_options is not None
+        assert isinstance(question.randomize_order, bool)
+
+
+def create_mock_student_session(client, session_id=None):
+    """Create a mock student session with session ID"""
+    import uuid
+    if session_id is None:
+        session_id = str(uuid.uuid4())
+    
+    # Set session cookie
+    client.cookies.set("session_id", session_id)
+    return session_id
+
+
+def compare_dict_subset(actual, expected):
+    """Compare that actual dict contains all key-value pairs from expected dict"""
+    for key, value in expected.items():
+        assert key in actual, f"Key '{key}' not found in actual dict"
+        assert actual[key] == value, f"Value mismatch for key '{key}': expected {value}, got {actual[key]}"
+
+
+def create_bulk_test_data(db_session, num_pages=3, num_questions_per_page=5):
+    """Create bulk test data for performance testing"""
+    import json
+    
+    pages = []
+    questions = []
+    
+    for i in range(num_pages):
+        page = Page(
+            title=f"Test Page {i+1}",
+            description=f"Description for page {i+1}",
+            order_index=i,
+            is_active=True
+        )
+        db_session.add(page)
+        pages.append(page)
+    
+    db_session.commit()
+    
+    question_types = [QuestionType.essay, QuestionType.slider, QuestionType.mcq, QuestionType.ordering]
+    
+    for page in pages:
+        for j in range(num_questions_per_page):
+            q_type = question_types[j % len(question_types)]
+            
+            question_data = {
+                "page_id": page.id,
+                "question_text": f"Question {j+1} for {page.title}",
+                "question_type": q_type,
+                "order_index": j,
+                "is_required": True
+            }
+            
+            if q_type == QuestionType.essay:
+                question_data["essay_char_limit"] = 500
+            elif q_type == QuestionType.slider:
+                question_data["slider_min_label"] = "Low"
+                question_data["slider_max_label"] = "High"
+            elif q_type == QuestionType.mcq:
+                question_data["mcq_options"] = json.dumps(["Option A", "Option B", "Option C"])
+                question_data["mcq_correct_answer"] = json.dumps([0])
+                question_data["allow_multiple_selection"] = False
+            elif q_type == QuestionType.ordering:
+                question_data["ordering_options"] = json.dumps(["Item 1", "Item 2", "Item 3"])
+                question_data["randomize_order"] = True
+            
+            question = Question(**question_data)
+            db_session.add(question)
+            questions.append(question)
+    
+    db_session.commit()
+    
+    return {"pages": pages, "questions": questions}

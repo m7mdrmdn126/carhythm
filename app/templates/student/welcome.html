@@ -1,36 +1,58 @@
 {% extends "base/student_base.html" %}
 
-{% block title %}Welcome - Career DNA Assessment{% endblock %}
+{% block title %}Welcome - CaRhythm{% endblock %}
 
 {% block content %}
-<div class="welcome-container">
-    <div class="welcome-content">
-        <h2 class="welcome-title">Welcome to Career DNA Assessment</h2>
-        <p class="welcome-description">
-            This psychological assessment will help us understand your educational targets and career preferences. 
-            The assessment consists of multiple pages with questions designed to evaluate various aspects of your personality and interests.
-        </p>
-        
-        {% if error %}
-        <div class="error-message">{{ error }}</div>
-        {% endif %}
-        
-        <div class="welcome-info">
-            <h3>What to expect:</h3>
-            <ul>
-                <li>Multiple pages of carefully crafted questions</li>
-                <li>A mix of written responses and scale-based questions</li>
-                <li>Approximately 15-20 minutes to complete</li>
-                <li>Your personal information will be collected at the end</li>
-            </ul>
-        </div>
-        
-        <div class="welcome-actions">
-            <a href="/student/exam" class="btn btn-primary btn-large">Start Assessment</a>
-        </div>
-        
-        <div class="privacy-notice">
-            <p><small>Your responses will be kept confidential and used solely for assessment purposes.</small></p>
+<div class="welcome-hero">
+    <div class="welcome-container">
+        <div class="welcome-content card">
+            <h1 class="welcome-title">Discover Your Career Rhythm</h1>
+            <p class="welcome-subtitle">Where Your Identity Meets Intelligence</p>
+            <p class="welcome-description">
+                Welcome to CaRhythm - a comprehensive assessment that goes beyond career matching. 
+                We help you discover the natural rhythm that exists at the intersection of who you are 
+                and how you think, guiding you toward a career path that truly resonates with your authentic self.
+            </p>
+            
+            {% if error %}
+            <div class="alert alert-error">{{ error }}</div>
+            {% endif %}
+            
+            <div class="welcome-features">
+                <div class="feature-card">
+                    <div class="feature-icon">🧠</div>
+                    <h3>Intelligent Analysis</h3>
+                    <p>Data-driven insights into your strengths and preferences</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🎯</div>
+                    <h3>Personalized Guidance</h3>
+                    <p>Tailored career paths based on your unique profile</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">✨</div>
+                    <h3>Authentic Discovery</h3>
+                    <p>Find the career rhythm that matches your true self</p>
+                </div>
+            </div>
+            
+            <div class="welcome-info">
+                <h3>What to Expect:</h3>
+                <ul class="info-list">
+                    <li>📝 Thoughtfully crafted questions across multiple dimensions</li>
+                    <li>⚡ Various question types including essays, scales, and rankings</li>
+                    <li>⏱️ Approximately 15-20 minutes of your time</li>
+                    <li>🔒 Complete confidentiality of your responses</li>
+                </ul>
+            </div>
+            
+            <div class="welcome-actions">
+                <a href="/student/exam" class="btn btn-primary btn-large">Find Your Rhythm</a>
+            </div>
+            
+            <div class="privacy-notice">
+                <p><small>🔐 Your responses are confidential and used exclusively for your career assessment. We respect your privacy and protect your data.</small></p>
+            </div>
         </div>
     </div>
 </div>

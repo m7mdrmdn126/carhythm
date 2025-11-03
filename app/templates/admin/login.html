@@ -3,31 +3,51 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Login - Career DNA</title>
-    <link rel="stylesheet" href="/static/css/admin.css">
+    <title>Admin Login - CaRhythm</title>
     <link rel="stylesheet" href="/static/css/common.css">
+    <link rel="stylesheet" href="/static/css/admin.css">
 </head>
-<body class="login-body">
+<body>
     <div class="login-container">
         <div class="login-card">
-            <h1 class="login-title">Career DNA Admin</h1>
-            <form method="post" class="login-form">
+            <div class="login-logo">
+                <img src="/static/img/logo.png" alt="CaRhythm Logo">
+                <h1 style="color: var(--primary-aubergine); margin: 0;">CaRhythm <span class="badge badge-coral">Admin</span></h1>
+                <p style="color: var(--text-light); margin-top: 8px;"><em>Your Career, Your Rhythm</em></p>
+            </div>
+            
+            <div class="login-title">
+                <h2 style="color: var(--primary-aubergine-dark); margin: 0;">🔐 Secure Access</h2>
+                <p style="color: var(--text-light); font-size: 14px; margin-top: 8px;">Enter your credentials to access the admin panel</p>
+            </div>
+            
+            <form method="post" class="admin-form">
                 {% if error %}
-                <div class="error-message">{{ error }}</div>
+                <div style="background: rgba(231, 76, 60, 0.1); border-left: 4px solid var(--error-color); padding: 12px; margin-bottom: 20px; border-radius: var(--radius-sm); color: var(--error-color);">
+                    <strong>⚠️ Error:</strong> {{ error }}
+                </div>
                 {% endif %}
                 
                 <div class="form-group">
-                    <label for="username">Username</label>
-                    <input type="text" id="username" name="username" required>
+                    <label for="username">👤 Username</label>
+                    <input type="text" id="username" name="username" required placeholder="Enter your username">
                 </div>
                 
                 <div class="form-group">
-                    <label for="password">Password</label>
-                    <input type="password" id="password" name="password" required>
+                    <label for="password">🔑 Password</label>
+                    <input type="password" id="password" name="password" required placeholder="Enter your password">
                 </div>
                 
-                <button type="submit" class="btn btn-primary">Login</button>
+                <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 24px;">
+                    Login to Dashboard →
+                </button>
             </form>
+            
+            <div style="text-align: center; margin-top: 24px; padding-top: 24px; border-top: 1px solid var(--border-color);">
+                <p style="color: var(--text-light); font-size: 12px; margin: 0;">
+                    🔒 Secure authentication • Protected access
+                </p>
+            </div>
         </div>
     </div>
 </body>

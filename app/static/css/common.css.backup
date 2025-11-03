@@ -1,0 +1,413 @@
+/* Common styles shared across the application */
+/* CaRhythm Brand Identity - "Your Career, Your Rhythm" */
+
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Poppins:wght@300;400;500;600;700&display=swap');
+
+:root {
+    /* Brand Colors - CaRhythm Identity */
+    --primary-aubergine: #6D3B8E;
+    --primary-aubergine-dark: #4A2C5F;
+    --secondary-gray: #7F8C8D;
+    --secondary-gray-dark: #5D697A;
+    --accent-coral: #FF6B6B;
+    --accent-coral-hover: #E74C3C;
+    --accent-yellow: #F9C74F;
+    --accent-yellow-glow: #FFD97D;
+    
+    /* Neutrals */
+    --background-light: #F8F9FA;
+    --background-white: #FFFFFF;
+    --text-dark: #2C3E50;
+    --text-charcoal: #3A4750;
+    --text-light: #7F8C8D;
+    --border-color: #E1E8ED;
+    
+    /* Functional Colors */
+    --success-color: #27AE60;
+    --warning-color: #F39C12;
+    --error-color: #E74C3C;
+    --info-color: #3498DB;
+    
+    /* Shadows & Effects */
+    --shadow-soft: 0 4px 20px rgba(109, 59, 142, 0.08);
+    --shadow-medium: 0 8px 30px rgba(109, 59, 142, 0.12);
+    --shadow-strong: 0 12px 40px rgba(109, 59, 142, 0.18);
+    --shadow-glow: 0 0 20px rgba(249, 199, 79, 0.3);
+    
+    /* Border Radius */
+    --radius-sm: 6px;
+    --radius-md: 12px;
+    --radius-lg: 18px;
+    --radius-xl: 24px;
+    
+    /* Typography */
+    --font-display: 'Playfair Display', serif;
+    --font-body: 'Poppins', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    
+    /* Spacing */
+    --spacing-xs: 8px;
+    --spacing-sm: 16px;
+    --spacing-md: 24px;
+    --spacing-lg: 40px;
+    --spacing-xl: 64px;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: var(--font-body);
+    line-height: 1.7;
+    color: var(--text-dark);
+    background: linear-gradient(135deg, var(--background-light) 0%, #FFFFFF 100%);
+    min-height: 100vh;
+    position: relative;
+}
+
+/* Neural Path Pattern Background */
+body::before {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image: 
+        radial-gradient(circle at 20% 50%, rgba(109, 59, 142, 0.03) 0%, transparent 50%),
+        radial-gradient(circle at 80% 80%, rgba(249, 199, 79, 0.03) 0%, transparent 50%);
+    pointer-events: none;
+    z-index: 0;
+}
+
+/* Display Headings */
+h1, h2, h3 {
+    font-family: var(--font-display);
+    font-weight: 700;
+    color: var(--primary-aubergine-dark);
+    line-height: 1.2;
+    margin-bottom: var(--spacing-sm);
+}
+
+h1 {
+    font-size: 3rem;
+    letter-spacing: -1px;
+}
+
+h2 {
+    font-size: 2.25rem;
+    letter-spacing: -0.5px;
+}
+
+h3 {
+    font-size: 1.75rem;
+}
+
+h4, h5, h6 {
+    font-family: var(--font-body);
+    font-weight: 600;
+    color: var(--text-dark);
+}
+
+p {
+    margin-bottom: var(--spacing-sm);
+}
+
+/* Button Styles - CaRhythm Design System */
+.btn {
+    display: inline-block;
+    padding: 14px 32px;
+    border: none;
+    border-radius: var(--radius-md);
+    font-family: var(--font-body);
+    font-size: 15px;
+    font-weight: 600;
+    text-decoration: none;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    text-align: center;
+    min-width: 120px;
+    position: relative;
+    overflow: hidden;
+    letter-spacing: 0.3px;
+}
+
+.btn::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 0;
+    height: 0;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.3);
+    transform: translate(-50%, -50%);
+    transition: width 0.6s, height 0.6s;
+}
+
+.btn:hover::before {
+    width: 300px;
+    height: 300px;
+}
+
+.btn-primary {
+    background: linear-gradient(135deg, var(--accent-coral) 0%, var(--accent-coral-hover) 100%);
+    color: var(--background-white);
+    box-shadow: var(--shadow-soft);
+}
+
+.btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-medium);
+}
+}
+
+.btn-primary:hover {
+    background-color: #357ABD;
+    transform: translateY(-1px);
+    box-shadow: var(--shadow);
+}
+
+.btn-secondary {
+    background-color: var(--white);
+    color: var(--text-color);
+    border: 1px solid var(--border-color);
+}
+
+.btn-secondary:hover {
+    background-color: #F1F3F4;
+    border-color: var(--primary-color);
+}
+
+.btn-success {
+    background-color: var(--success-color);
+    color: var(--white);
+}
+
+.btn-success:hover {
+    background-color: #219A52;
+}
+
+.btn-danger {
+    background-color: var(--error-color);
+    color: var(--white);
+}
+
+.btn-danger:hover {
+    background-color: #C0392B;
+}
+
+.btn-large {
+    padding: 16px 32px;
+    font-size: 16px;
+}
+
+.btn-sm {
+    padding: 8px 16px;
+    font-size: 12px;
+    min-width: auto;
+}
+
+/* Form Styles */
+.form-group {
+    margin-bottom: 20px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 6px;
+    font-weight: 500;
+    color: var(--text-color);
+}
+
+input[type="text"],
+input[type="email"],
+input[type="password"],
+input[type="number"],
+textarea,
+select {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius);
+    font-size: 14px;
+    transition: border-color 0.3s ease;
+}
+
+input:focus,
+textarea:focus,
+select:focus {
+    outline: none;
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 3px rgba(74, 144, 226, 0.1);
+}
+
+textarea {
+    resize: vertical;
+    min-height: 100px;
+}
+
+/* Modal Styles */
+.modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 1000;
+    align-items: center;
+    justify-content: center;
+}
+
+.modal-content {
+    background: var(--white);
+    border-radius: var(--border-radius-large);
+    box-shadow: var(--shadow);
+    max-width: 500px;
+    width: 90%;
+    max-height: 80vh;
+    overflow-y: auto;
+}
+
+.modal-header {
+    padding: 20px;
+    border-bottom: 1px solid var(--border-color);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.modal-header h3 {
+    margin: 0;
+    color: var(--text-color);
+}
+
+.close {
+    background: none;
+    border: none;
+    font-size: 24px;
+    cursor: pointer;
+    color: var(--text-light);
+}
+
+.close:hover {
+    color: var(--text-color);
+}
+
+.modal-body {
+    padding: 20px;
+}
+
+.modal-footer {
+    padding: 20px;
+    border-top: 1px solid var(--border-color);
+    display: flex;
+    gap: 10px;
+    justify-content: flex-end;
+}
+
+/* Table Styles */
+.admin-table {
+    width: 100%;
+    border-collapse: collapse;
+    background: var(--white);
+    border-radius: var(--border-radius);
+    overflow: hidden;
+    box-shadow: var(--shadow-light);
+}
+
+.admin-table th,
+.admin-table td {
+    padding: 12px 16px;
+    text-align: left;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.admin-table th {
+    background-color: #F8F9FA;
+    font-weight: 600;
+    color: var(--text-color);
+}
+
+.admin-table tr:hover {
+    background-color: #F8F9FA;
+}
+
+/* Status badges */
+.status {
+    padding: 4px 8px;
+    border-radius: 12px;
+    font-size: 12px;
+    font-weight: 500;
+}
+
+.status.active {
+    background-color: #D4EDDA;
+    color: #155724;
+}
+
+.status.inactive {
+    background-color: #F8D7DA;
+    color: #721C24;
+}
+
+/* Utility classes */
+.text-center {
+    text-align: center;
+}
+
+.text-right {
+    text-align: right;
+}
+
+.mt-20 {
+    margin-top: 20px;
+}
+
+.mb-20 {
+    margin-bottom: 20px;
+}
+
+.error-message {
+    background-color: #F8D7DA;
+    color: #721C24;
+    padding: 12px;
+    border-radius: var(--border-radius);
+    margin-bottom: 20px;
+    border: 1px solid #F5C6CB;
+}
+
+.success-message {
+    background-color: #D4EDDA;
+    color: #155724;
+    padding: 12px;
+    border-radius: var(--border-radius);
+    margin-bottom: 20px;
+    border: 1px solid #C3E6CB;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .btn {
+        width: 100%;
+        margin-bottom: 10px;
+    }
+    
+    .modal-content {
+        width: 95%;
+        margin: 20px;
+    }
+    
+    .admin-table {
+        font-size: 14px;
+    }
+    
+    .admin-table th,
+    .admin-table td {
+        padding: 8px;
+    }
+}

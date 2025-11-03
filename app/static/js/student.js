@@ -241,6 +241,107 @@ document.addEventListener('keydown', function(e) {
     }
 });
 
+// MCQ Option Selection Handler
+function handleRadioSelection(radio) {
+    const container = radio.closest('.mcq-container');
+    if (container) {
+        const options = container.querySelectorAll('.mcq-option');
+        options.forEach(opt => opt.classList.remove('selected'));
+        radio.closest('.mcq-option').classList.add('selected');
+    }
+}
+
+// Add ripple effect to buttons
+function createRipple(event) {
+    const button = event.currentTarget;
+    const ripple = document.createElement('span');
+    const diameter = Math.max(button.clientWidth, button.clientHeight);
+    const radius = diameter / 2;
+    
+    ripple.style.width = ripple.style.height = `${diameter}px`;
+    ripple.style.left = `${event.clientX - button.offsetLeft - radius}px`;
+    ripple.style.top = `${event.clientY - button.offsetTop - radius}px`;
+    ripple.classList.add('ripple');
+    
+    const rippleEffect = button.querySelector('.ripple');
+    if (rippleEffect) {
+        rippleEffect.remove();
+    }
+    
+    button.appendChild(ripple);
+}
+
+// Intersection Observer for scroll animations
+function initScrollAnimations() {
+    const observerOptions = {
+        threshold: 0.1,
+        rootMargin: '0px 0px -50px 0px'
+    };
+    
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('animate-in');
+                observer.unobserve(entry.target);
+            }
+        });
+    }, observerOptions);
+    
+    const animatedElements = document.querySelectorAll('.question-card, .feature-card, .mcq-option');
+    animatedElements.forEach(el => observer.observe(el));
+}
+
+// Smooth scroll to top button
+function addScrollToTop() {
+    const scrollBtn = document.createElement('button');
+    scrollBtn.innerHTML = '↑';
+    scrollBtn.className = 'scroll-to-top';
+    scrollBtn.style.cssText = `
+        position: fixed;
+        bottom: 30px;
+        right: 30px;
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, var(--accent-coral), var(--accent-coral-hover));
+        color: white;
+        border: none;
+        font-size: 24px;
+        cursor: pointer;
+        opacity: 0;
+        transform: scale(0);
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        z-index: 1000;
+        box-shadow: 0 4px 20px rgba(255, 107, 107, 0.4);
+    `;
+    
+    document.body.appendChild(scrollBtn);
+    
+    window.addEventListener('scroll', () => {
+        if (window.pageYOffset > 300) {
+            scrollBtn.style.opacity = '1';
+            scrollBtn.style.transform = 'scale(1)';
+        } else {
+            scrollBtn.style.opacity = '0';
+            scrollBtn.style.transform = 'scale(0)';
+        }
+    });
+    
+    scrollBtn.addEventListener('click', () => {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+    
+    scrollBtn.addEventListener('mouseenter', () => {
+        scrollBtn.style.transform = 'scale(1.1)';
+        scrollBtn.style.boxShadow = '0 6px 30px rgba(255, 107, 107, 0.6)';
+    });
+    
+    scrollBtn.addEventListener('mouseleave', () => {
+        scrollBtn.style.transform = 'scale(1)';
+        scrollBtn.style.boxShadow = '0 4px 20px rgba(255, 107, 107, 0.4)';
+    });
+}
+
 // Initialize when page loads
 document.addEventListener('DOMContentLoaded', function() {
     // Set up auto-save for form inputs
@@ -253,6 +354,69 @@ document.addEventListener('DOMContentLoaded', function() {
             updateCharCount(input);
         } else if (input.type === 'range') {
             updateSliderValue(input);
+        }
+    });
+    
+    // Add ripple effect to all buttons
+    const buttons = document.querySelectorAll('.btn, .btn-primary, .btn-large');
+    buttons.forEach(button => {
+        button.addEventListener('click', createRipple);
+    });
+    
+    // Initialize scroll animations
+    initScrollAnimations();
+    
+    // Add scroll to top button
+    addScrollToTop();
+    
+    // MCQ selection handling - Enhanced
+    const mcqContainers = document.querySelectorAll('.mcq-container');
+    console.log('Found MCQ containers:', mcqContainers.length);
+    
+    const mcqOptions = document.querySelectorAll('.mcq-option');
+    console.log('Found MCQ options:', mcqOptions.length);
+    
+    mcqOptions.forEach(option => {
+        const input = option.querySelector('input[type="radio"], input[type="checkbox"]');
+        if (input) {
+            console.log('MCQ input found:', input.type, input.name, input.value);
+            
+            // Mark already selected options on load
+            if (input.checked) {
+                option.classList.add('selected');
+                console.log('Marked as selected:', input.name);
+            }
+            
+            // Handle clicks on the entire option div
+            option.addEventListener('click', function(e) {
+                // Don't trigger if clicking directly on input (let native behavior work)
+                if (e.target !== input) {
+                    input.click();
+                }
+            });
+            
+            // Handle input changes
+            input.addEventListener('change', function() {
+                if (this.type === 'radio') {
+                    // For radio buttons, remove selected from all in group, then add to this one
+                    const container = this.closest('.mcq-container');
+                    if (container) {
+                        container.querySelectorAll('.mcq-option').forEach(opt => {
+                            opt.classList.remove('selected');
+                        });
+                    }
+                    if (this.checked) {
+                        option.classList.add('selected');
+                    }
+                } else if (this.type === 'checkbox') {
+                    // For checkboxes, toggle selected state
+                    if (this.checked) {
+                        option.classList.add('selected');
+                    } else {
+                        option.classList.remove('selected');
+                    }
+                }
+            });
         }
     });
     

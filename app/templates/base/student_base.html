@@ -3,24 +3,28 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% block title %}Career DNA Assessment{% endblock %}</title>
-    <link rel="stylesheet" href="/static/css/student.css">
+    <title>{% block title %}CaRhythm - Your Career, Your Rhythm{% endblock %}</title>
     <link rel="stylesheet" href="/static/css/common.css">
+    <link rel="stylesheet" href="/static/css/student.css">
     <script src="https://cdn.jsdelivr.net/npm/sortablejs@latest/Sortable.min.js"></script>
+    <link rel="icon" type="image/png" href="/static/img/logo.png">
 </head>
 <body>
     <div class="container">
-        <header class="header">
-            <h1 class="logo">Career DNA</h1>
+        <header class="header rhythm-wave">
+            <div class="logo">
+                <img src="/static/img/logo.png" alt="CaRhythm Logo" class="logo-img">
+                <span class="logo-text">CaRhythm</span>
+            </div>
             {% block progress %}{% endblock %}
         </header>
         
-        <main class="main-content">
+        <main class="main-content neural-pattern">
             {% block content %}{% endblock %}
         </main>
         
         <footer class="footer">
-            <p>&copy; 2025 Career DNA Assessment. All rights reserved.</p>
+            <p>&copy; 2025 CaRhythm. All rights reserved. | <em>Your Career, Your Rhythm</em></p>
         </footer>
     </div>
     
