@@ -74,9 +74,20 @@ async def logout(request: Request):
     return response
 
 @router.get("/dashboard", response_class=HTMLResponse)
-async def dashboard(request: Request, admin=Depends(require_admin)):
+async def dashboard(request: Request, db: Session = Depends(get_db), admin=Depends(require_admin)):
     """Admin dashboard."""
+    from ..models import Page, Question, StudentResponse
+    from ..models.question_pool import QuestionPool
+    
+    # Get statistics
+    stats = {
+        "total_pages": db.query(Page).count(),
+        "total_questions": db.query(Question).count(),
+        "total_responses": db.query(StudentResponse).count(),
+        "total_pool_questions": db.query(QuestionPool).count()
+    }
+    
     return templates.TemplateResponse(
         "admin/dashboard.html", 
-        {"request": request, "admin": admin}
+        {"request": request, "admin": admin, "stats": stats}
     )

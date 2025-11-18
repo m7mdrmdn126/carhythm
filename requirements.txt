@@ -7,4 +7,5 @@ passlib==1.7.4
 python-jose==3.3.0
 bcrypt==4.1.1
 aiosqlite==0.19.0
-python-dotenv==1.0.0
+python-dotenv==1.0.0reportlab==4.0.7
+matplotlib==3.8.2

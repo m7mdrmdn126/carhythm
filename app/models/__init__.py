@@ -4,6 +4,7 @@ from .page import Page
 from .question import Question, QuestionType
 from .response import StudentResponse, QuestionAnswer
 from .question_pool import Category, QuestionPool, QuestionPageAssignment, ImportLog
+from .assessment_score import AssessmentScore
 
 __all__ = [
     "Base",
@@ -19,5 +20,6 @@ __all__ = [
     "Category",
     "QuestionPool", 
     "QuestionPageAssignment",
-    "ImportLog"
+    "ImportLog",
+    "AssessmentScore"
 ]

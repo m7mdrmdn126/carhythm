@@ -16,8 +16,9 @@ class StudentResponse(Base):
     completed_at = Column(DateTime(timezone=True))
     created_at = Column(DateTime(timezone=True), server_default=func.now())
     
-    # Relationship with answers
+    # Relationships
     answers = relationship("QuestionAnswer", back_populates="response", cascade="all, delete-orphan")
+    scores = relationship("AssessmentScore", back_populates="response", uselist=False, cascade="all, delete-orphan")
 
 class QuestionAnswer(Base):
     __tablename__ = "question_answers"

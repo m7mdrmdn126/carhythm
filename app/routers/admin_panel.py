@@ -1,13 +1,16 @@
 from fastapi import APIRouter, Depends, Request, Form, UploadFile, File, HTTPException
-from fastapi.responses import HTMLResponse, RedirectResponse, JSONResponse
+from fastapi.responses import HTMLResponse, RedirectResponse, JSONResponse, StreamingResponse
 from fastapi.templating import Jinja2Templates
 from sqlalchemy.orm import Session
 from ..models import get_db, QuestionType
 from ..services import question_service, response_service
+from ..services import scoring_service, pdf_service
 from ..schemas import PageCreate, PageUpdate, QuestionCreate, QuestionUpdate
 from ..utils.helpers import save_upload_file, validate_image_file, delete_file, format_datetime
 from .admin import require_admin
 from typing import Optional
+import csv
+import io
 
 router = APIRouter(prefix="/admin", tags=["admin_panel"])
 templates = Jinja2Templates(directory="app/templates")
@@ -295,7 +298,7 @@ async def view_response_detail(
     db: Session = Depends(get_db),
     admin=Depends(require_admin)
 ):
-    """View detailed response with all answers."""
+    """View detailed response with all answers and calculated scores."""
     response = response_service.get_response_with_answers(db, response_id)
     if not response:
         raise HTTPException(status_code=404, detail="Response not found")
@@ -309,12 +312,16 @@ async def view_response_detail(
             'answer': answer
         }
     
+    # Get or calculate scores
+    scores = scoring_service.get_scores_for_response(db, response_id)
+    
     return templates.TemplateResponse(
         "admin/response_detail.html",
         {
             "request": request,
             "response": response,
             "answers_by_question": answers_by_question,
+            "scores": scores,
             "admin": admin,
             "format_datetime": format_datetime
         }
@@ -329,3 +336,143 @@ async def delete_response(
     """Delete a student response."""
     response_service.delete_student_response(db, response_id)
     return RedirectResponse(url="/admin/results", status_code=302)
+
+
+@router.post("/results/{response_id}/calculate-scores")
+async def calculate_response_scores(
+    response_id: int,
+    db: Session = Depends(get_db),
+    admin=Depends(require_admin)
+):
+    """Calculate and save scores for a specific response."""
+    try:
+        scores = scoring_service.calculate_and_save_scores(db, response_id)
+        return JSONResponse(content={
+            "success": True,
+            "message": "Scores calculated successfully",
+            "scores_id": scores.id
+        })
+    except Exception as e:
+        return JSONResponse(content={
+            "success": False,
+            "message": str(e)
+        }, status_code=500)
+
+
+@router.get("/results/export/csv")
+async def export_results_csv(
+    db: Session = Depends(get_db),
+    admin=Depends(require_admin)
+):
+    """Export all results with scores to CSV."""
+    responses = response_service.get_all_responses(db)
+    
+    # Create CSV in memory
+    output = io.StringIO()
+    writer = csv.writer(output)
+    
+    # Write header
+    writer.writerow([
+        'Response ID', 'Session ID', 'Name', 'Email', 'Age Group', 'Country', 'Origin Country',
+        'Started At', 'Completed At', 'Status',
+        # RIASEC scores
+        'RIASEC R', 'RIASEC I', 'RIASEC A', 'RIASEC S', 'RIASEC E', 'RIASEC C', 'RIASEC Profile',
+        # Big Five scores
+        'Big5 Openness', 'Big5 Conscientiousness', 'Big5 Extraversion', 'Big5 Agreeableness', 'Big5 Neuroticism',
+        # Work Rhythm scores
+        'WR Motivation', 'WR Grit', 'WR Self-Efficacy', 'WR Resilience', 'WR Learning', 'WR Empathy', 'WR Procrastination',
+        'Scores Calculated At'
+    ])
+    
+    # Write data rows
+    for response in responses:
+        scores = scoring_service.get_scores_for_response(db, response.id)
+        
+        status = "Complete" if response.completed_at else "In Progress"
+        
+        row = [
+            response.id,
+            response.session_id,
+            response.full_name,
+            response.email,
+            response.age_group,
+            response.country,
+            response.origin_country,
+            response.created_at.strftime('%Y-%m-%d %H:%M:%S') if response.created_at else '',
+            response.completed_at.strftime('%Y-%m-%d %H:%M:%S') if response.completed_at else '',
+            status
+        ]
+        
+        # Add scores if available
+        if scores:
+            row.extend([
+                scores.riasec_r_score or '',
+                scores.riasec_i_score or '',
+                scores.riasec_a_score or '',
+                scores.riasec_s_score or '',
+                scores.riasec_e_score or '',
+                scores.riasec_c_score or '',
+                scores.riasec_profile or '',
+                scores.bigfive_openness or '',
+                scores.bigfive_conscientiousness or '',
+                scores.bigfive_extraversion or '',
+                scores.bigfive_agreeableness or '',
+                scores.bigfive_neuroticism or '',
+                scores.workrhythm_motivation or '',
+                scores.workrhythm_grit or '',
+                scores.workrhythm_self_efficacy or '',
+                scores.workrhythm_resilience or '',
+                scores.workrhythm_learning or '',
+                scores.workrhythm_empathy or '',
+                scores.workrhythm_procrastination or '',
+                scores.calculated_at.strftime('%Y-%m-%d %H:%M:%S') if scores.calculated_at else ''
+            ])
+        else:
+            row.extend([''] * 21)  # Empty columns for scores
+        
+        writer.writerow(row)
+    
+    # Prepare response
+    output.seek(0)
+    return StreamingResponse(
+        iter([output.getvalue()]),
+        media_type="text/csv",
+        headers={"Content-Disposition": "attachment; filename=carhythm_results_export.csv"}
+    )
+
+
+@router.get("/results/{response_id}/export/pdf")
+async def export_response_pdf(
+    response_id: int,
+    db: Session = Depends(get_db),
+    admin=Depends(require_admin)
+):
+    """Export individual response as PDF report with scores and visualizations."""
+    response = response_service.get_response_with_answers(db, response_id)
+    if not response:
+        raise HTTPException(status_code=404, detail="Response not found")
+    
+    # Get scores (calculate if not exists)
+    scores = scoring_service.get_scores_for_response(db, response_id)
+    if not scores:
+        # Calculate scores if they don't exist
+        scores = scoring_service.calculate_and_save_scores(db, response_id)
+    
+    if not scores:
+        raise HTTPException(status_code=400, detail="Unable to calculate scores for this response")
+    
+    # Generate PDF
+    try:
+        pdf_buffer = pdf_service.generate_pdf_report(response, scores)
+        
+        # Create safe filename
+        safe_name = "".join(c for c in response.full_name if c.isalnum() or c in (' ', '-', '_')).strip()
+        filename = f"CaRhythm_Report_{safe_name}_{response.id}.pdf"
+        
+        return StreamingResponse(
+            pdf_buffer,
+            media_type="application/pdf",
+            headers={"Content-Disposition": f"attachment; filename={filename}"}
+        )
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Error generating PDF: {str(e)}")

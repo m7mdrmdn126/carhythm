@@ -19,6 +19,9 @@
             <h2>👤 Student Information</h2>
             <div class="actions">
                 <a href="/admin/results" class="btn btn-secondary">← Back to Results</a>
+                {% if scores %}
+                <a href="/admin/results/{{ response.id }}/export/pdf" class="btn btn-success">📄 Download PDF Report</a>
+                {% endif %}
                 <form style="display: inline;" method="post" action="/admin/results/{{ response.id }}/delete" 
                       onsubmit="return confirm('Are you sure you want to delete this response? This action cannot be undone.')">
                     <button type="submit" class="btn btn-danger">🗑️ Delete Response</button>
@@ -73,6 +76,11 @@
     <div class="card response-summary">
         <div class="card-header">
             <h2>📈 Response Summary</h2>
+            {% if not scores %}
+            <button onclick="calculateScores({{ response.id }})" class="btn btn-primary">
+                🧮 Calculate Scores
+            </button>
+            {% endif %}
         </div>
         <div class="card-content">
             <div class="summary-stats">
@@ -105,6 +113,175 @@
             </div>
         </div>
     </div>
+
+    <!-- Assessment Scores Section -->
+    {% if scores %}
+    <div class="card scores-section">
+        <div class="card-header">
+            <h2>🎯 Assessment Scores</h2>
+            <span class="score-timestamp">Calculated: {{ format_datetime(scores.calculated_at) }}</span>
+        </div>
+        <div class="card-content">
+            
+            <!-- RIASEC Scores -->
+            {% if scores.riasec_complete %}
+            <div class="score-module">
+                <h3>🔧 RIASEC Career Interest Profile: <span class="profile-code">{{ scores.riasec_profile }}</span></h3>
+                <div class="score-grid">
+                    <div class="score-item">
+                        <div class="score-label">Realistic (R)</div>
+                        <div class="progress-bar">
+                            <div class="progress-fill" style="width: {{ scores.riasec_r_score }}%"></div>
+                        </div>
+                        <div class="score-value">{{ scores.riasec_r_score|round|int }}/100</div>
+                    </div>
+                    <div class="score-item">
+                        <div class="score-label">Investigative (I)</div>
+                        <div class="progress-bar">
+                            <div class="progress-fill" style="width: {{ scores.riasec_i_score }}%"></div>
+                        </div>
+                        <div class="score-value">{{ scores.riasec_i_score|round|int }}/100</div>
+                    </div>
+                    <div class="score-item">
+                        <div class="score-label">Artistic (A)</div>
+                        <div class="progress-bar">
+                            <div class="progress-fill" style="width: {{ scores.riasec_a_score }}%"></div>
+                        </div>
+                        <div class="score-value">{{ scores.riasec_a_score|round|int }}/100</div>
+                    </div>
+                    <div class="score-item">
+                        <div class="score-label">Social (S)</div>
+                        <div class="progress-bar">
+                            <div class="progress-fill" style="width: {{ scores.riasec_s_score }}%"></div>
+                        </div>
+                        <div class="score-value">{{ scores.riasec_s_score|round|int }}/100</div>
+                    </div>
+                    <div class="score-item">
+                        <div class="score-label">Enterprising (E)</div>
+                        <div class="progress-bar">
+                            <div class="progress-fill" style="width: {{ scores.riasec_e_score }}%"></div>
+                        </div>
+                        <div class="score-value">{{ scores.riasec_e_score|round|int }}/100</div>
+                    </div>
+                    <div class="score-item">
+                        <div class="score-label">Conventional (C)</div>
+                        <div class="progress-bar">
+                            <div class="progress-fill" style="width: {{ scores.riasec_c_score }}%"></div>
+                        </div>
+                        <div class="score-value">{{ scores.riasec_c_score|round|int }}/100</div>
+                    </div>
+                </div>
+                <canvas id="riasecChart" width="400" height="400"></canvas>
+            </div>
+            {% endif %}
+
+            <!-- Big Five Scores -->
+            {% if scores.bigfive_complete %}
+            <div class="score-module">
+                <h3>🧠 Big Five Personality Traits</h3>
+                <div class="score-grid">
+                    <div class="score-item">
+                        <div class="score-label">Openness</div>
+                        <div class="progress-bar">
+                            <div class="progress-fill" style="width: {{ scores.bigfive_openness }}%"></div>
+                        </div>
+                        <div class="score-value">{{ scores.bigfive_openness|round|int }}/100</div>
+                    </div>
+                    <div class="score-item">
+                        <div class="score-label">Conscientiousness</div>
+                        <div class="progress-bar">
+                            <div class="progress-fill" style="width: {{ scores.bigfive_conscientiousness }}%"></div>
+                        </div>
+                        <div class="score-value">{{ scores.bigfive_conscientiousness|round|int }}/100</div>
+                    </div>
+                    <div class="score-item">
+                        <div class="score-label">Extraversion</div>
+                        <div class="progress-bar">
+                            <div class="progress-fill" style="width: {{ scores.bigfive_extraversion }}%"></div>
+                        </div>
+                        <div class="score-value">{{ scores.bigfive_extraversion|round|int }}/100</div>
+                    </div>
+                    <div class="score-item">
+                        <div class="score-label">Agreeableness</div>
+                        <div class="progress-bar">
+                            <div class="progress-fill" style="width: {{ scores.bigfive_agreeableness }}%"></div>
+                        </div>
+                        <div class="score-value">{{ scores.bigfive_agreeableness|round|int }}/100</div>
+                    </div>
+                    <div class="score-item">
+                        <div class="score-label">Neuroticism</div>
+                        <div class="progress-bar">
+                            <div class="progress-fill" style="width: {{ scores.bigfive_neuroticism }}%"></div>
+                        </div>
+                        <div class="score-value">{{ scores.bigfive_neuroticism|round|int }}/100</div>
+                    </div>
+                </div>
+                <canvas id="bigFiveChart" width="400" height="400"></canvas>
+            </div>
+            {% endif %}
+
+            <!-- Work Rhythm Scores -->
+            {% if scores.workrhythm_complete %}
+            <div class="score-module">
+                <h3>⚡ Work Rhythm Traits</h3>
+                <div class="score-grid">
+                    <div class="score-item">
+                        <div class="score-label">Motivation</div>
+                        <div class="progress-bar">
+                            <div class="progress-fill" style="width: {{ scores.workrhythm_motivation }}%"></div>
+                        </div>
+                        <div class="score-value">{{ scores.workrhythm_motivation|round|int }}/100</div>
+                    </div>
+                    <div class="score-item">
+                        <div class="score-label">Grit</div>
+                        <div class="progress-bar">
+                            <div class="progress-fill" style="width: {{ scores.workrhythm_grit }}%"></div>
+                        </div>
+                        <div class="score-value">{{ scores.workrhythm_grit|round|int }}/100</div>
+                    </div>
+                    <div class="score-item">
+                        <div class="score-label">Self-Efficacy</div>
+                        <div class="progress-bar">
+                            <div class="progress-fill" style="width: {{ scores.workrhythm_self_efficacy }}%"></div>
+                        </div>
+                        <div class="score-value">{{ scores.workrhythm_self_efficacy|round|int }}/100</div>
+                    </div>
+                    <div class="score-item">
+                        <div class="score-label">Resilience</div>
+                        <div class="progress-bar">
+                            <div class="progress-fill" style="width: {{ scores.workrhythm_resilience }}%"></div>
+                        </div>
+                        <div class="score-value">{{ scores.workrhythm_resilience|round|int }}/100</div>
+                    </div>
+                    <div class="score-item">
+                        <div class="score-label">Learning</div>
+                        <div class="progress-bar">
+                            <div class="progress-fill" style="width: {{ scores.workrhythm_learning }}%"></div>
+                        </div>
+                        <div class="score-value">{{ scores.workrhythm_learning|round|int }}/100</div>
+                    </div>
+                    <div class="score-item">
+                        <div class="score-label">Empathy</div>
+                        <div class="progress-bar">
+                            <div class="progress-fill" style="width: {{ scores.workrhythm_empathy }}%"></div>
+                        </div>
+                        <div class="score-value">{{ scores.workrhythm_empathy|round|int }}/100</div>
+                    </div>
+                    <div class="score-item">
+                        <div class="score-label">Procrastination</div>
+                        <div class="progress-bar">
+                            <div class="progress-fill" style="width: {{ scores.workrhythm_procrastination }}%"></div>
+                        </div>
+                        <div class="score-value">{{ scores.workrhythm_procrastination|round|int }}/100</div>
+                    </div>
+                </div>
+                <canvas id="workRhythmChart" width="400" height="400"></canvas>
+            </div>
+            {% endif %}
+
+        </div>
+    </div>
+    {% endif %}
 
     <!-- Detailed Answers -->
     <div class="card answers-detail">
@@ -447,5 +624,284 @@
         grid-template-columns: repeat(2, 1fr);
     }
 }
+
+/* Score Visualization Styles */
+.scores-section {
+    margin-top: 24px;
+}
+
+.score-timestamp {
+    font-size: 0.875rem;
+    color: #6b7280;
+}
+
+.score-module {
+    margin-bottom: 32px;
+    padding: 20px;
+    background: #f9fafb;
+    border-radius: 8px;
+}
+
+.score-module h3 {
+    color: #1f2937;
+    margin-bottom: 20px;
+    font-size: 1.25rem;
+}
+
+.profile-code {
+    color: #3b82f6;
+    font-weight: bold;
+    font-size: 1.5rem;
+}
+
+.score-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 16px;
+    margin-bottom: 24px;
+}
+
+.score-item {
+    background: white;
+    padding: 16px;
+    border-radius: 6px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+}
+
+.score-label {
+    font-weight: 600;
+    color: #374151;
+    margin-bottom: 8px;
+    font-size: 0.95rem;
+}
+
+.progress-bar {
+    width: 100%;
+    height: 24px;
+    background: #e5e7eb;
+    border-radius: 12px;
+    overflow: hidden;
+    margin-bottom: 8px;
+}
+
+.progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #3b82f6, #60a5fa);
+    border-radius: 12px;
+    transition: width 0.5s ease;
+}
+
+.score-value {
+    text-align: right;
+    font-weight: bold;
+    color: #3b82f6;
+    font-size: 1.1rem;
+}
+
+canvas {
+    display: block;
+    margin: 24px auto;
+    max-width: 500px;
+}
+</style>
+
+<!-- Chart.js Library -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+
+<script>
+// Calculate Scores Function
+async function calculateScores(responseId) {
+    if (!confirm('Calculate scores for this response? This may take a moment.')) {
+        return;
+    }
+    
+    try {
+        const response = await fetch(`/admin/results/${responseId}/calculate-scores`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        });
+        
+        const data = await response.json();
+        
+        if (data.success) {
+            alert('Scores calculated successfully!');
+            window.location.reload();
+        } else {
+            alert('Error calculating scores: ' + data.message);
+        }
+    } catch (error) {
+        alert('Error: ' + error.message);
+    }
+}
+
+// Initialize Radar Charts
+{% if scores %}
+
+{% if scores.riasec_complete %}
+// RIASEC Radar Chart
+const riasecCtx = document.getElementById('riasecChart');
+if (riasecCtx) {
+    new Chart(riasecCtx, {
+        type: 'radar',
+        data: {
+            labels: ['Realistic', 'Investigative', 'Artistic', 'Social', 'Enterprising', 'Conventional'],
+            datasets: [{
+                label: 'RIASEC Profile',
+                data: [
+                    {{ scores.riasec_r_score or 0 }},
+                    {{ scores.riasec_i_score or 0 }},
+                    {{ scores.riasec_a_score or 0 }},
+                    {{ scores.riasec_s_score or 0 }},
+                    {{ scores.riasec_e_score or 0 }},
+                    {{ scores.riasec_c_score or 0 }}
+                ],
+                backgroundColor: 'rgba(59, 130, 246, 0.2)',
+                borderColor: 'rgba(59, 130, 246, 1)',
+                borderWidth: 2,
+                pointBackgroundColor: 'rgba(59, 130, 246, 1)',
+                pointBorderColor: '#fff',
+                pointHoverBackgroundColor: '#fff',
+                pointHoverBorderColor: 'rgba(59, 130, 246, 1)'
+            }]
+        },
+        options: {
+            scales: {
+                r: {
+                    beginAtZero: true,
+                    max: 100,
+                    ticks: {
+                        stepSize: 20
+                    }
+                }
+            },
+            plugins: {
+                legend: {
+                    display: false
+                },
+                title: {
+                    display: true,
+                    text: 'RIASEC Career Interest Profile',
+                    font: {
+                        size: 16
+                    }
+                }
+            }
+        }
+    });
+}
+{% endif %}
+
+{% if scores.bigfive_complete %}
+// Big Five Radar Chart
+const bigFiveCtx = document.getElementById('bigFiveChart');
+if (bigFiveCtx) {
+    new Chart(bigFiveCtx, {
+        type: 'radar',
+        data: {
+            labels: ['Openness', 'Conscientiousness', 'Extraversion', 'Agreeableness', 'Neuroticism'],
+            datasets: [{
+                label: 'Big Five Personality',
+                data: [
+                    {{ scores.bigfive_openness or 0 }},
+                    {{ scores.bigfive_conscientiousness or 0 }},
+                    {{ scores.bigfive_extraversion or 0 }},
+                    {{ scores.bigfive_agreeableness or 0 }},
+                    {{ scores.bigfive_neuroticism or 0 }}
+                ],
+                backgroundColor: 'rgba(16, 185, 129, 0.2)',
+                borderColor: 'rgba(16, 185, 129, 1)',
+                borderWidth: 2,
+                pointBackgroundColor: 'rgba(16, 185, 129, 1)',
+                pointBorderColor: '#fff',
+                pointHoverBackgroundColor: '#fff',
+                pointHoverBorderColor: 'rgba(16, 185, 129, 1)'
+            }]
+        },
+        options: {
+            scales: {
+                r: {
+                    beginAtZero: true,
+                    max: 100,
+                    ticks: {
+                        stepSize: 20
+                    }
+                }
+            },
+            plugins: {
+                legend: {
+                    display: false
+                },
+                title: {
+                    display: true,
+                    text: 'Big Five Personality Traits',
+                    font: {
+                        size: 16
+                    }
+                }
+            }
+        }
+    });
+}
+{% endif %}
+
+{% if scores.workrhythm_complete %}
+// Work Rhythm Radar Chart
+const workRhythmCtx = document.getElementById('workRhythmChart');
+if (workRhythmCtx) {
+    new Chart(workRhythmCtx, {
+        type: 'radar',
+        data: {
+            labels: ['Motivation', 'Grit', 'Self-Efficacy', 'Resilience', 'Learning', 'Empathy', 'Procrastination'],
+            datasets: [{
+                label: 'Work Rhythm Traits',
+                data: [
+                    {{ scores.workrhythm_motivation or 0 }},
+                    {{ scores.workrhythm_grit or 0 }},
+                    {{ scores.workrhythm_self_efficacy or 0 }},
+                    {{ scores.workrhythm_resilience or 0 }},
+                    {{ scores.workrhythm_learning or 0 }},
+                    {{ scores.workrhythm_empathy or 0 }},
+                    {{ scores.workrhythm_procrastination or 0 }}
+                ],
+                backgroundColor: 'rgba(245, 158, 11, 0.2)',
+                borderColor: 'rgba(245, 158, 11, 1)',
+                borderWidth: 2,
+                pointBackgroundColor: 'rgba(245, 158, 11, 1)',
+                pointBorderColor: '#fff',
+                pointHoverBackgroundColor: '#fff',
+                pointHoverBorderColor: 'rgba(245, 158, 11, 1)'
+            }]
+        },
+        options: {
+            scales: {
+                r: {
+                    beginAtZero: true,
+                    max: 100,
+                    ticks: {
+                        stepSize: 20
+                    }
+                }
+            },
+            plugins: {
+                legend: {
+                    display: false
+                },
+                title: {
+                    display: true,
+                    text: 'Work Rhythm Traits Profile',
+                    font: {
+                        size: 16
+                    }
+                }
+            }
+        }
+    });
+}
+{% endif %}
+
+{% endif %}
+</script>
 </style>
 {% endblock %}
