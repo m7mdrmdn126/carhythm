@@ -1,8 +1,9 @@
 from sqlalchemy.orm import Session
 from sqlalchemy.sql import func
-from ..models import StudentResponse, QuestionAnswer, Question
+from ..models import StudentResponse, QuestionAnswer, Question, SessionStatus, Page
 from ..schemas import StudentResponseCreate, QuestionAnswerCreate
 from typing import List, Optional, Dict
+from datetime import datetime, timedelta
 import uuid
 
 def create_student_response(db: Session, response: StudentResponseCreate) -> StudentResponse:
@@ -41,7 +42,7 @@ def create_question_answer(db: Session, answer: QuestionAnswerCreate) -> Questio
         existing_answer.answer_text = answer.answer_text
         existing_answer.answer_value = answer.answer_value
         db.commit()
-        db.refresh(existing_answer)
+        # Return existing answer without refresh (already in session)
         return existing_answer
     else:
         # Create new answer
@@ -83,4 +84,59 @@ def get_response_statistics(db: Session) -> Dict:
         "total_responses": total_responses,
         "completed_responses": completed_responses,
         "incomplete_responses": incomplete_responses
+    }
+
+def mark_session_abandoned(db: Session, session_id: str) -> bool:
+    """Mark session as user_abandoned_not_completed."""
+    student_response = get_student_response_by_session(db, session_id)
+    if not student_response:
+        return False
+    
+    student_response.status = SessionStatus.abandoned
+    db.commit()
+    return True
+
+def get_session_progress_info(db: Session, response_id: int) -> Dict:
+    """Get detailed progress information for a session."""
+    # Get total questions
+    total_questions = db.query(Question).join(Page).filter(Page.is_active == True).count()
+    
+    # Get answered questions
+    answered_count = db.query(QuestionAnswer).filter(
+        QuestionAnswer.response_id == response_id
+    ).count()
+    
+    percentage = round((answered_count / total_questions * 100), 1) if total_questions > 0 else 0
+    total_xp = answered_count * 10
+    
+    return {
+        "questions_answered": answered_count,
+        "total_questions": total_questions,
+        "percentage": percentage,
+        "total_xp": total_xp
+    }
+
+def validate_session(db: Session, session_id: str) -> Optional[Dict]:
+    """Validate if session exists and is not expired (30 days)."""
+    student_response = get_student_response_by_session(db, session_id)
+    
+    if not student_response:
+        return None
+    
+    # Check if expired (30 days)
+    if student_response.last_activity:
+        age = datetime.utcnow() - student_response.last_activity
+        if age > timedelta(days=30):
+            return None
+    
+    # Get progress info
+    progress_info = get_session_progress_info(db, student_response.id)
+    
+    return {
+        "session_id": session_id,
+        "response_id": student_response.id,
+        "status": student_response.status.value,
+        "current_page_id": student_response.current_page_id,
+        "last_activity": student_response.last_activity.isoformat() if student_response.last_activity else None,
+        "progress": progress_info
     }

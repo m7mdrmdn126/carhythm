@@ -1,0 +1,429 @@
+/* Resume Modal Styles */
+
+.resume-modal-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.7);
+  backdrop-filter: blur(8px);
+  z-index: 9998;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+
+.resume-modal-container {
+  position: relative;
+  z-index: 9999;
+  max-width: 500px;
+  width: 100%;
+  max-height: calc(100vh - 40px);
+  overflow-y: auto;
+  overflow-x: hidden;
+  margin: auto;
+}
+
+.resume-modal-content {
+  background: white;
+  border-radius: 20px;
+  padding: 30px 25px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+  animation: slideUp 0.3s ease-out;
+  margin: auto;
+}
+
+.confirmation-content {
+  padding: 28px 25px;
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Header */
+.resume-modal-header {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.resume-icon {
+  font-size: 48px;
+  margin-bottom: 10px;
+  display: inline-block;
+  line-height: 1;
+}
+
+.warning-icon {
+  font-size: 44px;
+}
+
+.resume-modal-header h2 {
+  font-size: 24px;
+  color: #2c3e50;
+  margin: 0 0 8px 0;
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+.resume-subtitle {
+  font-size: 14px;
+  color: #7f8c8d;
+  margin: 0;
+  line-height: 1.4;
+}
+
+.warning-text {
+  color: #e74c3c;
+  font-weight: 500;
+}
+
+/* Progress Summary */
+.progress-summary {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin-bottom: 18px;
+  padding: 16px;
+  background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+  border-radius: 12px;
+}
+
+.progress-stat {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.stat-label {
+  font-size: 10px;
+  color: #6c757d;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  line-height: 1.2;
+}
+
+.stat-value {
+  font-size: 20px;
+  color: #2c3e50;
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+.stat-time {
+  font-size: 14px;
+  color: #6D3B8E;
+}
+
+/* Progress Bar */
+.progress-bar-container {
+  margin-bottom: 20px;
+}
+
+.progress-bar-bg {
+  height: 8px;
+  background: #e9ecef;
+  border-radius: 10px;
+  overflow: hidden;
+  position: relative;
+}
+
+.progress-bar-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+  border-radius: 10px;
+  transition: width 0.8s ease-out;
+  position: relative;
+  overflow: hidden;
+}
+
+.progress-bar-fill::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.3),
+    transparent
+  );
+  animation: shimmer 2s infinite;
+}
+
+@keyframes shimmer {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+/* Confirmation Message */
+.confirmation-message {
+  padding: 20px;
+  background: #fff3cd;
+  border-left: 4px solid #ffc107;
+  border-radius: 8px;
+  margin-bottom: 25px;
+}
+
+.confirmation-message p {
+  margin: 0 0 12px 0;
+  color: #856404;
+  font-size: 15px;
+  line-height: 1.6;
+}
+
+.confirmation-message p:last-child {
+  margin-bottom: 0;
+}
+
+.confirmation-message strong {
+  color: #533f03;
+  font-weight: 700;
+}
+
+/* Actions */
+.resume-modal-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.btn {
+  width: 100%;
+  padding: 14px 20px;
+  border: none;
+  border-radius: 12px;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  text-align: center;
+}
+
+.btn-icon {
+  font-size: 18px;
+}
+
+.btn-primary {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+}
+
+.btn-primary:hover {
+  box-shadow: 0 6px 20px rgba(102, 126, 234, 0.5);
+  transform: translateY(-2px);
+}
+
+.btn-secondary {
+  background: white;
+  color: #6c757d;
+  border: 2px solid #dee2e6;
+}
+
+.btn-secondary:hover {
+  background: #f8f9fa;
+  border-color: #adb5bd;
+}
+
+.btn-danger {
+  background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
+  color: white;
+  box-shadow: 0 4px 15px rgba(231, 76, 60, 0.3);
+}
+
+.btn-danger:hover {
+  box-shadow: 0 6px 20px rgba(231, 76, 60, 0.4);
+  transform: translateY(-2px);
+}
+
+.btn:active {
+  transform: translateY(0);
+}
+
+/* Responsive */
+@media (max-width: 600px) {
+  .resume-modal-backdrop {
+    padding: 10px;
+  }
+
+  .resume-modal-container {
+    width: 100%;
+    max-height: calc(100vh - 20px);
+  }
+
+  .resume-modal-content {
+    padding: 25px 20px;
+  }
+
+  .resume-modal-header h2 {
+    font-size: 22px;
+  }
+
+  .resume-icon {
+    font-size: 40px;
+    margin-bottom: 8px;
+  }
+
+  .warning-icon {
+    font-size: 36px;
+  }
+
+  .progress-summary {
+    grid-template-columns: 1fr;
+    gap: 10px;
+    padding: 14px;
+  }
+
+  .stat-value {
+    font-size: 18px;
+  }
+
+  .btn {
+    padding: 13px 18px;
+    font-size: 14px;
+  }
+}
+
+@media (max-height: 750px) {
+  .resume-modal-backdrop {
+    padding: 15px;
+  }
+
+  .resume-modal-container {
+    max-height: calc(100vh - 30px);
+  }
+
+  .resume-modal-content {
+    padding: 22px 22px;
+  }
+
+  .resume-icon {
+    font-size: 44px;
+    margin-bottom: 8px;
+  }
+
+  .resume-modal-header {
+    margin-bottom: 16px;
+  }
+
+  .resume-modal-header h2 {
+    font-size: 22px;
+  }
+
+  .progress-summary {
+    gap: 10px;
+    margin-bottom: 14px;
+    padding: 14px;
+  }
+
+  .progress-bar-container {
+    margin-bottom: 16px;
+  }
+
+  .btn {
+    padding: 12px 18px;
+  }
+}
+
+@media (max-height: 650px) {
+  .resume-modal-backdrop {
+    padding: 10px;
+  }
+
+  .resume-modal-container {
+    max-height: calc(100vh - 20px);
+  }
+
+  .resume-modal-content {
+    padding: 18px 20px;
+  }
+
+  .resume-icon {
+    font-size: 36px;
+    margin-bottom: 6px;
+  }
+
+  .resume-modal-header {
+    margin-bottom: 12px;
+  }
+
+  .resume-modal-header h2 {
+    font-size: 20px;
+  }
+
+  .resume-subtitle {
+    font-size: 12px;
+  }
+
+  .progress-summary {
+    gap: 8px;
+    margin-bottom: 12px;
+    padding: 12px;
+  }
+
+  .stat-label {
+    font-size: 9px;
+  }
+
+  .stat-value {
+    font-size: 16px;
+  }
+
+  .progress-bar-container {
+    margin-bottom: 12px;
+  }
+
+  .progress-bar-bg {
+    height: 6px;
+  }
+
+  .btn {
+    padding: 11px 16px;
+    font-size: 13px;
+  }
+
+  .btn-icon {
+    font-size: 15px;
+  }
+}
+
+/* Accessibility */
+.btn:focus-visible {
+  outline: 3px solid #667eea;
+  outline-offset: 2px;
+}
+
+.resume-modal-backdrop:focus {
+  outline: none;
+}
+
+/* Animations */
+@media (prefers-reduced-motion: reduce) {
+  .resume-modal-content,
+  .progress-bar-fill,
+  .btn {
+    animation: none;
+    transition: none;
+  }
+}

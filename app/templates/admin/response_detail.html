@@ -124,51 +124,52 @@
         <div class="card-content">
             
             <!-- RIASEC Scores -->
-            {% if scores.riasec_complete %}
+            {% if scores.riasec_complete or scores.riasec_profile %}
             <div class="score-module">
                 <h3>🔧 RIASEC Career Interest Profile: <span class="profile-code">{{ scores.riasec_profile }}</span></h3>
+                <p class="v1-1-badge" style="background: #4CAF50; color: white; padding: 4px 8px; border-radius: 4px; display: inline-block; font-size: 12px; margin-bottom: 10px;">✨ CaRhythm v1.1 - Direct Sum Scoring</p>
                 <div class="score-grid">
                     <div class="score-item">
-                        <div class="score-label">Realistic (R)</div>
+                        <div class="score-label">Realistic (R) - <span class="strength-label" style="font-weight: bold; color: {% if riasec_labels.R == 'Very High' %}#4CAF50{% elif riasec_labels.R == 'High' %}#8BC34A{% elif riasec_labels.R == 'Medium' %}#FFC107{% else %}#FF9800{% endif %}">{{ riasec_labels.R or 'N/A' }}</span></div>
                         <div class="progress-bar">
-                            <div class="progress-fill" style="width: {{ scores.riasec_r_score }}%"></div>
+                            <div class="progress-fill" style="width: {{ (scores.riasec_r_score / 15 * 100)|round }}%; background: {% if riasec_labels.R == 'Very High' %}#4CAF50{% elif riasec_labels.R == 'High' %}#8BC34A{% elif riasec_labels.R == 'Medium' %}#FFC107{% else %}#FF9800{% endif %}"></div>
                         </div>
-                        <div class="score-value">{{ scores.riasec_r_score|round|int }}/100</div>
+                        <div class="score-value">{{ scores.riasec_r_score|round|int }}/15</div>
                     </div>
                     <div class="score-item">
-                        <div class="score-label">Investigative (I)</div>
+                        <div class="score-label">Investigative (I) - <span class="strength-label" style="font-weight: bold; color: {% if riasec_labels.I == 'Very High' %}#4CAF50{% elif riasec_labels.I == 'High' %}#8BC34A{% elif riasec_labels.I == 'Medium' %}#FFC107{% else %}#FF9800{% endif %}">{{ riasec_labels.I or 'N/A' }}</span></div>
                         <div class="progress-bar">
-                            <div class="progress-fill" style="width: {{ scores.riasec_i_score }}%"></div>
+                            <div class="progress-fill" style="width: {{ (scores.riasec_i_score / 15 * 100)|round }}%; background: {% if riasec_labels.I == 'Very High' %}#4CAF50{% elif riasec_labels.I == 'High' %}#8BC34A{% elif riasec_labels.I == 'Medium' %}#FFC107{% else %}#FF9800{% endif %}"></div>
                         </div>
-                        <div class="score-value">{{ scores.riasec_i_score|round|int }}/100</div>
+                        <div class="score-value">{{ scores.riasec_i_score|round|int }}/15</div>
                     </div>
                     <div class="score-item">
-                        <div class="score-label">Artistic (A)</div>
+                        <div class="score-label">Artistic (A) - <span class="strength-label" style="font-weight: bold; color: {% if riasec_labels.A == 'Very High' %}#4CAF50{% elif riasec_labels.A == 'High' %}#8BC34A{% elif riasec_labels.A == 'Medium' %}#FFC107{% else %}#FF9800{% endif %}">{{ riasec_labels.A or 'N/A' }}</span></div>
                         <div class="progress-bar">
-                            <div class="progress-fill" style="width: {{ scores.riasec_a_score }}%"></div>
+                            <div class="progress-fill" style="width: {{ (scores.riasec_a_score / 15 * 100)|round }}%; background: {% if riasec_labels.A == 'Very High' %}#4CAF50{% elif riasec_labels.A == 'High' %}#8BC34A{% elif riasec_labels.A == 'Medium' %}#FFC107{% else %}#FF9800{% endif %}"></div>
                         </div>
-                        <div class="score-value">{{ scores.riasec_a_score|round|int }}/100</div>
+                        <div class="score-value">{{ scores.riasec_a_score|round|int }}/15</div>
                     </div>
                     <div class="score-item">
-                        <div class="score-label">Social (S)</div>
+                        <div class="score-label">Social (S) - <span class="strength-label" style="font-weight: bold; color: {% if riasec_labels.S == 'Very High' %}#4CAF50{% elif riasec_labels.S == 'High' %}#8BC34A{% elif riasec_labels.S == 'Medium' %}#FFC107{% else %}#FF9800{% endif %}">{{ riasec_labels.S or 'N/A' }}</span></div>
                         <div class="progress-bar">
-                            <div class="progress-fill" style="width: {{ scores.riasec_s_score }}%"></div>
+                            <div class="progress-fill" style="width: {{ (scores.riasec_s_score / 15 * 100)|round }}%; background: {% if riasec_labels.S == 'Very High' %}#4CAF50{% elif riasec_labels.S == 'High' %}#8BC34A{% elif riasec_labels.S == 'Medium' %}#FFC107{% else %}#FF9800{% endif %}"></div>
                         </div>
-                        <div class="score-value">{{ scores.riasec_s_score|round|int }}/100</div>
+                        <div class="score-value">{{ scores.riasec_s_score|round|int }}/15</div>
                     </div>
                     <div class="score-item">
-                        <div class="score-label">Enterprising (E)</div>
+                        <div class="score-label">Enterprising (E) - <span class="strength-label" style="font-weight: bold; color: {% if riasec_labels.E == 'Very High' %}#4CAF50{% elif riasec_labels.E == 'High' %}#8BC34A{% elif riasec_labels.E == 'Medium' %}#FFC107{% else %}#FF9800{% endif %}">{{ riasec_labels.E or 'N/A' }}</span></div>
                         <div class="progress-bar">
-                            <div class="progress-fill" style="width: {{ scores.riasec_e_score }}%"></div>
+                            <div class="progress-fill" style="width: {{ (scores.riasec_e_score / 15 * 100)|round }}%; background: {% if riasec_labels.E == 'Very High' %}#4CAF50{% elif riasec_labels.E == 'High' %}#8BC34A{% elif riasec_labels.E == 'Medium' %}#FFC107{% else %}#FF9800{% endif %}"></div>
                         </div>
-                        <div class="score-value">{{ scores.riasec_e_score|round|int }}/100</div>
+                        <div class="score-value">{{ scores.riasec_e_score|round|int }}/15</div>
                     </div>
                     <div class="score-item">
-                        <div class="score-label">Conventional (C)</div>
+                        <div class="score-label">Conventional (C) - <span class="strength-label" style="font-weight: bold; color: {% if riasec_labels.C == 'Very High' %}#4CAF50{% elif riasec_labels.C == 'High' %}#8BC34A{% elif riasec_labels.C == 'Medium' %}#FFC107{% else %}#FF9800{% endif %}">{{ riasec_labels.C or 'N/A' }}</span></div>
                         <div class="progress-bar">
-                            <div class="progress-fill" style="width: {{ scores.riasec_c_score }}%"></div>
+                            <div class="progress-fill" style="width: {{ (scores.riasec_c_score / 15 * 100)|round }}%; background: {% if riasec_labels.C == 'Very High' %}#4CAF50{% elif riasec_labels.C == 'High' %}#8BC34A{% elif riasec_labels.C == 'Medium' %}#FFC107{% else %}#FF9800{% endif %}"></div>
                         </div>
-                        <div class="score-value">{{ scores.riasec_c_score|round|int }}/100</div>
+                        <div class="score-value">{{ scores.riasec_c_score|round|int }}/15</div>
                     </div>
                 </div>
                 <canvas id="riasecChart" width="400" height="400"></canvas>
@@ -176,47 +177,78 @@
             {% endif %}
 
             <!-- Big Five Scores -->
-            {% if scores.bigfive_complete %}
+            {% if scores.bigfive_complete or scores.bigfive_o_score %}
             <div class="score-module">
                 <h3>🧠 Big Five Personality Traits</h3>
+                <p class="v1-1-badge" style="background: #2196F3; color: white; padding: 4px 8px; border-radius: 4px; display: inline-block; font-size: 12px; margin-bottom: 10px;">✨ CaRhythm v1.1 - 5 items per trait</p>
                 <div class="score-grid">
                     <div class="score-item">
-                        <div class="score-label">Openness</div>
+                        <div class="score-label">Openness (O) - <span class="strength-label" style="font-weight: bold; color: {% if bigfive_labels.O == 'Very High' %}#4CAF50{% elif bigfive_labels.O == 'High' %}#8BC34A{% elif bigfive_labels.O == 'Medium' %}#FFC107{% else %}#FF9800{% endif %}">{{ bigfive_labels.O or 'N/A' }}</span></div>
                         <div class="progress-bar">
-                            <div class="progress-fill" style="width: {{ scores.bigfive_openness }}%"></div>
+                            <div class="progress-fill" style="width: {{ (scores.bigfive_o_score / 25 * 100)|round }}%; background: {% if bigfive_labels.O == 'Very High' %}#4CAF50{% elif bigfive_labels.O == 'High' %}#8BC34A{% elif bigfive_labels.O == 'Medium' %}#FFC107{% else %}#FF9800{% endif %}"></div>
                         </div>
-                        <div class="score-value">{{ scores.bigfive_openness|round|int }}/100</div>
+                        <div class="score-value">{{ scores.bigfive_o_score|round|int }}/25</div>
                     </div>
                     <div class="score-item">
-                        <div class="score-label">Conscientiousness</div>
+                        <div class="score-label">Conscientiousness (C) - <span class="strength-label" style="font-weight: bold; color: {% if bigfive_labels.C == 'Very High' %}#4CAF50{% elif bigfive_labels.C == 'High' %}#8BC34A{% elif bigfive_labels.C == 'Medium' %}#FFC107{% else %}#FF9800{% endif %}">{{ bigfive_labels.C or 'N/A' }}</span></div>
                         <div class="progress-bar">
-                            <div class="progress-fill" style="width: {{ scores.bigfive_conscientiousness }}%"></div>
+                            <div class="progress-fill" style="width: {{ (scores.bigfive_c_score / 25 * 100)|round }}%; background: {% if bigfive_labels.C == 'Very High' %}#4CAF50{% elif bigfive_labels.C == 'High' %}#8BC34A{% elif bigfive_labels.C == 'Medium' %}#FFC107{% else %}#FF9800{% endif %}"></div>
                         </div>
-                        <div class="score-value">{{ scores.bigfive_conscientiousness|round|int }}/100</div>
+                        <div class="score-value">{{ scores.bigfive_c_score|round|int }}/25</div>
                     </div>
                     <div class="score-item">
-                        <div class="score-label">Extraversion</div>
+                        <div class="score-label">Extraversion (E) - <span class="strength-label" style="font-weight: bold; color: {% if bigfive_labels.E == 'Very High' %}#4CAF50{% elif bigfive_labels.E == 'High' %}#8BC34A{% elif bigfive_labels.E == 'Medium' %}#FFC107{% else %}#FF9800{% endif %}">{{ bigfive_labels.E or 'N/A' }}</span></div>
                         <div class="progress-bar">
-                            <div class="progress-fill" style="width: {{ scores.bigfive_extraversion }}%"></div>
+                            <div class="progress-fill" style="width: {{ (scores.bigfive_e_score / 25 * 100)|round }}%; background: {% if bigfive_labels.E == 'Very High' %}#4CAF50{% elif bigfive_labels.E == 'High' %}#8BC34A{% elif bigfive_labels.E == 'Medium' %}#FFC107{% else %}#FF9800{% endif %}"></div>
                         </div>
-                        <div class="score-value">{{ scores.bigfive_extraversion|round|int }}/100</div>
+                        <div class="score-value">{{ scores.bigfive_e_score|round|int }}/25</div>
                     </div>
                     <div class="score-item">
-                        <div class="score-label">Agreeableness</div>
+                        <div class="score-label">Agreeableness (A) - <span class="strength-label" style="font-weight: bold; color: {% if bigfive_labels.A == 'Very High' %}#4CAF50{% elif bigfive_labels.A == 'High' %}#8BC34A{% elif bigfive_labels.A == 'Medium' %}#FFC107{% else %}#FF9800{% endif %}">{{ bigfive_labels.A or 'N/A' }}</span></div>
                         <div class="progress-bar">
-                            <div class="progress-fill" style="width: {{ scores.bigfive_agreeableness }}%"></div>
+                            <div class="progress-fill" style="width: {{ (scores.bigfive_a_score / 25 * 100)|round }}%; background: {% if bigfive_labels.A == 'Very High' %}#4CAF50{% elif bigfive_labels.A == 'High' %}#8BC34A{% elif bigfive_labels.A == 'Medium' %}#FFC107{% else %}#FF9800{% endif %}"></div>
                         </div>
-                        <div class="score-value">{{ scores.bigfive_agreeableness|round|int }}/100</div>
+                        <div class="score-value">{{ scores.bigfive_a_score|round|int }}/25</div>
                     </div>
                     <div class="score-item">
-                        <div class="score-label">Neuroticism</div>
+                        <div class="score-label">Neuroticism (N) - <span class="strength-label" style="font-weight: bold; color: {% if bigfive_labels.N == 'Very High' %}#4CAF50{% elif bigfive_labels.N == 'High' %}#8BC34A{% elif bigfive_labels.N == 'Medium' %}#FFC107{% else %}#FF9800{% endif %}">{{ bigfive_labels.N or 'N/A' }}</span></div>
                         <div class="progress-bar">
-                            <div class="progress-fill" style="width: {{ scores.bigfive_neuroticism }}%"></div>
+                            <div class="progress-fill" style="width: {{ (scores.bigfive_n_score / 25 * 100)|round }}%; background: {% if bigfive_labels.N == 'Very High' %}#4CAF50{% elif bigfive_labels.N == 'High' %}#8BC34A{% elif bigfive_labels.N == 'Medium' %}#FFC107{% else %}#FF9800{% endif %}"></div>
                         </div>
-                        <div class="score-value">{{ scores.bigfive_neuroticism|round|int }}/100</div>
+                        <div class="score-value">{{ scores.bigfive_n_score|round|int }}/25</div>
                     </div>
                 </div>
                 <canvas id="bigFiveChart" width="400" height="400"></canvas>
+            </div>
+            {% endif %}
+
+            <!-- v1.1 Behavioral Flags -->
+            {% if behavioral_flags %}
+            <div class="score-module">
+                <h3>🚩 Behavioral Flags & Risk Indicators (v1.1)</h3>
+                <p class="v1-1-badge" style="background: #9C27B0; color: white; padding: 4px 8px; border-radius: 4px; display: inline-block; font-size: 12px; margin-bottom: 10px;">✨ NEW in v1.1 - Actionable Insights</p>
+                <div class="behavioral-flags-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-top: 15px;">
+                    <div class="flag-item" style="padding: 15px; border-radius: 8px; background: {% if behavioral_flags.procrastination_risk %}#FF5722{% else %}#E8F5E9{% endif %}; color: {% if behavioral_flags.procrastination_risk %}white{% else %}#333{% endif %}">
+                        <strong>⚠️ Procrastination Risk</strong>
+                        <p style="margin: 5px 0 0 0;">{% if behavioral_flags.procrastination_risk %}YES - Needs Support{% else %}No - Good habits{% endif %}</p>
+                    </div>
+                    <div class="flag-item" style="padding: 15px; border-radius: 8px; background: {% if behavioral_flags.perfectionism_risk %}#FF9800{% else %}#E8F5E9{% endif %}; color: {% if behavioral_flags.perfectionism_risk %}white{% else %}#333{% endif %}">
+                        <strong>🎯 Perfectionism Risk</strong>
+                        <p style="margin: 5px 0 0 0;">{% if behavioral_flags.perfectionism_risk %}YES - Monitor{% else %}No - Balanced{% endif %}</p>
+                    </div>
+                    <div class="flag-item" style="padding: 15px; border-radius: 8px; background: {% if behavioral_flags.low_grit_risk %}#FFC107{% else %}#E8F5E9{% endif %}; color: {% if behavioral_flags.low_grit_risk %}#333{% else %}#333{% endif %}">
+                        <strong>💪 Low Grit Risk</strong>
+                        <p style="margin: 5px 0 0 0;">{% if behavioral_flags.low_grit_risk %}YES - Build resilience{% else %}No - Strong grit{% endif %}</p>
+                    </div>
+                    <div class="flag-item" style="padding: 15px; border-radius: 8px; background: {% if behavioral_flags.poor_regulation_risk %}#F44336{% else %}#E8F5E9{% endif %}; color: {% if behavioral_flags.poor_regulation_risk %}white{% else %}#333{% endif %}">
+                        <strong>🧘 Poor Regulation Risk</strong>
+                        <p style="margin: 5px 0 0 0;">{% if behavioral_flags.poor_regulation_risk %}YES - Teach strategies{% else %}No - Good regulation{% endif %}</p>
+                    </div>
+                    <div class="flag-item" style="padding: 15px; border-radius: 8px; background: {% if behavioral_flags.growth_mindset %}#4CAF50{% else %}#FFEBEE{% endif %}; color: white">
+                        <strong>🌱 Growth Mindset</strong>
+                        <p style="margin: 5px 0 0 0;">{% if behavioral_flags.growth_mindset %}YES - Excellent!{% else %}No - Encourage growth{% endif %}</p>
+                    </div>
+                </div>
             </div>
             {% endif %}
 

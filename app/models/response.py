@@ -1,7 +1,14 @@
-from sqlalchemy import Column, Integer, String, Text, DateTime, ForeignKey, Float
+from sqlalchemy import Column, Integer, String, Text, DateTime, ForeignKey, Float, Enum
 from sqlalchemy.sql import func
 from sqlalchemy.orm import relationship
 from .database import Base
+import enum
+
+class SessionStatus(enum.Enum):
+    """Session status enumeration"""
+    active = "active"
+    completed = "completed"
+    abandoned = "user_abandoned_not_completed"
 
 class StudentResponse(Base):
     __tablename__ = "student_responses"
@@ -16,9 +23,15 @@ class StudentResponse(Base):
     completed_at = Column(DateTime(timezone=True))
     created_at = Column(DateTime(timezone=True), server_default=func.now())
     
+    # Progress tracking fields
+    status = Column(Enum(SessionStatus), default=SessionStatus.active, nullable=False, index=True)
+    last_activity = Column(DateTime(timezone=True), server_default=func.now(), onupdate=func.now())
+    current_page_id = Column(Integer, ForeignKey("pages.id"), nullable=True)
+    
     # Relationships
     answers = relationship("QuestionAnswer", back_populates="response", cascade="all, delete-orphan")
     scores = relationship("AssessmentScore", back_populates="response", uselist=False, cascade="all, delete-orphan")
+    current_page = relationship("Page", foreign_keys=[current_page_id])
 
 class QuestionAnswer(Base):
     __tablename__ = "question_answers"

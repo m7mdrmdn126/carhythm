@@ -1,16 +1,35 @@
-# CaRhythm - Career DNA Assessment System
+# CaRhythm - Career DNA Assessment System 🎯
 
-## Table of Contents
+## 🚀 Version 2.0.0 - Story Mode Release
+
+A comprehensive career assessment platform featuring an engaging **Story Mode** experience with Instagram Stories-style narrative assessments, designed for Gen Z/Alpha mobile users.
+
+## ✨ What's New in Version 2.0
+
+### Story Mode Frontend
+- 📱 **Mobile-first React interface** - Optimized for Gen Z/Alpha users
+- 🎮 **Gamified experience** - Progress tracking, XP points, celebration animations
+- 🎨 **5 interactive question types** - Slider, MCQ, Ordering, Essay with beautiful UI
+- 📖 **Narrative-driven** - Scene settings, character scenarios, visual themes
+- 🌈 **4 scene themes** - Workshop, Mind Palace, Flow, Cosmic
+- 💫 **Smooth animations** - Framer Motion powered transitions
+
+### Enhanced Backend
+- 🔌 **REST API v2** - Modern `/api/v2/*` endpoints for React frontend
+- 📊 **Story Mode fields** - Scene narratives, module emojis, chapter organization
+- 🎯 **Progress tracking** - Real-time session management and XP gamification
+- 🔒 **CORS configured** - Ready for frontend integration
+
+## 📋 Table of Contents
 1. [Overview](#overview)
-2. [System Architecture](#system-architecture)
-3. [Technology Stack](#technology-stack)
-4. [Database Schema](#database-schema)
+2. [Quick Start](#quick-start)
+3. [System Architecture](#system-architecture)
+4. [Technology Stack](#technology-stack)
 5. [Core Features](#core-features)
-6. [Module Details](#module-details)
-7. [Setup and Installation](#setup-and-installation)
-8. [Running the Application](#running-the-application)
-9. [API Documentation](#api-documentation)
-10. [Testing](#testing)
+6. [Story Mode Setup](#story-mode-setup)
+7. [API Documentation](#api-documentation)
+8. [Deployment](#deployment)
+9. [Testing](#testing)
 
 ---
 
@@ -22,12 +41,28 @@ CaRhythm is a comprehensive web-based career assessment platform that evaluates 
 2. **Big Five Personality** - Trait assessment measuring personality dimensions
 3. **Work Rhythm Traits** - Work-related characteristics assessment
 
+### Assessment Modes
+
+**Story Mode (New!)** - Engaging narrative experience
+- Mobile-first responsive design
+- Interactive question components
+- Progress tracking with gamification
+- Scene narratives and visual themes
+- Student info collection at completion
+
+**Classic Mode** - Traditional Jinja template interface
+- Desktop-optimized layout
+- Server-rendered pages
+- PDF report generation
+- Admin result viewing
+
 The system provides:
 - Interactive multi-page assessments with various question types
 - Advanced scoring algorithms with weighted calculations
 - Professional PDF reports with visualizations
 - Admin panel for complete assessment management
 - Question pool system for reusable content
+- **NEW**: Story Mode with scene narratives and themes
 - CSV import/export capabilities
 
 ---
@@ -37,20 +72,21 @@ The system provides:
 ### Application Structure
 ```
 carhythm/
-├── app/
+├── app/                        # Backend (FastAPI)
 │   ├── main.py                 # FastAPI application entry point
 │   ├── models/                 # SQLAlchemy ORM models
 │   │   ├── database.py         # Database configuration
 │   │   ├── admin.py            # Admin user model
-│   │   ├── page.py             # Assessment page model
-│   │   ├── question.py         # Question model with types
+│   │   ├── page.py             # Assessment page model (+ Story Mode fields)
+│   │   ├── question.py         # Question model (+ Scene narrative fields)
 │   │   ├── question_pool.py    # Question pool & categories
 │   │   ├── response.py         # Student responses & answers
 │   │   └── assessment_score.py # Calculated scores
 │   ├── routers/                # FastAPI route handlers
 │   │   ├── admin.py            # Admin authentication
 │   │   ├── admin_panel.py      # Admin CRUD operations
-│   │   ├── examination.py      # Student exam interface
+│   │   ├── api_v2.py           # **NEW** REST API for React frontend
+│   │   ├── examination.py      # Student exam interface (Classic)
 │   │   └── question_pool.py    # Question pool management
 │   ├── services/               # Business logic layer
 │   │   ├── auth.py             # Authentication service
@@ -69,27 +105,124 @@ carhythm/
 │   │   ├── js/                 # JavaScript files
 │   │   ├── img/                # Images
 │   │   └── uploads/            # User uploaded files
-│   └── templates/              # Jinja2 HTML templates
+│   └── templates/              # Jinja2 HTML templates (Classic mode)
 │       ├── base/               # Base templates
-│       ├── admin/              # Admin interface
+│       ├── admin/              # Admin interface (+ Story Mode forms)
 │       ├── student/            # Student interface
 │       └── csv_templates/      # CSV templates
+├── frontend/                   # **NEW** React Frontend (Story Mode)
+│   ├── src/
+│   │   ├── components/         # Reusable UI components
+│   │   │   ├── Button.jsx      # Button component
+│   │   │   ├── Card.jsx        # Card component
+│   │   │   ├── ProgressBar.jsx # Progress indicator
+│   │   │   ├── LoadingSpinner.jsx # Loading state
+│   │   │   └── questions/      # Question type components
+│   │   │       ├── SliderQuestion.jsx    # Slider input
+│   │   │       ├── MCQQuestion.jsx       # Multiple choice
+│   │   │       ├── OrderingQuestion.jsx  # Drag-drop ordering
+│   │   │       └── EssayQuestion.jsx     # Text input
+│   │   ├── pages/              # Route pages
+│   │   │   ├── Welcome.jsx     # Landing/intro page
+│   │   │   ├── Question.jsx    # Assessment question page
+│   │   │   └── Complete.jsx    # Completion page
+│   │   ├── services/           # API integration
+│   │   │   └── api.js          # Axios client for API v2
+│   │   ├── hooks/              # Custom React hooks
+│   │   │   └── useSession.js   # Session management
+│   │   └── styles/             # Global styles
+│   │       ├── variables.css   # Design tokens
+│   │       └── global.css      # Base styles
+│   ├── package.json            # NPM dependencies
+│   └── vite.config.js          # Vite configuration
 ├── tests/                      # Test suite
 │   ├── unit/                   # Unit tests
 │   ├── integration/            # Integration tests
 │   ├── performance/            # Performance tests
 │   └── security/               # Security tests
+├── migrate_story_mode.py       # **NEW** Story Mode database migration
 ├── run.py                      # Application launcher
 ├── populate_db.py              # Database population script
 ├── populate_question_pool.py   # Question pool seeding
+├── ADMIN_GUIDE.md              # **NEW** Story Mode admin guide
+├── DEPLOYMENT.md               # **NEW** Deployment guide
 └── requirements.txt            # Python dependencies
 ```
 
-### Design Pattern: MVC Architecture
-- **Models**: SQLAlchemy ORM models in `app/models/`
-- **Views**: Jinja2 templates in `app/templates/`
-- **Controllers**: FastAPI routers in `app/routers/`
-- **Services**: Business logic layer for separation of concerns
+### Design Pattern: Hybrid Architecture
+- **Backend**: FastAPI with MVC pattern
+  - **Models**: SQLAlchemy ORM models in `app/models/`
+  - **Views**: Jinja2 templates (Classic) + JSON responses (Story Mode API)
+  - **Controllers**: FastAPI routers in `app/routers/`
+  - **Services**: Business logic layer for separation of concerns
+
+- **Frontend**: React SPA (Story Mode)
+  - **Components**: Reusable UI components
+  - **Pages**: Route-based page components
+  - **Services**: API integration layer
+  - **Hooks**: State management with custom hooks
+
+---
+
+## Quick Start
+
+### Prerequisites
+- Python 3.9+ 
+- Node.js 18+ and npm
+- Git
+
+### Development Setup
+
+**1. Clone and Setup Backend**
+```bash
+# Clone repository
+git clone https://github.com/m7mdrmdn126/carhythm.git
+cd carhythm
+
+# Create virtual environment
+python3 -m venv .venv
+source .venv/bin/activate  # On Windows: .venv\Scripts\activate
+
+# Install dependencies
+pip install -r requirements.txt
+
+# Run Story Mode migration
+python migrate_story_mode.py
+
+# Start backend server
+python run.py
+# Backend now running at http://localhost:8000
+```
+
+**2. Setup Frontend (Story Mode)**
+```bash
+# In a new terminal
+cd frontend
+
+# Install dependencies
+npm install
+
+# Start development server
+npm run dev
+# Frontend now running at http://localhost:5173
+```
+
+**3. Access the Application**
+- **Story Mode (React)**: http://localhost:5173
+- **Classic Mode**: http://localhost:8000/student/exam
+- **Admin Panel**: http://localhost:8000/admin/login
+  - Default credentials: `admin` / `admin123`
+- **API Docs**: http://localhost:8000/docs
+
+### Production Build
+
+```bash
+# Build frontend
+cd frontend
+npm run build
+
+# Deploy (see DEPLOYMENT.md for details)
+```
 
 ---
 
@@ -101,9 +234,18 @@ carhythm/
 - **SQLAlchemy** 2.0.23 - ORM and database toolkit
 - **Python-Jose** 3.3.0 - JWT token handling
 - **Passlib** 1.7.4 - Password hashing with bcrypt
+- **Jinja2** 3.1.2 - Template engine (Classic mode)
 
-### Frontend
-- **Jinja2** 3.1.2 - Template engine
+### Frontend (Story Mode - NEW!)
+- **React** 18.2+ - UI library
+- **Vite** 7.2+ - Build tool and dev server
+- **React Router** 6 - Client-side routing
+- **Axios** - HTTP client for API calls
+- **Framer Motion** - Animation library
+- **CSS Variables** - Design system
+
+### Frontend (Classic Mode)
+- **Jinja2** 3.1.2 - Server-side templates
 - **HTML/CSS/JavaScript** - Responsive UI
 - **Custom CSS** - No external CSS frameworks
 

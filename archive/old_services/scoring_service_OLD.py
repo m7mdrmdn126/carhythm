@@ -1,4 +1,14 @@
 """
+⚠️ ARCHIVED - CaRhythm v1.0 Assessment Scoring Service (LEGACY)
+
+This file is archived and superseded by scoring_service_v1_1.py
+Last used: CaRhythm v1.0 (11 pages, 0-10 slider, weighted formula)
+
+DO NOT USE THIS FILE - For reference only
+Replaced by: app/services/scoring_service_v1_1.py (v1.1 direct sum scoring)
+
+---
+
 CaRhythm Assessment Scoring Service
 
 Implements scoring algorithms for three assessment modules:

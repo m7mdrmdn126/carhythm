@@ -4,13 +4,14 @@ from fastapi.templating import Jinja2Templates
 from sqlalchemy.orm import Session
 from ..models import get_db, QuestionType
 from ..services import question_service, response_service
-from ..services import scoring_service, pdf_service
+from ..services import scoring_service_v1_1 as scoring_service, pdf_service
 from ..schemas import PageCreate, PageUpdate, QuestionCreate, QuestionUpdate
 from ..utils.helpers import save_upload_file, validate_image_file, delete_file, format_datetime
 from .admin import require_admin
 from typing import Optional
 import csv
 import io
+import json
 
 router = APIRouter(prefix="/admin", tags=["admin_panel"])
 templates = Jinja2Templates(directory="app/templates")
@@ -32,6 +33,11 @@ async def create_page(
     title: str = Form(...),
     description: str = Form(""),
     order_index: int = Form(0),
+    module_name: str = Form(""),
+    module_emoji: str = Form(""),
+    chapter_number: Optional[int] = Form(None),
+    estimated_minutes: Optional[int] = Form(None),
+    completion_message: str = Form(""),
     db: Session = Depends(get_db),
     admin=Depends(require_admin)
 ):
@@ -39,7 +45,12 @@ async def create_page(
     page_data = PageCreate(
         title=title,
         description=description if description else None,
-        order_index=order_index
+        order_index=order_index,
+        module_name=module_name if module_name else None,
+        module_emoji=module_emoji if module_emoji else None,
+        chapter_number=chapter_number,
+        estimated_minutes=estimated_minutes,
+        completion_message=completion_message if completion_message else None
     )
     question_service.create_page(db, page_data)
     return RedirectResponse(url="/admin/pages", status_code=302)
@@ -51,6 +62,11 @@ async def update_page(
     description: str = Form(""),
     order_index: int = Form(...),
     is_active: bool = Form(False),
+    module_name: str = Form(""),
+    module_emoji: str = Form(""),
+    chapter_number: Optional[int] = Form(None),
+    estimated_minutes: Optional[int] = Form(None),
+    completion_message: str = Form(""),
     db: Session = Depends(get_db),
     admin=Depends(require_admin)
 ):
@@ -59,7 +75,12 @@ async def update_page(
         title=title,
         description=description if description else None,
         order_index=order_index,
-        is_active=is_active
+        is_active=is_active,
+        module_name=module_name if module_name else None,
+        module_emoji=module_emoji if module_emoji else None,
+        chapter_number=chapter_number,
+        estimated_minutes=estimated_minutes,
+        completion_message=completion_message if completion_message else None
     )
     question_service.update_page(db, page_id, page_update)
     return RedirectResponse(url="/admin/pages", status_code=302)
@@ -119,6 +140,11 @@ async def create_question(
     allow_multiple_selection: bool = Form(False),
     # Ordering fields  
     randomize_order: bool = Form(True),
+    # Story Mode fields
+    scene_title: str = Form(""),
+    scene_narrative: str = Form(""),
+    scene_image_url: str = Form(""),
+    scene_theme: str = Form(""),
     image: UploadFile = File(None),
     db: Session = Depends(get_db),
     admin=Depends(require_admin)
@@ -180,7 +206,12 @@ async def create_question(
         mcq_correct_answer=mcq_correct_answers,
         allow_multiple_selection=allow_multiple_selection,
         ordering_options=ordering_options,
-        randomize_order=randomize_order
+        randomize_order=randomize_order,
+        # Story Mode fields
+        scene_title=scene_title if scene_title else None,
+        scene_narrative=scene_narrative if scene_narrative else None,
+        scene_image_url=scene_image_url if scene_image_url else None,
+        scene_theme=scene_theme if scene_theme else None
     )
     
     question = question_service.create_question(db, question_data)
@@ -315,6 +346,22 @@ async def view_response_detail(
     # Get or calculate scores
     scores = scoring_service.get_scores_for_response(db, response_id)
     
+    # Parse v1.1 JSON fields for template
+    riasec_labels = {}
+    bigfive_labels = {}
+    behavioral_flags = {}
+    ikigai_zones = {}
+    
+    if scores:
+        if scores.riasec_strength_labels:
+            riasec_labels = json.loads(scores.riasec_strength_labels)
+        if scores.bigfive_strength_labels:
+            bigfive_labels = json.loads(scores.bigfive_strength_labels)
+        if scores.behavioral_flags:
+            behavioral_flags = json.loads(scores.behavioral_flags)
+        if scores.ikigai_zones:
+            ikigai_zones = json.loads(scores.ikigai_zones)
+    
     return templates.TemplateResponse(
         "admin/response_detail.html",
         {
@@ -322,6 +369,10 @@ async def view_response_detail(
             "response": response,
             "answers_by_question": answers_by_question,
             "scores": scores,
+            "riasec_labels": riasec_labels,
+            "bigfive_labels": bigfive_labels,
+            "behavioral_flags": behavioral_flags,
+            "ikigai_zones": ikigai_zones,
             "admin": admin,
             "format_datetime": format_datetime
         }
@@ -371,16 +422,20 @@ async def export_results_csv(
     output = io.StringIO()
     writer = csv.writer(output)
     
-    # Write header
+    # Write header with v1.1 fields
     writer.writerow([
         'Response ID', 'Session ID', 'Name', 'Email', 'Age Group', 'Country', 'Origin Country',
         'Started At', 'Completed At', 'Status',
-        # RIASEC scores
+        # RIASEC raw scores
         'RIASEC R', 'RIASEC I', 'RIASEC A', 'RIASEC S', 'RIASEC E', 'RIASEC C', 'RIASEC Profile',
-        # Big Five scores
-        'Big5 Openness', 'Big5 Conscientiousness', 'Big5 Extraversion', 'Big5 Agreeableness', 'Big5 Neuroticism',
-        # Work Rhythm scores
-        'WR Motivation', 'WR Grit', 'WR Self-Efficacy', 'WR Resilience', 'WR Learning', 'WR Empathy', 'WR Procrastination',
+        # RIASEC v1.1 strength labels
+        'RIASEC R Label', 'RIASEC I Label', 'RIASEC A Label', 'RIASEC S Label', 'RIASEC E Label', 'RIASEC C Label',
+        # Big Five raw scores
+        'Big5 O', 'Big5 C', 'Big5 E', 'Big5 A', 'Big5 N',
+        # Big Five v1.1 strength labels
+        'Big5 O Label', 'Big5 C Label', 'Big5 E Label', 'Big5 A Label', 'Big5 N Label',
+        # Behavioral flags v1.1
+        'Procrastination Risk', 'Perfectionism Risk', 'Low Grit Risk', 'Poor Regulation Risk', 'Growth Mindset',
         'Scores Calculated At'
     ])
     
@@ -405,6 +460,7 @@ async def export_results_csv(
         
         # Add scores if available
         if scores:
+            # RIASEC raw scores
             row.extend([
                 scores.riasec_r_score or '',
                 scores.riasec_i_score or '',
@@ -413,22 +469,51 @@ async def export_results_csv(
                 scores.riasec_e_score or '',
                 scores.riasec_c_score or '',
                 scores.riasec_profile or '',
-                scores.bigfive_openness or '',
-                scores.bigfive_conscientiousness or '',
-                scores.bigfive_extraversion or '',
-                scores.bigfive_agreeableness or '',
-                scores.bigfive_neuroticism or '',
-                scores.workrhythm_motivation or '',
-                scores.workrhythm_grit or '',
-                scores.workrhythm_self_efficacy or '',
-                scores.workrhythm_resilience or '',
-                scores.workrhythm_learning or '',
-                scores.workrhythm_empathy or '',
-                scores.workrhythm_procrastination or '',
-                scores.calculated_at.strftime('%Y-%m-%d %H:%M:%S') if scores.calculated_at else ''
             ])
+            
+            # RIASEC v1.1 strength labels
+            riasec_labels = json.loads(scores.riasec_strength_labels) if scores.riasec_strength_labels else {}
+            row.extend([
+                riasec_labels.get('R', ''),
+                riasec_labels.get('I', ''),
+                riasec_labels.get('A', ''),
+                riasec_labels.get('S', ''),
+                riasec_labels.get('E', ''),
+                riasec_labels.get('C', ''),
+            ])
+            
+            # Big Five raw scores
+            row.extend([
+                scores.bigfive_o_score or '',
+                scores.bigfive_c_score or '',
+                scores.bigfive_e_score or '',
+                scores.bigfive_a_score or '',
+                scores.bigfive_n_score or '',
+            ])
+            
+            # Big Five v1.1 strength labels
+            bigfive_labels = json.loads(scores.bigfive_strength_labels) if scores.bigfive_strength_labels else {}
+            row.extend([
+                bigfive_labels.get('O', ''),
+                bigfive_labels.get('C', ''),
+                bigfive_labels.get('E', ''),
+                bigfive_labels.get('A', ''),
+                bigfive_labels.get('N', ''),
+            ])
+            
+            # Behavioral flags v1.1
+            behavioral_flags = json.loads(scores.behavioral_flags) if scores.behavioral_flags else {}
+            row.extend([
+                'Yes' if behavioral_flags.get('procrastination_risk') else 'No',
+                'Yes' if behavioral_flags.get('perfectionism_risk') else 'No',
+                'Yes' if behavioral_flags.get('low_grit_risk') else 'No',
+                'Yes' if behavioral_flags.get('poor_regulation_risk') else 'No',
+                'Yes' if behavioral_flags.get('growth_mindset') else 'No',
+            ])
+            
+            row.append(scores.calculated_at.strftime('%Y-%m-%d %H:%M:%S') if scores.calculated_at else '')
         else:
-            row.extend([''] * 21)  # Empty columns for scores
+            row.extend([''] * 30)  # Empty columns for all score fields
         
         writer.writerow(row)
     
@@ -437,7 +522,7 @@ async def export_results_csv(
     return StreamingResponse(
         iter([output.getvalue()]),
         media_type="text/csv",
-        headers={"Content-Disposition": "attachment; filename=carhythm_results_export.csv"}
+        headers={"Content-Disposition": "attachment; filename=carhythm_results_v1.1_export.csv"}
     )
 
 
@@ -463,7 +548,31 @@ async def export_response_pdf(
     
     # Generate PDF
     try:
-        pdf_buffer = pdf_service.generate_pdf_report(response, scores)
+        # Convert response and scores to dict format for V2 template
+        response_dict = {
+            'student_name': response.full_name,
+            'student_email': response.email,
+            'session_id': response.session_id
+        }
+        
+        scores_dict = {
+            'riasec_raw_scores': json.loads(scores.riasec_raw_scores) if scores.riasec_raw_scores else {},
+            'holland_code': scores.holland_code,
+            'riasec_strength_labels': json.loads(scores.riasec_strength_labels) if scores.riasec_strength_labels else {},
+            'bigfive_raw_scores': json.loads(scores.bigfive_raw_scores) if scores.bigfive_raw_scores else {},
+            'bigfive_strength_labels': json.loads(scores.bigfive_strength_labels) if scores.bigfive_strength_labels else {},
+            'behavioral_raw_scores': json.loads(scores.behavioral_raw_scores) if scores.behavioral_raw_scores else {},
+            'behavioral_strength_labels': json.loads(scores.behavioral_strength_labels) if scores.behavioral_strength_labels else {},
+            'behavioral_flags': json.loads(scores.behavioral_flags) if scores.behavioral_flags else {},
+            'ikigai_zones': json.loads(scores.ikigai_zones) if scores.ikigai_zones else {}
+        }
+        
+        pdf_buffer = pdf_service.generate_pdf_report(
+            response_dict, 
+            scores_dict,
+            template_version='v2',  # Admin always gets V2 for now
+            checkout_url='https://carhythm.com/premium'
+        )
         
         # Create safe filename
         safe_name = "".join(c for c in response.full_name if c.isalnum() or c in (' ', '-', '_')).strip()

@@ -13,5 +13,12 @@ class Page(Base):
     is_active = Column(Boolean, default=True, nullable=False)
     created_at = Column(DateTime(timezone=True), server_default=func.now())
     
+    # Story Mode / Module Organization fields (optional)
+    module_name = Column(String(100))  # e.g., "RIASEC", "Big Five", "Work Rhythm"
+    module_emoji = Column(String(10))  # e.g., "🎯", "🧠", "⚡"
+    chapter_number = Column(Integer)  # For ordering modules/chapters
+    estimated_minutes = Column(Integer)  # Time estimate for this page
+    completion_message = Column(Text)  # Message shown after completing this page
+    
     # Relationship with questions
     questions = relationship("Question", back_populates="page", cascade="all, delete-orphan")

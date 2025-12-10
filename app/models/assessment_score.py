@@ -43,6 +43,15 @@ class AssessmentScore(Base):
     workrhythm_procrastination = Column(Float)
     workrhythm_complete = Column(Boolean, default=False)
     
+    # CaRhythm v1.1 - Strength Labels and Advanced Analytics
+    riasec_raw_scores = Column(Text)  # JSON: {"R": 15, "I": 12, ...}
+    riasec_strength_labels = Column(Text)  # JSON: {"R": "High", "I": "Medium", ...}
+    bigfive_strength_labels = Column(Text)  # JSON: {"O": "Very High", ...}
+    behavioral_strength_labels = Column(Text)  # JSON: {"motivation_type": "High", ...}
+    behavioral_flags = Column(Text)  # JSON: {"procrastination_risk": 1, ...}
+    ikigai_zones = Column(Text)  # JSON: full Ikigai wheel data
+    rhythm_profile = Column(Text)  # JSON: complete profile with heatmap/insights
+    
     # Metadata
     calculated_at = Column(DateTime(timezone=True), server_default=func.now())
     last_updated = Column(DateTime(timezone=True), onupdate=func.now())

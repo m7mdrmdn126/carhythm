@@ -1,0 +1,37 @@
+/* Card Component Styles */
+.card {
+  background-color: var(--color-bg-secondary);
+  border-radius: var(--radius-xl);
+  padding: var(--space-lg);
+  transition: all var(--transition-base);
+  border: 2px solid transparent;
+}
+
+.card-hover:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-xl);
+  border-color: var(--color-primary);
+}
+
+.card-clickable {
+  cursor: pointer;
+}
+
+.card-primary {
+  background: var(--gradient-primary);
+}
+
+.card-secondary {
+  background-color: var(--color-bg-tertiary);
+}
+
+.card-outline {
+  background-color: transparent;
+  border-color: var(--color-bg-tertiary);
+}
+
+@media (max-width: 640px) {
+  .card {
+    padding: var(--space-md);
+  }
+}

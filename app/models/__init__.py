@@ -2,7 +2,7 @@ from .database import Base, engine, get_db, create_tables
 from .admin import Admin
 from .page import Page
 from .question import Question, QuestionType
-from .response import StudentResponse, QuestionAnswer
+from .response import StudentResponse, QuestionAnswer, SessionStatus
 from .question_pool import Category, QuestionPool, QuestionPageAssignment, ImportLog
 from .assessment_score import AssessmentScore
 
@@ -17,6 +17,7 @@ __all__ = [
     "QuestionType",
     "StudentResponse",
     "QuestionAnswer",
+    "SessionStatus",
     "Category",
     "QuestionPool", 
     "QuestionPageAssignment",

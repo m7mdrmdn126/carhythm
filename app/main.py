@@ -2,6 +2,7 @@ from fastapi import FastAPI, Request, Depends
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 from fastapi.responses import RedirectResponse
+from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy.orm import Session
 import os
 from dotenv import load_dotenv
@@ -13,12 +14,29 @@ from .routers.admin import router as admin_router
 from .routers.admin_panel import router as admin_panel_router
 from .routers.examination import router as examination_router
 from .routers.question_pool import router as question_pool_router
+from .routers.api_v2 import router as api_v2_router
 
 # Load environment variables
 load_dotenv()
 
 # Create FastAPI app
-app = FastAPI(title="Career DNA Assessment", version="1.0.0")
+app = FastAPI(title="Career DNA Assessment", version="2.0.0", description="Story Mode Career Assessment")
+
+# Add CORS middleware for React frontend
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=[
+        "http://localhost:5173",  # Vite dev server (default)
+        "http://localhost:5174",  # Vite dev server (alternative)
+        "http://localhost:3000",  # Alternative React dev server
+        "http://127.0.0.1:5173",
+        "http://127.0.0.1:5174",
+        "http://127.0.0.1:3000",
+    ],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 # Mount static files
 app.mount("/static", StaticFiles(directory="app/static"), name="static")
@@ -44,6 +62,7 @@ app.include_router(admin_router)
 app.include_router(admin_panel_router)
 app.include_router(examination_router)
 app.include_router(question_pool_router)
+app.include_router(api_v2_router)  # New Story Mode API
 
 @app.on_event("startup")
 async def startup_event():

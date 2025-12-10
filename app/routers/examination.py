@@ -29,6 +29,57 @@ async def welcome_page(request: Request):
     """Student welcome page."""
     return templates.TemplateResponse("student/welcome.html", {"request": request})
 
+@router.get("/paid", response_class=HTMLResponse)
+async def premium_landing_page(
+    request: Request,
+    discount: Optional[str] = None,
+    utm_source: Optional[str] = None,
+    utm_medium: Optional[str] = None,
+    utm_content: Optional[str] = None
+):
+    """
+    Premium report landing page with discount handling.
+    
+    Query params:
+        - discount: Discount code (e.g., LAUNCH50 for 50% off)
+        - utm_source: UTM source tracking
+        - utm_medium: UTM medium tracking
+        - utm_content: UTM content tracking (section name)
+    """
+    # Discount validation
+    valid_discounts = {
+        "LAUNCH50": {"amount": 50, "label": "50% LAUNCH DISCOUNT"},
+        "EARLY30": {"amount": 30, "label": "30% EARLY BIRD"},
+        "STUDENT20": {"amount": 20, "label": "20% STUDENT DISCOUNT"}
+    }
+    
+    discount_info = None
+    if discount and discount.upper() in valid_discounts:
+        discount_info = valid_discounts[discount.upper()]
+    
+    # Default pricing
+    original_price = 49.99
+    discounted_price = original_price
+    
+    if discount_info:
+        discount_percent = discount_info["amount"]
+        discounted_price = original_price * (1 - discount_percent / 100)
+    
+    return templates.TemplateResponse(
+        "student/premium_landing.html",
+        {
+            "request": request,
+            "discount_code": discount,
+            "discount_info": discount_info,
+            "original_price": f"${original_price:.2f}",
+            "discounted_price": f"${discounted_price:.2f}",
+            "savings": f"${original_price - discounted_price:.2f}",
+            "utm_source": utm_source,
+            "utm_medium": utm_medium,
+            "utm_content": utm_content
+        }
+    )
+
 @router.get("/student/exam", response_class=HTMLResponse)
 async def start_examination(
     request: Request,

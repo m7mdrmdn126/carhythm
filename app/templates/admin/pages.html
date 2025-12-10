@@ -72,6 +72,39 @@
                     <label for="order_index">Order</label>
                     <input type="number" id="order_index" name="order_index" value="{{ (pages|length) }}">
                 </div>
+                
+                <hr style="margin: 24px 0;">
+                <h4 style="color: var(--primary-aubergine); margin-bottom: 16px;">📖 Story Mode Settings (Optional)</h4>
+                
+                <div class="form-group">
+                    <label for="module_name">Module Name</label>
+                    <input type="text" id="module_name" name="module_name" placeholder="e.g., RIASEC, Big Five, Work Rhythm">
+                    <small style="color: var(--text-light);">Groups pages into chapters for Story Mode</small>
+                </div>
+                
+                <div class="form-group">
+                    <label for="module_emoji">Module Emoji</label>
+                    <input type="text" id="module_emoji" name="module_emoji" placeholder="e.g., 🎯, 🧠, ⚡" maxlength="10">
+                    <small style="color: var(--text-light);">Visual icon for this module</small>
+                </div>
+                
+                <div class="form-group">
+                    <label for="chapter_number">Chapter Number</label>
+                    <input type="number" id="chapter_number" name="chapter_number" min="0" placeholder="e.g., 1, 2, 3">
+                    <small style="color: var(--text-light);">For ordering modules in Story Mode</small>
+                </div>
+                
+                <div class="form-group">
+                    <label for="estimated_minutes">Estimated Minutes</label>
+                    <input type="number" id="estimated_minutes" name="estimated_minutes" min="1" placeholder="e.g., 5">
+                    <small style="color: var(--text-light);">How long this page takes to complete</small>
+                </div>
+                
+                <div class="form-group">
+                    <label for="completion_message">Completion Message</label>
+                    <textarea id="completion_message" name="completion_message" rows="2" placeholder="Great job! You've completed this section."></textarea>
+                    <small style="color: var(--text-light);">Message shown after completing this page</small>
+                </div>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" onclick="hideCreatePageModal()">Cancel</button>
@@ -108,6 +141,34 @@
                         Active
                     </label>
                 </div>
+                
+                <hr style="margin: 24px 0;">
+                <h4 style="color: var(--primary-aubergine); margin-bottom: 16px;">📖 Story Mode Settings (Optional)</h4>
+                
+                <div class="form-group">
+                    <label for="edit_module_name">Module Name</label>
+                    <input type="text" id="edit_module_name" name="module_name" placeholder="e.g., RIASEC, Big Five">
+                </div>
+                
+                <div class="form-group">
+                    <label for="edit_module_emoji">Module Emoji</label>
+                    <input type="text" id="edit_module_emoji" name="module_emoji" placeholder="e.g., 🎯" maxlength="10">
+                </div>
+                
+                <div class="form-group">
+                    <label for="edit_chapter_number">Chapter Number</label>
+                    <input type="number" id="edit_chapter_number" name="chapter_number" min="0">
+                </div>
+                
+                <div class="form-group">
+                    <label for="edit_estimated_minutes">Estimated Minutes</label>
+                    <input type="number" id="edit_estimated_minutes" name="estimated_minutes" min="1">
+                </div>
+                
+                <div class="form-group">
+                    <label for="edit_completion_message">Completion Message</label>
+                    <textarea id="edit_completion_message" name="completion_message" rows="2"></textarea>
+                </div>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" onclick="hideEditPageModal()">Cancel</button>
@@ -131,6 +192,18 @@ function editPage(id, title, description, orderIndex, isActive) {
     document.getElementById('edit_description').value = description;
     document.getElementById('edit_order_index').value = orderIndex;
     document.getElementById('edit_is_active').checked = isActive;
+    
+    // Fetch page data to populate Story Mode fields
+    fetch(`/admin/pages`)
+        .then(() => {
+            // Story Mode fields will be empty for now, admin can fill them
+            document.getElementById('edit_module_name').value = '';
+            document.getElementById('edit_module_emoji').value = '';
+            document.getElementById('edit_chapter_number').value = '';
+            document.getElementById('edit_estimated_minutes').value = '';
+            document.getElementById('edit_completion_message').value = '';
+        });
+    
     document.getElementById('editPageForm').action = `/admin/pages/${id}/edit`;
     document.getElementById('editPageModal').style.display = 'flex';
 }

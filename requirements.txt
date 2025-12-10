@@ -7,5 +7,13 @@ passlib==1.7.4
 python-jose==3.3.0
 bcrypt==4.1.1
 aiosqlite==0.19.0
-python-dotenv==1.0.0reportlab==4.0.7
+python-dotenv==1.0.0
+pydantic-settings==2.0.3
+reportlab==4.0.7
 matplotlib==3.8.2
+Pillow==10.1.0
+aiosmtplib==3.0.1
+email-validator==2.1.0
+qrcode[pil]==7.4.2
+arabic-reshaper==3.0.0
+python-bidi==0.4.2

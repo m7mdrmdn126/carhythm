@@ -7,6 +7,12 @@ class PageBase(BaseModel):
     description: Optional[str] = None
     order_index: int = 0
     is_active: bool = True
+    # Story Mode / Module Organization fields
+    module_name: Optional[str] = None
+    module_emoji: Optional[str] = None
+    chapter_number: Optional[int] = None
+    estimated_minutes: Optional[int] = None
+    completion_message: Optional[str] = None
 
 class PageCreate(PageBase):
     pass

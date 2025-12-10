@@ -1,0 +1,69 @@
+/* LoadingSpinner Component Styles */
+.loading-spinner-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-lg);
+  padding: var(--space-2xl);
+}
+
+.loading-spinner {
+  position: relative;
+  display: inline-block;
+}
+
+.loading-spinner-small {
+  width: 24px;
+  height: 24px;
+}
+
+.loading-spinner-medium {
+  width: 48px;
+  height: 48px;
+}
+
+.loading-spinner-large {
+  width: 72px;
+  height: 72px;
+}
+
+.spinner-ring {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  border: 3px solid transparent;
+  border-top-color: var(--color-primary);
+  border-radius: 50%;
+  animation: spin 1.2s cubic-bezier(0.5, 0, 0.5, 1) infinite;
+}
+
+.spinner-ring:nth-child(1) {
+  animation-delay: -0.45s;
+}
+
+.spinner-ring:nth-child(2) {
+  animation-delay: -0.3s;
+  border-top-color: var(--color-secondary);
+}
+
+.spinner-ring:nth-child(3) {
+  animation-delay: -0.15s;
+  border-top-color: var(--color-primary-light);
+}
+
+.loading-message {
+  color: var(--color-text-secondary);
+  font-size: var(--font-size-base);
+  text-align: center;
+  margin: 0;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}

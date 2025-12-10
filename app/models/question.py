@@ -21,6 +21,14 @@ class Question(Base):
     order_index = Column(Integer, nullable=False, default=0)
     is_required = Column(Boolean, default=True, nullable=False)
     
+    # CaRhythm v1.1 fields
+    item_id = Column(String(20), unique=True, index=True)  # e.g., "R1", "FC_RI_1", "RANK1"
+    domain = Column(String(20))  # RIASEC domain (R/I/A/S/E/C) or trait code
+    tags = Column(Text)  # JSON array of behavioral tags
+    reverse_scored = Column(Boolean, default=False)  # For reverse-keyed items
+    scale_type = Column(String(20))  # "likert_5", "forced_choice", "ranking"
+    scale_labels = Column(Text)  # JSON array: ["Not at all", "A little", ...]
+    
     # Essay question fields
     essay_char_limit = Column(Integer)  # For essay questions
     
@@ -36,6 +44,12 @@ class Question(Base):
     # Ordering question fields
     ordering_options = Column(Text)  # JSON string: ["Item 1", "Item 2", "Item 3"]
     randomize_order = Column(Boolean, default=True)  # Randomize initial order
+    
+    # Story Mode fields (optional - for enhanced UX)
+    scene_title = Column(String(200))  # e.g., "THE WORKSHOP DISCOVERY"
+    scene_narrative = Column(Text)  # Story context for the question
+    scene_image_url = Column(String(500))  # Background image/GIF URL for scene
+    scene_theme = Column(String(50))  # Color theme: workshop/mindpalace/flow
     
     created_at = Column(DateTime(timezone=True), server_default=func.now())
     

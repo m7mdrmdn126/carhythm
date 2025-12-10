@@ -25,6 +25,11 @@ class QuestionBase(BaseModel):
     # Ordering fields
     ordering_options: Optional[List[str]] = None
     randomize_order: Optional[bool] = True
+    # Story Mode fields
+    scene_title: Optional[str] = None
+    scene_narrative: Optional[str] = None
+    scene_image_url: Optional[str] = None
+    scene_theme: Optional[str] = None
 
 class QuestionCreate(QuestionBase):
     pass
@@ -44,6 +49,11 @@ class QuestionUpdate(BaseModel):
     # Ordering fields
     ordering_options: Optional[List[str]] = None
     randomize_order: Optional[bool] = None
+    # Story Mode fields
+    scene_title: Optional[str] = None
+    scene_narrative: Optional[str] = None
+    scene_image_url: Optional[str] = None
+    scene_theme: Optional[str] = None
 
 class Question(QuestionBase):
     id: int

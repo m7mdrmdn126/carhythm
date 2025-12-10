@@ -203,6 +203,42 @@
                     <input type="file" id="image" name="image" accept="image/*">
                     <small>Supported formats: JPG, PNG, GIF, WebP</small>
                 </div>
+                
+                <hr style="margin: 24px 0;">
+                <h4 style="color: var(--primary-aubergine); margin-bottom: 16px;">🎬 Story Mode Enhancement (Optional)</h4>
+                <p style="color: var(--text-light); font-size: 14px; margin-bottom: 16px;">
+                    Transform this question into an engaging story scene for mobile users
+                </p>
+                
+                <div class="form-group">
+                    <label for="scene_title">Scene Title</label>
+                    <input type="text" id="scene_title" name="scene_title" placeholder="e.g., THE WORKSHOP DISCOVERY" maxlength="200">
+                    <small style="color: var(--text-light);">Dramatic title for the story scene (UPPERCASE recommended)</small>
+                </div>
+                
+                <div class="form-group">
+                    <label for="scene_narrative">Scene Narrative</label>
+                    <textarea id="scene_narrative" name="scene_narrative" rows="3" placeholder="You enter an old workshop filled with mysterious tools and gadgets..."></textarea>
+                    <small style="color: var(--text-light);">Story context that sets up the question (2-3 sentences)</small>
+                </div>
+                
+                <div class="form-group">
+                    <label for="scene_image_url">Scene Background Image URL</label>
+                    <input type="text" id="scene_image_url" name="scene_image_url" placeholder="https://example.com/scene-bg.jpg or /static/scenes/workshop.jpg">
+                    <small style="color: var(--text-light);">URL or path to background image/GIF for this scene</small>
+                </div>
+                
+                <div class="form-group">
+                    <label for="scene_theme">Scene Theme</label>
+                    <select id="scene_theme" name="scene_theme">
+                        <option value="">Default</option>
+                        <option value="workshop">Workshop (Warm, Industrial)</option>
+                        <option value="mindpalace">Mind Palace (Purple, Abstract)</option>
+                        <option value="flow">Flow (Green, Natural)</option>
+                        <option value="cosmic">Cosmic (Blue, Space)</option>
+                    </select>
+                    <small style="color: var(--text-light);">Visual theme for this question's presentation</small>
+                </div>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" onclick="hideCreateQuestionModal()">Cancel</button>

@@ -1,0 +1,166 @@
+/* XP Notification Styles */
+
+.xp-notification {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  z-index: 9999;
+  pointer-events: none;
+}
+
+.xp-content {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  padding: 12px 24px;
+  border-radius: 50px;
+  box-shadow: 0 8px 24px rgba(102, 126, 234, 0.4);
+  min-width: 120px;
+  height: 60px;
+  position: relative;
+  overflow: visible;
+}
+
+.xp-icon {
+  font-size: 24px;
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.2));
+}
+
+.xp-text {
+  color: white;
+  font-size: 20px;
+  font-weight: 700;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  letter-spacing: 0.5px;
+}
+
+/* Sparkle Effects */
+.sparkle {
+  position: absolute;
+  font-size: 16px;
+  pointer-events: none;
+}
+
+.sparkle-1 {
+  top: 10px;
+  left: 10px;
+}
+
+.sparkle-2 {
+  top: 10px;
+  right: 10px;
+}
+
+.sparkle-3 {
+  bottom: 5px;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+/* Glow Effect */
+.xp-content::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  border-radius: 50px;
+  padding: 2px;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.5), transparent);
+  -webkit-mask: 
+    linear-gradient(#fff 0 0) content-box, 
+    linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  opacity: 0.6;
+}
+
+/* Shimmer Effect */
+.xp-content::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.4),
+    transparent
+  );
+  animation: shimmer 1.5s ease-in-out;
+}
+
+@keyframes shimmer {
+  0% {
+    left: -100%;
+  }
+  100% {
+    left: 100%;
+  }
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .xp-notification {
+    top: 15px;
+    right: 15px;
+  }
+
+  .xp-content {
+    padding: 10px 20px;
+    min-width: 100px;
+    height: 50px;
+  }
+
+  .xp-icon {
+    font-size: 20px;
+  }
+
+  .xp-text {
+    font-size: 18px;
+  }
+
+  .sparkle {
+    font-size: 14px;
+  }
+}
+
+@media (max-width: 480px) {
+  .xp-notification {
+    top: 10px;
+    right: 10px;
+  }
+
+  .xp-content {
+    padding: 8px 16px;
+    min-width: 90px;
+    height: 45px;
+  }
+
+  .xp-icon {
+    font-size: 18px;
+  }
+
+  .xp-text {
+    font-size: 16px;
+  }
+}
+
+/* Accessibility */
+@media (prefers-reduced-motion: reduce) {
+  .xp-notification,
+  .xp-content,
+  .sparkle {
+    animation: none;
+    transition: none;
+  }
+
+  .xp-content::after {
+    animation: none;
+  }
+}
