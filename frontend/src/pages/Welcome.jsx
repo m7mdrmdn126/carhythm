@@ -67,7 +67,8 @@ const Welcome = () => {
             total_xp: 0,
             questions_answered: 0
           });
-          navigate(`/question/${targetPageId}`);
+          // Navigate to module intro first
+          navigate(`/module/${targetPageId}`);
         } else {
           setError('No questions available. Please contact administrator.');
         }
@@ -159,12 +160,13 @@ const Welcome = () => {
               transition={{ duration: 1, ease: "easeOut" }}
             >
               <motion.div 
-                className="hero-logo"
+                className="hero-logo-container"
                 initial={{ scale: 0.8, opacity: 0 }}
                 animate={{ scale: 1, opacity: 1 }}
                 transition={{ duration: 0.8, delay: 0.2 }}
               >
-                <img src="/CaRhythm updated logo.png" alt="CaRhythm" />
+                <img src="/CaRhythm updated logo.png" alt="CaRhythm" className="hero-logo" />
+                <h2 className="hero-brand-name">CaRhythm</h2>
               </motion.div>
               
               <motion.h1 
@@ -207,6 +209,17 @@ const Welcome = () => {
                 </p>
               </motion.div>
             </motion.div>
+            
+            {/* Scroll Indicator - Inside Hero */}
+            <motion.div 
+              className="scroll-indicator"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 1.5, duration: 1 }}
+            >
+              <span className="scroll-text">Scroll to explore</span>
+              <div className="scroll-arrow">↓</div>
+            </motion.div>
           </motion.div>
 
           {/* Floating Background Elements */}
@@ -215,17 +228,6 @@ const Welcome = () => {
             <div className="shape shape-2"></div>
             <div className="shape shape-3"></div>
           </div>
-
-          {/* Scroll Indicator */}
-          <motion.div 
-            className="scroll-indicator"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 1.5, duration: 1 }}
-          >
-            <span className="scroll-text">Scroll to explore</span>
-            <div className="scroll-arrow">↓</div>
-          </motion.div>
 
           {/* Features Section with Parallax Cards */}
           <motion.section 

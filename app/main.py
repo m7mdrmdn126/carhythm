@@ -15,6 +15,7 @@ from .routers.admin_panel import router as admin_panel_router
 from .routers.examination import router as examination_router
 from .routers.question_pool import router as question_pool_router
 from .routers.api_v2 import router as api_v2_router
+from .routers.feedback import router as feedback_router
 
 # Load environment variables
 load_dotenv()
@@ -63,6 +64,7 @@ app.include_router(admin_panel_router)
 app.include_router(examination_router)
 app.include_router(question_pool_router)
 app.include_router(api_v2_router)  # New Story Mode API
+app.include_router(feedback_router)  # Feedback API
 
 @app.on_event("startup")
 async def startup_event():

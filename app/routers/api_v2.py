@@ -245,6 +245,12 @@ async def get_questions(
             "title": page.title,
             "description": page.description,
             "module": page.module_name,
+            "module_emoji": page.module_emoji,
+            "module_description": page.module_description,
+            "chapter_number": page.chapter_number,
+            "estimated_minutes": page.estimated_minutes,
+            "module_color_primary": page.module_color_primary,
+            "module_color_secondary": page.module_color_secondary,
             "completion_message": page.completion_message
         },
         "questions": formatted_questions,

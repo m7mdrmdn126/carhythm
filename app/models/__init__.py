@@ -5,6 +5,7 @@ from .question import Question, QuestionType
 from .response import StudentResponse, QuestionAnswer, SessionStatus
 from .question_pool import Category, QuestionPool, QuestionPageAssignment, ImportLog
 from .assessment_score import AssessmentScore
+from .feedback import Feedback
 
 __all__ = [
     "Base",
@@ -22,5 +23,6 @@ __all__ = [
     "QuestionPool", 
     "QuestionPageAssignment",
     "ImportLog",
-    "AssessmentScore"
+    "AssessmentScore",
+    "Feedback"
 ]

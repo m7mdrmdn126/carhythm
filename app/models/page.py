@@ -16,9 +16,12 @@ class Page(Base):
     # Story Mode / Module Organization fields (optional)
     module_name = Column(String(100))  # e.g., "RIASEC", "Big Five", "Work Rhythm"
     module_emoji = Column(String(10))  # e.g., "🎯", "🧠", "⚡"
+    module_description = Column(Text)  # Description shown in module intro
     chapter_number = Column(Integer)  # For ordering modules/chapters
     estimated_minutes = Column(Integer)  # Time estimate for this page
     completion_message = Column(Text)  # Message shown after completing this page
+    module_color_primary = Column(String(20))  # Primary theme color e.g., "#8b5cf6"
+    module_color_secondary = Column(String(20))  # Secondary theme color e.g., "#3b82f6"
     
     # Relationship with questions
     questions = relationship("Question", back_populates="page", cascade="all, delete-orphan")

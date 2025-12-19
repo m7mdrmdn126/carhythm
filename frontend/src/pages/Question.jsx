@@ -27,6 +27,7 @@ const Question = () => {
   const [totalXP, setTotalXP] = useState(0);
   const [showAnswerFeedback, setShowAnswerFeedback] = useState(false);
   const [autoAdvancing, setAutoAdvancing] = useState(false);
+  const [moduleInfo, setModuleInfo] = useState(null);
 
   // Helper to get session ID from localStorage progress or sessionStorage
   const getCurrentSessionId = () => {
@@ -43,6 +44,15 @@ const Question = () => {
       setLoading(true);
       const data = await api.getQuestions(pageId);
       setQuestionData(data);
+      
+      // Store module info for header display
+      setModuleInfo({
+        name: data.page.module,
+        emoji: data.page.module_emoji,
+        chapterNumber: data.page.chapter_number,
+        colorPrimary: data.page.module_color_primary,
+        colorSecondary: data.page.module_color_secondary,
+      });
       
       // Check if we should restore question index from saved progress
       const progress = getProgress();
@@ -264,22 +274,27 @@ const Question = () => {
       // Check if there's a next page
       if (questionData.navigation?.next_page_id) {
         const nextPageId = questionData.navigation.next_page_id;
-        console.log('Advancing to next page:', nextPageId);
+        console.log('Module complete, showing completion screen before next module');
         
-        // Update progress with next page before navigating
-        const sessionId = getCurrentSessionId();
-        updateProgress({
-          session_id: sessionId,
-          current_page_id: nextPageId,
-          current_question_index: 0
+        // Calculate XP earned for this module
+        const moduleXP = questionData.questions.length * 10;
+        
+        // Navigate to module completion screen with data
+        navigate('/module-complete', {
+          state: {
+            moduleName: questionData.page.module,
+            moduleEmoji: moduleInfo?.emoji || '✅',
+            totalQuestions: questionData.questions.length,
+            xpEarned: moduleXP,
+            nextPageId: nextPageId,
+            colorPrimary: moduleInfo?.colorPrimary,
+            colorSecondary: moduleInfo?.colorSecondary,
+          }
         });
-        console.log('Progress updated: page', nextPageId, 'question 0');
-        
-        navigate(`/question/${nextPageId}`);
       } else {
-        // Assessment complete
-        console.log('Assessment complete, navigating to /complete');
-        navigate('/complete');
+        // Assessment complete - navigate to feedback page
+        console.log('Assessment complete, navigating to /feedback');
+        navigate('/feedback');
       }
     }
   };
@@ -366,7 +381,13 @@ const Question = () => {
   };
 
   return (
-    <div className={`question-container theme-${currentQuestion.scene_theme || 'default'}`}>
+    <div 
+      className={`question-container theme-${currentQuestion.scene_theme || 'default'}`}
+      style={{
+        '--module-color-primary': moduleInfo?.colorPrimary || '#8b5cf6',
+        '--module-color-secondary': moduleInfo?.colorSecondary || '#3b82f6',
+      }}
+    >
       {/* XP Notification */}
       <XPNotification 
         show={showXP} 
@@ -374,12 +395,20 @@ const Question = () => {
         onComplete={() => setShowXP(false)}
       />
       
-      {/* CaRhythm Header */}
+      {/* CaRhythm Header with Module Badge */}
       <div className="question-header-brand">
         <div className="brand-mini">
           <img src="/CaRhythm updated logo.png" alt="CaRhythm" style={{width: '50px', height: '50px', marginRight: '10px'}} />
           <span className="brand-name">Ca<span className="brand-accent">Rhythm</span></span>
         </div>
+        {moduleInfo && (
+          <div className="module-badge">
+            <span className="module-badge-emoji">{moduleInfo.emoji}</span>
+            <span className="module-badge-text">
+              Chapter {moduleInfo.chapterNumber}: {moduleInfo.name}
+            </span>
+          </div>
+        )}
       </div>
 
       {/* Progress Bar */}

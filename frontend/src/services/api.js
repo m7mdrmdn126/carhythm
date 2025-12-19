@@ -91,7 +91,9 @@ export const api = {
 
   // Submit student information
   submitStudentInfo: async (studentInfo) => {
-    const response = await apiClient.post('/student/info', studentInfo);
+    const response = await apiClient.post('/student/info', studentInfo, {
+      timeout: 60000 // 60 seconds for PDF generation
+    });
     return response.data;
   },
 

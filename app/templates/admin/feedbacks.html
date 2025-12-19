@@ -1,0 +1,213 @@
+{% extends "base/admin_base.html" %}
+
+{% block title %}Feedbacks - CaRhythm Admin{% endblock %}
+
+{% block content %}
+<div class="main-content">
+    <div class="page-header">
+        <div>
+            <h1>User Feedbacks 💬</h1>
+            <p class="subtitle">View and analyze user feedback from completed assessments</p>
+        </div>
+        <div>
+            <a href="/admin/feedbacks/export" class="btn btn-secondary">
+                📥 Export to CSV
+            </a>
+        </div>
+    </div>
+
+    <!-- Statistics Cards -->
+    <div class="dashboard-grid" style="margin-bottom: 32px;">
+        <div class="stat-card">
+            <div class="stat-icon">📊</div>
+            <div class="stat-value">{{ stats.total_feedbacks }}</div>
+            <div class="stat-label">Total Feedbacks</div>
+        </div>
+        
+        <div class="stat-card">
+            <div class="stat-icon">⭐</div>
+            <div class="stat-value">{{ stats.average_rating }}</div>
+            <div class="stat-label">Average Rating</div>
+        </div>
+        
+        <div class="stat-card">
+            <div class="stat-icon">👍</div>
+            <div class="stat-value">{{ stats.would_recommend }}</div>
+            <div class="stat-label">Would Recommend</div>
+        </div>
+        
+        <div class="stat-card">
+            <div class="stat-icon">👎</div>
+            <div class="stat-value">{{ stats.would_not_recommend }}</div>
+            <div class="stat-label">Would Not Recommend</div>
+        </div>
+    </div>
+
+    <!-- Filter Section -->
+    <div class="card" style="margin-bottom: 24px; padding: 20px;">
+        <h3 style="margin-bottom: 16px;">Filter by Rating</h3>
+        <div style="display: flex; gap: 12px; flex-wrap: wrap;">
+            <a href="/admin/feedbacks" class="btn {% if not selected_rating %}btn-primary{% else %}btn-secondary{% endif %}">
+                All Ratings
+            </a>
+            {% for rating in [5, 4, 3, 2, 1] %}
+            <a href="/admin/feedbacks?rating={{ rating }}" 
+               class="btn {% if selected_rating == rating %}btn-primary{% else %}btn-secondary{% endif %}">
+                {{ rating }} ⭐
+            </a>
+            {% endfor %}
+        </div>
+    </div>
+
+    <!-- Feedbacks List -->
+    {% if feedbacks %}
+    <div class="card">
+        <div class="table-responsive">
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th>User</th>
+                        <th>Rating</th>
+                        <th>Would Recommend</th>
+                        <th>Experience</th>
+                        <th>Suggestions</th>
+                        <th>Session</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for feedback in feedbacks %}
+                    <tr>
+                        <td>
+                            <div style="font-size: 0.9rem;">
+                                {{ feedback.created_at.strftime('%Y-%m-%d') }}<br>
+                                <span style="color: var(--text-light); font-size: 0.85rem;">
+                                    {{ feedback.created_at.strftime('%H:%M') }}
+                                </span>
+                            </div>
+                        </td>
+                        <td>
+                            <div>
+                                <strong>{{ feedback.response.full_name if feedback.response else 'N/A' }}</strong><br>
+                                <span style="color: var(--text-light); font-size: 0.85rem;">
+                                    {{ feedback.response.email if feedback.response else 'N/A' }}
+                                </span>
+                            </div>
+                        </td>
+                        <td>
+                            {% if feedback.rating %}
+                            <div style="font-size: 1.2rem; color: var(--accent-gold);">
+                                {% for i in range(feedback.rating) %}⭐{% endfor %}
+                            </div>
+                            <span style="font-size: 0.85rem; color: var(--text-light);">
+                                {{ feedback.rating }}/5
+                            </span>
+                            {% else %}
+                            <span style="color: var(--text-light);">No rating</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if feedback.would_recommend == True %}
+                            <span class="badge badge-success">👍 Yes</span>
+                            {% elif feedback.would_recommend == False %}
+                            <span class="badge badge-error">👎 No</span>
+                            {% else %}
+                            <span class="badge">N/A</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if feedback.experience_text %}
+                            <div style="max-width: 300px; overflow: hidden; text-overflow: ellipsis;">
+                                {{ feedback.experience_text[:100] }}
+                                {% if feedback.experience_text|length > 100 %}...{% endif %}
+                            </div>
+                            {% else %}
+                            <span style="color: var(--text-light);">No comment</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if feedback.suggestions %}
+                            <div style="max-width: 300px; overflow: hidden; text-overflow: ellipsis;">
+                                {{ feedback.suggestions[:100] }}
+                                {% if feedback.suggestions|length > 100 %}...{% endif %}
+                            </div>
+                            {% else %}
+                            <span style="color: var(--text-light);">No suggestions</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            <code style="font-size: 0.8rem; color: var(--text-light);">
+                                {{ feedback.session_id[:8] }}...
+                            </code>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+    {% else %}
+    <div class="card" style="padding: 48px; text-align: center;">
+        <div style="font-size: 4rem; margin-bottom: 16px;">📭</div>
+        <h3 style="color: var(--primary-aubergine); margin-bottom: 8px;">No Feedbacks Yet</h3>
+        <p style="color: var(--text-light);">
+            {% if selected_rating %}
+            No feedbacks with {{ selected_rating }} star rating found.
+            {% else %}
+            Feedbacks will appear here once users complete assessments and provide feedback.
+            {% endif %}
+        </p>
+    </div>
+    {% endif %}
+</div>
+
+<style>
+.badge {
+    display: inline-block;
+    padding: 4px 12px;
+    border-radius: 12px;
+    font-size: 0.85rem;
+    font-weight: 500;
+    background: var(--bg-light);
+    color: var(--text-dark);
+}
+
+.badge-success {
+    background: rgba(76, 175, 80, 0.1);
+    color: #4CAF50;
+}
+
+.badge-error {
+    background: rgba(244, 67, 54, 0.1);
+    color: #F44336;
+}
+
+.table-responsive {
+    overflow-x: auto;
+}
+
+.data-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.data-table th {
+    text-align: left;
+    padding: 16px;
+    background: var(--bg-light);
+    color: var(--primary-aubergine);
+    font-weight: 600;
+    border-bottom: 2px solid var(--border-color);
+}
+
+.data-table td {
+    padding: 16px;
+    border-bottom: 1px solid var(--border-color);
+    vertical-align: top;
+}
+
+.data-table tr:hover {
+    background: var(--bg-light);
+}
+</style>
+{% endblock %}

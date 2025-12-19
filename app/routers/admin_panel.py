@@ -2,13 +2,14 @@ from fastapi import APIRouter, Depends, Request, Form, UploadFile, File, HTTPExc
 from fastapi.responses import HTMLResponse, RedirectResponse, JSONResponse, StreamingResponse
 from fastapi.templating import Jinja2Templates
 from sqlalchemy.orm import Session
-from ..models import get_db, QuestionType
+from ..models import get_db, QuestionType, Feedback, StudentResponse as Response
 from ..services import question_service, response_service
 from ..services import scoring_service_v1_1 as scoring_service, pdf_service
 from ..schemas import PageCreate, PageUpdate, QuestionCreate, QuestionUpdate
 from ..utils.helpers import save_upload_file, validate_image_file, delete_file, format_datetime
 from .admin import require_admin
 from typing import Optional
+from sqlalchemy import desc, func
 import csv
 import io
 import json
@@ -585,3 +586,94 @@ async def export_response_pdf(
         )
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Error generating PDF: {str(e)}")
+
+
+# Feedback Management Routes
+
+@router.get("/feedbacks", response_class=HTMLResponse)
+async def manage_feedbacks(
+    request: Request,
+    rating: Optional[int] = None,
+    db: Session = Depends(get_db),
+    admin=Depends(require_admin)
+):
+    """Feedback management interface."""
+    query = db.query(Feedback).join(Response)
+    
+    # Filter by rating if specified
+    if rating is not None:
+        query = query.filter(Feedback.rating == rating)
+    
+    # Order by most recent first
+    feedbacks = query.order_by(desc(Feedback.created_at)).all()
+    
+    # Calculate statistics
+    total_feedbacks = db.query(func.count(Feedback.id)).scalar() or 0
+    avg_rating = db.query(func.avg(Feedback.rating)).filter(
+        Feedback.rating.isnot(None)
+    ).scalar()
+    would_recommend = db.query(func.count(Feedback.id)).filter(
+        Feedback.would_recommend == True
+    ).scalar() or 0
+    would_not_recommend = db.query(func.count(Feedback.id)).filter(
+        Feedback.would_recommend == False
+    ).scalar() or 0
+    
+    stats = {
+        'total_feedbacks': total_feedbacks,
+        'average_rating': round(avg_rating, 2) if avg_rating else 0,
+        'would_recommend': would_recommend,
+        'would_not_recommend': would_not_recommend
+    }
+    
+    return templates.TemplateResponse(
+        "admin/feedbacks.html",
+        {
+            "request": request,
+            "feedbacks": feedbacks,
+            "stats": stats,
+            "selected_rating": rating,
+            "admin": admin
+        }
+    )
+
+
+@router.get("/feedbacks/export", response_class=StreamingResponse)
+async def export_feedbacks(
+    db: Session = Depends(get_db),
+    admin=Depends(require_admin)
+):
+    """Export feedbacks to CSV."""
+    feedbacks = db.query(Feedback).join(Response).order_by(desc(Feedback.created_at)).all()
+    
+    # Create CSV in memory
+    output = io.StringIO()
+    writer = csv.writer(output)
+    
+    # Write header
+    writer.writerow([
+        'ID', 'Date', 'Session ID', 'User Name', 'User Email',
+        'Rating', 'Experience', 'Would Recommend', 'Suggestions'
+    ])
+    
+    # Write data
+    for feedback in feedbacks:
+        writer.writerow([
+            feedback.id,
+            feedback.created_at.strftime('%Y-%m-%d %H:%M:%S'),
+            feedback.session_id,
+            feedback.response.full_name if feedback.response else '',
+            feedback.response.email if feedback.response else '',
+            feedback.rating or '',
+            feedback.experience_text or '',
+            'Yes' if feedback.would_recommend else ('No' if feedback.would_recommend is False else ''),
+            feedback.suggestions or ''
+        ])
+    
+    output.seek(0)
+    
+    return StreamingResponse(
+        iter([output.getvalue()]),
+        media_type="text/csv",
+        headers={"Content-Disposition": "attachment; filename=feedbacks_export.csv"}
+    )

@@ -32,6 +32,7 @@ class StudentResponse(Base):
     answers = relationship("QuestionAnswer", back_populates="response", cascade="all, delete-orphan")
     scores = relationship("AssessmentScore", back_populates="response", uselist=False, cascade="all, delete-orphan")
     current_page = relationship("Page", foreign_keys=[current_page_id])
+    feedback = relationship("Feedback", back_populates="response", uselist=False, cascade="all, delete-orphan")
 
 class QuestionAnswer(Base):
     __tablename__ = "question_answers"

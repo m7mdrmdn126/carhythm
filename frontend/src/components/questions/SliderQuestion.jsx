@@ -51,16 +51,6 @@ const SliderQuestion = ({ question, onAnswer, initialValue = null }) => {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: option.value * 0.05 }}
               >
-                <motion.div 
-                  className="likert-option-emoji"
-                  animate={isSelected ? { 
-                    scale: [1, 1.3, 1],
-                    rotate: [0, 10, -10, 0]
-                  } : {}}
-                  transition={{ duration: 0.5 }}
-                >
-                  {option.emoji}
-                </motion.div>
                 <span className="likert-option-value">{option.value}</span>
                 
                 {isSelected && (
@@ -99,9 +89,6 @@ const SliderQuestion = ({ question, onAnswer, initialValue = null }) => {
               borderColor: `${displayOption.color}50`
             }}
           >
-            <div className="feedback-emoji" style={{ fontSize: '2rem' }}>
-              {displayOption.emoji}
-            </div>
             <div className="feedback-text">
               <span className="feedback-label">{displayOption.label}</span>
               {selectedValue === displayValue && showFeedback && (

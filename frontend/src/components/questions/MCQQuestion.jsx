@@ -56,6 +56,7 @@ const MCQQuestion = ({ question, onAnswer, initialValue = null, allowMultiple = 
               }}
               transition={{ delay: index * 0.05, duration: 0.3 }}
             >
+              <div className="mcq-option-number">{index + 1}.</div>
               <div className="mcq-option-check">
                 {allowMultiple ? (
                   <div className={`checkbox ${selected ? 'checked' : ''}`}>

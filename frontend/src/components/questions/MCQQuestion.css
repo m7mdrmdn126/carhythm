@@ -13,9 +13,23 @@
 }
 
 .mcq-options {
-  display: flex;
-  flex-direction: column;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
   gap: var(--space-md);
+}
+
+/* Tablet: 2 columns */
+@media (max-width: 768px) {
+  .mcq-options {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+/* Mobile: 1 column */
+@media (max-width: 480px) {
+  .mcq-options {
+    grid-template-columns: 1fr;
+  }
 }
 
 .mcq-option {
@@ -42,6 +56,14 @@
   border-color: var(--color-primary);
   background: linear-gradient(135deg, rgba(139, 92, 246, 0.15), rgba(20, 184, 166, 0.15));
   box-shadow: 0 4px 16px rgba(139, 92, 246, 0.3), inset 0 0 20px rgba(139, 92, 246, 0.1);
+}
+
+.mcq-option-number {
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-primary);
+  flex-shrink: 0;
+  min-width: 30px;
 }
 
 .mcq-option-check {
@@ -93,9 +115,15 @@
 @media (max-width: 640px) {
   .mcq-option {
     padding: var(--space-md);
+    gap: var(--space-sm);
   }
   
   .mcq-option-label {
     font-size: var(--font-size-sm);
+  }
+  
+  .mcq-option-number {
+    font-size: var(--font-size-base);
+    min-width: 25px;
   }
 }
