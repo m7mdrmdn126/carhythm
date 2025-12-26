@@ -107,7 +107,7 @@
 }
 
 .likert-option.selected .likert-option-value {
-  background: linear-gradient(135deg, #8b5cf6, #14b8a6);
+  background: linear-gradient(135deg, #8b5cf6, #ff6b6b);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -212,10 +212,11 @@
 /* Mobile Responsive */
 @media (max-width: 768px) {
   .likert-scale {
-    flex-wrap: wrap;
-    justify-content: center;
-    gap: var(--space-md);
-    padding: var(--space-lg);
+    flex-wrap: nowrap;
+    justify-content: space-between;
+    gap: var(--space-xs);
+    padding: var(--space-md);
+    overflow-x: visible;
   }
 
   .likert-scale::before {
@@ -223,12 +224,13 @@
   }
 
   .likert-option {
-    width: 70px;
-    height: 70px;
+    width: 50px;
+    height: 50px;
+    flex-shrink: 0;
   }
 
   .likert-option-value {
-    font-size: var(--font-size-xl);
+    font-size: var(--font-size-base);
   }
 
   .likert-labels {
@@ -252,5 +254,27 @@
   
   .feedback-label {
     font-size: var(--font-size-lg);
+  }
+}
+
+/* Extra small screens */
+@media (max-width: 480px) {
+  .likert-scale {
+    gap: 2px;
+    padding: var(--space-sm) var(--space-xs);
+  }
+
+  .likert-option {
+    width: 45px;
+    height: 45px;
+    border-width: 2px;
+  }
+
+  .likert-option.selected {
+    border-width: 3px;
+  }
+
+  .likert-option-value {
+    font-size: var(--font-size-sm);
   }
 }

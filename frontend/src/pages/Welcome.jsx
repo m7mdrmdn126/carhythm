@@ -249,11 +249,11 @@ const Welcome = () => {
                 whileHover={{ scale: 1.02, y: -5 }}
               >
                 <div className="feature-icon-large">🧠</div>
-                <h3 className="feature-title-large">Career Interests</h3>
+                <h3 className="feature-title-large">Find Your Flow</h3>
                 <p className="feature-description">
                   Discover your natural career passions through the Holland Code framework
                 </p>
-                <div className="feature-badge">RIASEC Assessment</div>
+                <div className="feature-badge">Career Interests</div>
               </motion.div>
 
               <motion.div 
@@ -265,11 +265,11 @@ const Welcome = () => {
                 whileHover={{ scale: 1.02, y: -5 }}
               >
                 <div className="feature-icon-large">👤</div>
-                <h3 className="feature-title-large">Personality Traits</h3>
+                <h3 className="feature-title-large">Discover Your Design</h3>
                 <p className="feature-description">
-                  Understand your core personality with the Big Five model
+                  Understand your core personality traits and behavioral patterns
                 </p>
-                <div className="feature-badge">Scientific Validation</div>
+                <div className="feature-badge">Personality Traits</div>
               </motion.div>
 
               <motion.div 
@@ -281,11 +281,11 @@ const Welcome = () => {
                 whileHover={{ scale: 1.02, y: -5 }}
               >
                 <div className="feature-icon-large">🎵</div>
-                <h3 className="feature-title-large">Work Rhythm</h3>
+                <h3 className="feature-title-large">Own Your Edge</h3>
                 <p className="feature-description">
-                  Learn how you naturally approach tasks and make decisions
+                  Learn how you naturally approach tasks and handle pressure
                 </p>
-                <div className="feature-badge">Behavioral Insights</div>
+                <div className="feature-badge">Work Rhythm</div>
               </motion.div>
             </div>
           </motion.section>

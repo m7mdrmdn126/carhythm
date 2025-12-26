@@ -1,3 +1,51 @@
+/* RTL Support */
+html[dir="rtl"] {
+  direction: rtl;
+  text-align: right;
+}
+
+html[dir="rtl"] body {
+  font-family: 'Arial', 'Tahoma', sans-serif; /* Better Arabic font support */
+}
+
+/* RTL Layout Adjustments */
+html[dir="rtl"] .question-header-brand {
+  flex-direction: row-reverse;
+}
+
+html[dir="rtl"] .header-right {
+  flex-direction: row-reverse;
+}
+
+html[dir="rtl"] .brand-mini {
+  flex-direction: row-reverse;
+}
+
+html[dir="rtl"] .module-badge {
+  flex-direction: row-reverse;
+}
+
+html[dir="rtl"] .question-navigation {
+  flex-direction: row-reverse;
+}
+
+html[dir="rtl"] .question-progress {
+  direction: ltr; /* Keep progress bar LTR */
+}
+
+html[dir="rtl"] .likert-scale {
+  flex-direction: row-reverse;
+}
+
+html[dir="rtl"] .mcq-options {
+  text-align: right;
+}
+
+html[dir="rtl"] button {
+  direction: rtl;
+}
+
+/* Root Styles */
 #root {
   max-width: 1280px;
   margin: 0 auto;

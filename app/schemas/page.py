@@ -13,6 +13,12 @@ class PageBase(BaseModel):
     chapter_number: Optional[int] = None
     estimated_minutes: Optional[int] = None
     completion_message: Optional[str] = None
+    # Arabic Translation fields
+    title_ar: Optional[str] = None
+    description_ar: Optional[str] = None
+    module_name_ar: Optional[str] = None
+    module_description_ar: Optional[str] = None
+    completion_message_ar: Optional[str] = None
 
 class PageCreate(PageBase):
     pass

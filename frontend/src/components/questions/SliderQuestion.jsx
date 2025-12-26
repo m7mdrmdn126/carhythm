@@ -2,15 +2,27 @@ import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import './SliderQuestion.css';
 
-const SliderQuestion = ({ question, onAnswer, initialValue = null }) => {
-  // Enhanced 5-point Likert scale with emoji support
-  const scaleOptions = [
+// Localized labels for scale options
+const SCALE_LABELS = {
+  en: [
     { value: 1, label: "Strongly Disagree", emoji: "😵", color: "#ef4444" },
     { value: 2, label: "Disagree", emoji: "😐", color: "#f97316" },
     { value: 3, label: "Neutral", emoji: "😌", color: "#eab308" },
     { value: 4, label: "Agree", emoji: "😃", color: "#22c55e" },
     { value: 5, label: "Strongly Agree", emoji: "🤩", color: "#8b5cf6" }
-  ];
+  ],
+  ar: [
+    { value: 1, label: "غير موافق بشدة", emoji: "😵", color: "#ef4444" },
+    { value: 2, label: "غير موافق", emoji: "😐", color: "#f97316" },
+    { value: 3, label: "محايد", emoji: "😌", color: "#eab308" },
+    { value: 4, label: "موافق", emoji: "😃", color: "#22c55e" },
+    { value: 5, label: "موافق بشدة", emoji: "🤩", color: "#8b5cf6" }
+  ]
+};
+
+const SliderQuestion = ({ question, onAnswer, initialValue = null, language = 'en' }) => {
+  // Get localized scale options based on current language
+  const scaleOptions = SCALE_LABELS[language] || SCALE_LABELS.en;
   
   const [selectedValue, setSelectedValue] = useState(initialValue);
   const [hoveredValue, setHoveredValue] = useState(null);
@@ -69,8 +81,8 @@ const SliderQuestion = ({ question, onAnswer, initialValue = null }) => {
         
         {/* Scale Labels */}
         <div className="likert-labels">
-          <span className="likert-label-start">Strongly Disagree</span>
-          <span className="likert-label-end">Strongly Agree</span>
+          <span className="likert-label-start">{scaleOptions[0].label}</span>
+          <span className="likert-label-end">{scaleOptions[4].label}</span>
         </div>
       </div>
 

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { api } from '../services/api';
+import { api, getPreferredLanguage } from '../services/api';
 import Button from '../components/Button';
 import LoadingSpinner from '../components/LoadingSpinner';
 import './ModuleIntro.css';
@@ -20,7 +20,8 @@ const ModuleIntro = () => {
   const loadModuleData = async () => {
     try {
       setLoading(true);
-      const data = await api.getQuestions(pageId);
+      const language = getPreferredLanguage();
+      const data = await api.getQuestions(pageId, language);
       
       setModuleData({
         id: data.page.id,

@@ -20,6 +20,7 @@ from ..services.email_service import send_results_email, send_admin_notification
 from ..services.pdf_service import generate_pdf_report
 from ..schemas import StudentResponseCreate, QuestionAnswerCreate
 from ..config import settings
+from ..utils.localization import get_localized_text, get_localized_json, validate_language
 import logging
 
 logger = logging.getLogger(__name__)
@@ -157,12 +158,22 @@ async def get_modules(db: Session = Depends(get_db)):
 @router.get("/questions")
 async def get_questions(
     page_id: int,
+    language: str = "en",
     session_id: Optional[str] = None,
     db: Session = Depends(get_db)
 ):
     """
     Get questions for a specific page with navigation info.
+    Supports bilingual content (English/Arabic).
+    
+    Args:
+        page_id: ID of the page to fetch questions for
+        language: Language code ('en' or 'ar'), defaults to 'en'
+        session_id: Optional session ID for progress tracking
     """
+    # Validate and normalize language
+    language = validate_language(language)
+    
     # Get page
     page = question_service.get_page_by_id(db, page_id)
     if not page:
@@ -190,7 +201,7 @@ async def get_questions(
         next_page_id=page_ids[current_index + 1] if current_index < len(all_pages) - 1 else None
     )
     
-    # Format questions for frontend
+    # Format questions for frontend with localization
     formatted_questions = []
     for q in questions:
         # Build options dict based on question type
@@ -201,22 +212,24 @@ async def get_questions(
                 "min": 1,  # v1.1: 5-point Likert scale
                 "max": 5,
                 "step": 1,
-                "min_label": q.slider_min_label or "Not at all",
-                "max_label": q.slider_max_label or "Totally!",
+                "min_label": get_localized_text(q, "slider_min_label", language) or "Not at all",
+                "max_label": get_localized_text(q, "slider_max_label", language) or "Totally!",
                 "scale_labels": json.loads(q.scale_labels) if q.scale_labels else ["Not at all", "A little", "Kinda", "Mostly", "Totally!"],
                 "item_id": q.item_id,  # v1.1: Include item ID for scoring
                 "domain": q.domain,  # v1.1: Include domain
                 "reverse_scored": q.reverse_scored  # v1.1: Include reverse scoring flag
             }
         elif q.question_type == QuestionType.mcq:
-            mcq_options = json.loads(q.mcq_options) if q.mcq_options else []
+            mcq_options_raw = get_localized_json(q, "mcq_options", language)
+            mcq_options = json.loads(mcq_options_raw) if mcq_options_raw else []
             options = {
                 "choices": mcq_options,
                 "multiple": q.allow_multiple_selection,
                 "item_id": q.item_id  # v1.1: Include item ID
             }
         elif q.question_type == QuestionType.ordering:
-            ordering_options = json.loads(q.ordering_options) if q.ordering_options else []
+            ordering_options_raw = get_localized_json(q, "ordering_options", language)
+            ordering_options = json.loads(ordering_options_raw) if ordering_options_raw else []
             options = {
                 "items": ordering_options,
                 "randomize": q.randomize_order,
@@ -230,9 +243,9 @@ async def get_questions(
         formatted_questions.append(QuestionResponse(
             id=q.id,
             type=q.question_type.value,
-            text=q.question_text,
-            scene_title=q.scene_title,
-            scene_narrative=q.scene_narrative,
+            text=get_localized_text(q, "question_text", language),
+            scene_title=get_localized_text(q, "scene_title", language),
+            scene_narrative=get_localized_text(q, "scene_narrative", language),
             scene_image=q.scene_image_url or q.image_path,
             scene_theme=q.scene_theme,
             required=q.is_required,
@@ -242,16 +255,16 @@ async def get_questions(
     return {
         "page": {
             "id": page.id,
-            "title": page.title,
-            "description": page.description,
-            "module": page.module_name,
+            "title": get_localized_text(page, "title", language),
+            "description": get_localized_text(page, "description", language),
+            "module": get_localized_text(page, "module_name", language),
             "module_emoji": page.module_emoji,
-            "module_description": page.module_description,
+            "module_description": get_localized_text(page, "module_description", language),
             "chapter_number": page.chapter_number,
             "estimated_minutes": page.estimated_minutes,
             "module_color_primary": page.module_color_primary,
             "module_color_secondary": page.module_color_secondary,
-            "completion_message": page.completion_message
+            "completion_message": get_localized_text(page, "completion_message", language)
         },
         "questions": formatted_questions,
         "navigation": navigation

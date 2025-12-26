@@ -30,6 +30,14 @@ class QuestionBase(BaseModel):
     scene_narrative: Optional[str] = None
     scene_image_url: Optional[str] = None
     scene_theme: Optional[str] = None
+    # Arabic Translation fields
+    question_text_ar: Optional[str] = None
+    slider_min_label_ar: Optional[str] = None
+    slider_max_label_ar: Optional[str] = None
+    mcq_options_ar: Optional[List[str]] = None
+    ordering_options_ar: Optional[List[str]] = None
+    scene_title_ar: Optional[str] = None
+    scene_narrative_ar: Optional[str] = None
 
 class QuestionCreate(QuestionBase):
     pass
@@ -54,6 +62,14 @@ class QuestionUpdate(BaseModel):
     scene_narrative: Optional[str] = None
     scene_image_url: Optional[str] = None
     scene_theme: Optional[str] = None
+    # Arabic Translation fields
+    question_text_ar: Optional[str] = None
+    slider_min_label_ar: Optional[str] = None
+    slider_max_label_ar: Optional[str] = None
+    mcq_options_ar: Optional[List[str]] = None
+    ordering_options_ar: Optional[List[str]] = None
+    scene_title_ar: Optional[str] = None
+    scene_narrative_ar: Optional[str] = None
 
 class Question(QuestionBase):
     id: int

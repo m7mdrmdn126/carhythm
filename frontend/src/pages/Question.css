@@ -31,24 +31,60 @@
   width: 100%;
   max-width: 100%;
   display: flex;
-  flex-direction: column;
+  flex-direction: row-reverse;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-md);
+}
+
+.header-right {
+  display: flex;
   align-items: center;
   gap: var(--space-md);
+  flex: 1;
 }
 
 .brand-mini {
   display: flex;
   align-items: center;
   gap: var(--space-md);
-  justify-content: center;
-  flex-wrap: wrap;
-  padding: var(--space-md) var(--space-lg);
-  background: rgba(30, 27, 75, 0.6);
-  border-radius: 20px;
-  border: 1px solid rgba(139, 92, 246, 0.25);
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25);
-  max-width: fit-content;
-  margin: 0 auto;
+  justify-content: flex-end;
+}
+
+.brand-logo {
+  width: 200px;
+  height: 200px;
+  filter: drop-shadow(0 0 30px rgba(139, 92, 246, 0.9)) 
+          drop-shadow(0 0 50px rgba(255, 107, 107, 0.7));
+  animation: float 3s ease-in-out infinite, logo-glow 2s ease-in-out infinite alternate;
+}
+
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+@keyframes logo-glow {
+  0% {
+    filter: drop-shadow(0 0 30px rgba(139, 92, 246, 0.9)) 
+            drop-shadow(0 0 50px rgba(255, 107, 107, 0.7));
+  }
+  100% {
+    filter: drop-shadow(0 0 40px rgba(139, 92, 246, 1)) 
+            drop-shadow(0 0 60px rgba(255, 107, 107, 0.9));
+  }
+}
+
+.brand-name {
+  font-size: 1.5rem;
+  font-weight: var(--font-weight-bold);
+  letter-spacing: -0.01em;
+  color: #ffffff;
+  text-shadow: 0 0 15px rgba(139, 92, 246, 0.4), 0 0 25px rgba(255, 107, 107, 0.2);
 }
 
 /* Module Badge */
@@ -59,18 +95,18 @@
   padding: var(--space-sm) var(--space-lg);
   background: linear-gradient(135deg, 
     var(--module-color-primary, #8b5cf6), 
-    var(--module-color-secondary, #3b82f6));
+    var(--module-color-secondary, #ff6b6b));
   border-radius: 50px;
-  box-shadow: 0 4px 16px rgba(139, 92, 246, 0.3);
+  box-shadow: 0 4px 16px rgba(139, 92, 246, 0.4), 0 2px 8px rgba(255, 107, 107, 0.3);
   animation: badge-glow 3s ease-in-out infinite;
 }
 
 @keyframes badge-glow {
   0%, 100% {
-    box-shadow: 0 4px 16px rgba(139, 92, 246, 0.3);
+    box-shadow: 0 4px 16px rgba(139, 92, 246, 0.4), 0 2px 8px rgba(255, 107, 107, 0.3);
   }
   50% {
-    box-shadow: 0 6px 24px rgba(139, 92, 246, 0.5);
+    box-shadow: 0 6px 24px rgba(139, 92, 246, 0.6), 0 3px 12px rgba(255, 107, 107, 0.5);
   }
 }
 
@@ -90,23 +126,6 @@
 
 .brand-icon {
   font-size: 1.5rem;
-}
-
-.brand-name {
-  font-size: 1.5rem;
-  font-weight: var(--font-weight-bold);
-  letter-spacing: -0.01em;
-  background: linear-gradient(135deg, #a78bfa, #c4b5fd);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-}
-
-.brand-accent {
-  background: linear-gradient(135deg, #f9a8d4, #fbbf24);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
 }
 
 /* Theme Variations */
@@ -345,11 +364,18 @@
   .question-header-brand {
     padding: var(--space-sm) 0;
     margin-bottom: var(--space-sm);
+    flex-direction: column;
+    align-items: center;
   }
   
   .brand-mini {
-    padding: var(--space-sm) var(--space-md);
+    padding: 0;
     gap: var(--space-sm);
+  }
+  
+  .brand-logo {
+    width: 80px;
+    height: 80px;
   }
   
   .brand-icon {
@@ -358,6 +384,19 @@
   
   .brand-name {
     font-size: 1.1rem;
+  }
+  
+  .module-badge {
+    padding: var(--space-xs) var(--space-md);
+    gap: var(--space-xs);
+  }
+  
+  .module-badge-emoji {
+    font-size: 1.2rem;
+  }
+  
+  .module-badge-text {
+    font-size: 0.75rem;
   }
   
   .question-progress {
@@ -410,12 +449,27 @@
   .question-navigation button {
     width: 100%;
   }
+  
+  /* Mobile RTL Adjustments */
+  .question-header-brand {
+    flex-direction: column;
+  }
+  
+  .header-right {
+    flex-direction: column;
+    width: 100%;
+  }
 }
 
 /* Tablet Styles (481px - 768px) */
 @media (min-width: 481px) and (max-width: 768px) {
   .question-container {
     padding: var(--space-md) var(--space-sm);
+  }
+  
+  .brand-logo {
+    width: 120px;
+    height: 120px;
   }
   
   .brand-mini {

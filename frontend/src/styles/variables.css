@@ -2,15 +2,15 @@
 /* Mobile-first responsive design tokens */
 
 :root {
-  /* Brand Colors - CaRhythm */
-  --color-primary: #8b5cf6;        /* Purple */
+  /* Brand Colors - CaRhythm (Based on Logo) */
+  --color-primary: #8b5cf6;        /* Purple/Violet - Fingerprint */
   --color-primary-dark: #7c3aed;
   --color-primary-light: #a78bfa;
-  --color-secondary: #14b8a6;      /* Teal */
-  --color-secondary-dark: #0d9488;
-  --color-secondary-light: #5eead4;
-  --color-accent: #f59e0b;         /* Amber for highlights */
-  --color-accent-light: #fbbf24;
+  --color-secondary: #ff6b6b;      /* Coral/Peach - Brain */
+  --color-secondary-dark: #ff5252;
+  --color-secondary-light: #ffa07a;
+  --color-accent: #ff8787;         /* Light Coral for highlights */
+  --color-accent-light: #ffb4b4;
   
   /* Neutral Colors */
   --color-bg-primary: #0f172a;
@@ -28,6 +28,7 @@
   
   /* Gradients */
   --gradient-primary: linear-gradient(135deg, var(--color-primary), var(--color-secondary));
+  --gradient-brand: linear-gradient(135deg, #8b5cf6 0%, #ff6b6b 100%);
   --gradient-dark: linear-gradient(135deg, #1e293b, #0f172a);
   --gradient-overlay: linear-gradient(180deg, transparent, rgba(0,0,0,0.6));
   

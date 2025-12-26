@@ -140,7 +140,7 @@
 
 .progress-bar-fill {
   height: 100%;
-  background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(90deg, #8b5cf6 0%, #ff6b6b 100%);
   border-radius: 10px;
   transition: width 0.8s ease-out;
   position: relative;
@@ -225,13 +225,13 @@
 }
 
 .btn-primary {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, #8b5cf6 0%, #ff6b6b 100%);
   color: white;
-  box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+  box-shadow: 0 4px 15px rgba(139, 92, 246, 0.5), 0 2px 8px rgba(255, 107, 107, 0.3);
 }
 
 .btn-primary:hover {
-  box-shadow: 0 6px 20px rgba(102, 126, 234, 0.5);
+  box-shadow: 0 6px 20px rgba(139, 92, 246, 0.6), 0 3px 12px rgba(255, 107, 107, 0.4);
   transform: translateY(-2px);
 }
 
@@ -410,7 +410,7 @@
 
 /* Accessibility */
 .btn:focus-visible {
-  outline: 3px solid #667eea;
+  outline: 3px solid #8b5cf6;
   outline-offset: 2px;
 }
 

@@ -51,6 +51,15 @@ class Question(Base):
     scene_image_url = Column(String(500))  # Background image/GIF URL for scene
     scene_theme = Column(String(50))  # Color theme: workshop/mindpalace/flow
     
+    # Arabic Translation fields
+    question_text_ar = Column(Text)  # Arabic translation of question text
+    slider_min_label_ar = Column(String(100))  # Arabic slider minimum label
+    slider_max_label_ar = Column(String(100))  # Arabic slider maximum label
+    mcq_options_ar = Column(Text)  # JSON array of Arabic MCQ options
+    ordering_options_ar = Column(Text)  # JSON array of Arabic ordering options
+    scene_title_ar = Column(String(200))  # Arabic scene title
+    scene_narrative_ar = Column(Text)  # Arabic scene narrative
+    
     created_at = Column(DateTime(timezone=True), server_default=func.now())
     
     # Relationships

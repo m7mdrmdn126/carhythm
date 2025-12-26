@@ -173,15 +173,11 @@
 .completion-module-name {
   font-size: 1.25rem;
   font-weight: 700;
-  background: linear-gradient(135deg, 
-    var(--module-color-primary, #8b5cf6), 
-    var(--module-color-secondary, #3b82f6));
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
+  color: var(--module-color-primary, #8b5cf6);
   margin-bottom: 2.5rem;
   text-transform: uppercase;
   letter-spacing: 2px;
+  text-shadow: 0 0 20px rgba(139, 92, 246, 0.5);
 }
 
 /* Stats */
@@ -209,13 +205,9 @@
 .stat-value {
   font-size: 2rem;
   font-weight: 800;
-  background: linear-gradient(135deg, 
-    var(--module-color-primary, #8b5cf6), 
-    var(--module-color-secondary, #3b82f6));
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
+  color: var(--module-color-primary, #8b5cf6);
   margin-bottom: 0.25rem;
+  text-shadow: 0 0 15px rgba(139, 92, 246, 0.4);
 }
 
 .stat-label {

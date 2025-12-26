@@ -23,5 +23,12 @@ class Page(Base):
     module_color_primary = Column(String(20))  # Primary theme color e.g., "#8b5cf6"
     module_color_secondary = Column(String(20))  # Secondary theme color e.g., "#3b82f6"
     
+    # Arabic Translation fields
+    title_ar = Column(String(200))  # Arabic translation of page title
+    description_ar = Column(Text)  # Arabic translation of description
+    module_name_ar = Column(String(100))  # Arabic module name
+    module_description_ar = Column(Text)  # Arabic module description
+    completion_message_ar = Column(Text)  # Arabic completion message
+    
     # Relationship with questions
     questions = relationship("Question", back_populates="page", cascade="all, delete-orphan")

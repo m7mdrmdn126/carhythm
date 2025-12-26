@@ -60,9 +60,12 @@ export const api = {
   },
 
   // Get questions for a specific page
-  getQuestions: async (pageId) => {
+  getQuestions: async (pageId, language = 'en') => {
     const response = await apiClient.get('/questions', {
-      params: { page_id: pageId }
+      params: { 
+        page_id: pageId,
+        language: language
+      }
     });
     return response.data;
   },
@@ -138,6 +141,16 @@ export const clearSession = () => {
 // Helper function to get current session ID
 export const getSessionId = () => {
   return sessionStorage.getItem('session_id');
+};
+
+// Helper function to get preferred language
+export const getPreferredLanguage = () => {
+  return localStorage.getItem('preferredLanguage') || 'en';
+};
+
+// Helper function to set preferred language
+export const setPreferredLanguage = (language) => {
+  localStorage.setItem('preferredLanguage', language);
 };
 
 export default api;

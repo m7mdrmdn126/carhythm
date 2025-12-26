@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { api, getSessionId } from '../services/api';
+import { api, getSessionId, getPreferredLanguage } from '../services/api';
 import { saveProgress, updateProgress, getProgress } from '../services/storage';
 import SliderQuestion from '../components/questions/SliderQuestion';
 import MCQQuestion from '../components/questions/MCQQuestion';
@@ -11,6 +11,7 @@ import ProgressBar from '../components/ProgressBar';
 import Button from '../components/Button';
 import LoadingSpinner from '../components/LoadingSpinner';
 import XPNotification from '../components/XPNotification';
+import LanguageSwitcher from '../components/LanguageSwitcher';
 import './Question.css';
 
 const Question = () => {
@@ -28,6 +29,7 @@ const Question = () => {
   const [showAnswerFeedback, setShowAnswerFeedback] = useState(false);
   const [autoAdvancing, setAutoAdvancing] = useState(false);
   const [moduleInfo, setModuleInfo] = useState(null);
+  const [language, setLanguage] = useState(getPreferredLanguage());
 
   // Helper to get session ID from localStorage progress or sessionStorage
   const getCurrentSessionId = () => {
@@ -37,12 +39,12 @@ const Question = () => {
 
   useEffect(() => {
     loadQuestion();
-  }, [pageId]);
+  }, [pageId, language]);
 
   const loadQuestion = async () => {
     try {
       setLoading(true);
-      const data = await api.getQuestions(pageId);
+      const data = await api.getQuestions(pageId, language);
       setQuestionData(data);
       
       // Store module info for header display
@@ -351,7 +353,8 @@ const Question = () => {
     const props = {
       question: currentQuestion,
       onAnswer: handleAnswer,
-      initialValue: currentAnswer
+      initialValue: currentAnswer,
+      language: language
     };
 
     // Map backend question types to frontend components
@@ -398,17 +401,24 @@ const Question = () => {
       {/* CaRhythm Header with Module Badge */}
       <div className="question-header-brand">
         <div className="brand-mini">
-          <img src="/CaRhythm updated logo.png" alt="CaRhythm" style={{width: '50px', height: '50px', marginRight: '10px'}} />
-          <span className="brand-name">Ca<span className="brand-accent">Rhythm</span></span>
+          <img 
+            src="/CaRhythm updated logo.png" 
+            alt="CaRhythm" 
+            className="brand-logo"
+          />
+          <span className="brand-name">CaRhythm</span>
         </div>
-        {moduleInfo && (
-          <div className="module-badge">
-            <span className="module-badge-emoji">{moduleInfo.emoji}</span>
-            <span className="module-badge-text">
-              Chapter {moduleInfo.chapterNumber}: {moduleInfo.name}
-            </span>
-          </div>
-        )}
+        <div className="header-right">
+          <LanguageSwitcher onLanguageChange={setLanguage} />
+          {moduleInfo && (
+            <div className="module-badge">
+              <span className="module-badge-emoji">{moduleInfo.emoji}</span>
+              <span className="module-badge-text">
+                Chapter {moduleInfo.chapterNumber}: {moduleInfo.name}
+              </span>
+            </div>
+          )}
+        </div>
       </div>
 
       {/* Progress Bar */}
