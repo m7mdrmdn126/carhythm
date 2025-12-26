@@ -1,8 +1,9 @@
 # 🚀 QUICK SERVER UPDATE - Copy & Paste Commands
 
 ## ✅ Changes Successfully Pushed to GitHub!
-- Commit: 6ea45c0
-- 32 files changed
+- Commit: d51d6f2
+- 27 files changed (1234 insertions, 153 deletions)
+- **Major Update:** Bilingual support (Arabic/English) + Branding refresh
 - Ready to deploy!
 
 ---
@@ -13,21 +14,20 @@
 # 1. SSH into your VPS
 ssh root@145.14.158.174
 
-# 2. Navigate to app directory (adjust path if different)
+# 2. Navigate to app directory
 cd /home/carhythm/carhythm
 
-# 3. Backup database
-cp career_dna.db career_dna.db.backup_$(date +%Y%m%d_%H%M%S)
-
-# 4. Pull latest code
+# 3. Pull latest code from GitHub
 git pull origin main
 
-# 5. Update database schema
-sqlite3 career_dna.db < database_update.sql
+# 4. Update database with Arabic translations & new modules
+bash scripts/update_server_database.sh
 
-# 6. Update backend
+# 5. Update backend dependencies
 source venv/bin/activate
 pip install -r requirements.txt
+
+# 6. Restart backend
 sudo systemctl restart carhythm-backend
 
 # 7. Build and deploy frontend
@@ -40,19 +40,22 @@ cd ..
 # 8. Reload nginx
 sudo systemctl reload nginx
 
-# 9. Verify everything is running
+# 9. Verify services are running
 sudo systemctl status carhythm-backend --no-pager
 sudo systemctl status nginx --no-pager
-
-# 10. Check module data
-sqlite3 career_dna.db "SELECT id, module_name, module_emoji, module_color_primary FROM pages;"
 ```
 
-**Expected output from step 10:**
+**The database update script will show:**
 ```
-1|RIASEC|🎯|#8b5cf6
-2|Big Five|🧠|#14b8a6
-3|Behavioral|⚡|#f59e0b
+✅ Backup created
+✅ Translation columns added
+✅ Arabic translations added (73 questions)
+✅ Module metadata updated
+
+Module Configuration:
+1|The Signal|الإشارة|🧠
+2|The Fingerprint|البصمة|👆
+3|The Compass|البوصلة|🎵
 ```
 
 ---
@@ -61,17 +64,27 @@ sqlite3 career_dna.db "SELECT id, module_name, module_emoji, module_color_primar
 
 1. Open browser: http://145.14.158.174 or https://carhythm.com
 2. Press `Ctrl+Shift+R` (hard refresh)
-3. Start assessment
-4. Verify you see:
-   - ✅ Module intro screen with emoji & description
-   - ✅ Module badge in question header (colored)
-   - ✅ Completion celebration after each module
-   - ✅ Feedback page at the end
-   - ✅ Numbered answers (1. 2. 3. instead of emojis)
+3. Test the new features:
+   - ✅ **Language Switcher** - Toggle between EN/عربي in top right
+   - ✅ **New Module Names** - "The Signal", "The Fingerprint", "The Compass"
+   - ✅ **New Emojis** - 🧠 (Signal), 👆 (Fingerprint), 🎵 (Compass)
+   - ✅ **Arabic Content** - All 73 questions translated
+   - ✅ **RTL Layout** - Text direction switches for Arabic
+   - ✅ **Updated Colors** - Purple/Coral theme matching logo
+   - ✅ **Responsive Logo** - Large on desktop, smaller on mobile
+   - ✅ **Module Descriptions** - New engaging descriptions on intro screens
 
 ---
 
 ## 🐛 If Something Goes Wrong
+
+**Database update failed?**
+```bash
+# Restore from backup
+ls -lt career_dna.db.backup_* | head -1  # Find latest backup
+cp career_dna.db.backup_YYYYMMDD_HHMMSS career_dna.db
+sudo systemctl restart carhythm-backend
+```
 
 **Backend not starting?**
 ```bash
@@ -84,14 +97,7 @@ sudo journalctl -u carhythm-backend -n 50
 sudo rm -rf /var/cache/nginx/*
 sudo systemctl restart nginx
 
-# In browser: Ctrl+Shift+R
-```
-
-**Database error?**
-```bash
-# Restore backup
-cp career_dna.db.backup_YYYYMMDD_HHMMSS career_dna.db
-sudo systemctl restart carhythm-backend
+# In browser: Ctrl+Shift+R (hard refresh)
 ```
 
 ---
