@@ -1,0 +1,7 @@
+title,question_text,category_name,is_required,slider_min_label,slider_max_label,question_text_ar,slider_min_label_ar,slider_max_label_ar
+Communication Skills,Rate your ability to communicate ideas clearly to others,Skills Evaluation,TRUE,Need Improvement,Excellent,قيّم قدرتك على التواصل بوضوح مع الآخرين,يحتاج تحسين,ممتاز
+Leadership Confidence,How confident are you in leading a team or project?,Skills Evaluation,TRUE,Not Confident,Very Confident,ما مدى ثقتك في قيادة فريق أو مشروع؟,غير واثق,واثق جداً
+Teamwork Preference,How much do you enjoy working with others?,Work Preferences,TRUE,Prefer Working Alone,Love Team Collaboration,كم تستمتع بالعمل مع الآخرين؟,أفضل العمل بمفردي,أحب التعاون الجماعي
+Risk Taking,How comfortable are you with taking calculated risks?,Personality Assessment,TRUE,Very Risk-Averse,Risk Embracer,ما مدى راحتك في تحمل المخاطر المحسوبة؟,أتجنب المخاطر,أتقبل المخاطرة
+Creativity Level,How would you rate your creative thinking abilities?,Skills Evaluation,FALSE,Not Very Creative,Highly Creative,كيف تقيّم قدراتك في التفكير الإبداعي؟,غير مبدع كثيراً,مبدع جداً
+Stress Management,How well do you handle high-pressure situations?,Skills Evaluation,TRUE,Struggle Under Pressure,Thrive Under Pressure,كيف تتعامل مع المواقف الضاغطة؟,أعاني تحت الضغط,أزدهر تحت الضغط

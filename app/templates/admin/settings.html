@@ -1,0 +1,255 @@
+{% extends "base/admin_base.html" %}
+
+{% block title %}Settings - CaRhythm Admin{% endblock %}
+
+{% block content %}
+<div class="main-content" style="max-width: 900px; margin: 0 auto;">
+    <!-- Page Header -->
+    <div style="margin-bottom: 40px;">
+        <h1 style="color: var(--primary-aubergine-dark); margin: 0; font-size: 2.5rem;">
+            <i class="fas fa-cog"></i> Admin Settings
+        </h1>
+        <p style="color: var(--text-light); margin-top: 12px; font-size: 1.1rem;">
+            Manage your account and system preferences
+        </p>
+    </div>
+    
+    {% if success %}
+    <div class="alert alert-success" style="background: rgba(39, 174, 96, 0.1); border-left: 4px solid var(--success-color); padding: 16px; margin-bottom: 24px; border-radius: var(--radius-md);">
+        <strong><i class="fas fa-check-circle"></i> Success!</strong> {{ success }}
+    </div>
+    {% endif %}
+    
+    {% if error %}
+    <div class="alert alert-error" style="background: rgba(231, 76, 60, 0.1); border-left: 4px solid var(--error-color); padding: 16px; margin-bottom: 24px; border-radius: var(--radius-md);">
+        <strong><i class="fas fa-exclamation-circle"></i> Error!</strong> {{ error }}
+    </div>
+    {% endif %}
+    
+    <!-- Account Information -->
+    <div class="card" style="margin-bottom: 24px; padding: 32px;">
+        <h2 style="color: var(--primary-aubergine); margin-bottom: 24px; display: flex; align-items: center; gap: 12px;">
+            <i class="fas fa-user-circle"></i> Account Information
+        </h2>
+        
+        <div style="display: grid; gap: 16px;">
+            <div style="display: flex; justify-content: space-between; padding: 12px; background: var(--background-light); border-radius: var(--radius-md);">
+                <span style="color: var(--text-light); font-weight: 600;">Username:</span>
+                <span style="color: var(--text-dark); font-weight: 700;">{{ admin.username }}</span>
+            </div>
+            
+            <div style="display: flex; justify-content: space-between; padding: 12px; background: var(--background-light); border-radius: var(--radius-md);">
+                <span style="color: var(--text-light); font-weight: 600;">Account Created:</span>
+                <span style="color: var(--text-dark);">{{ admin.created_at.strftime('%B %d, %Y') }}</span>
+            </div>
+            
+            <div style="display: flex; justify-content: space-between; padding: 12px; background: var(--background-light); border-radius: var(--radius-md);">
+                <span style="color: var(--text-light); font-weight: 600;">Role:</span>
+                <span class="badge" style="background: var(--primary-aubergine); color: white; padding: 4px 12px; border-radius: 4px;">
+                    Administrator
+                </span>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Change Password -->
+    <div class="card" style="margin-bottom: 24px; padding: 32px;">
+        <h2 style="color: var(--primary-aubergine); margin-bottom: 24px; display: flex; align-items: center; gap: 12px;">
+            <i class="fas fa-key"></i> Change Password
+        </h2>
+        
+        <form method="post" action="/admin/settings/change-password">
+            <div class="form-group">
+                <label for="current_password">
+                    <i class="fas fa-lock"></i> Current Password
+                </label>
+                <input type="password" id="current_password" name="current_password" required 
+                       placeholder="Enter your current password"
+                       style="width: 100%; padding: 12px; border: 2px solid var(--border-color); border-radius: var(--radius-md);">
+            </div>
+            
+            <div class="form-group">
+                <label for="new_password">
+                    <i class="fas fa-key"></i> New Password
+                </label>
+                <input type="password" id="new_password" name="new_password" required 
+                       placeholder="Enter your new password (min 8 characters)"
+                       minlength="8"
+                       style="width: 100%; padding: 12px; border: 2px solid var(--border-color); border-radius: var(--radius-md);">
+                <small style="color: var(--text-light); display: block; margin-top: 4px;">
+                    Password must be at least 8 characters long
+                </small>
+            </div>
+            
+            <div class="form-group">
+                <label for="confirm_password">
+                    <i class="fas fa-check-circle"></i> Confirm New Password
+                </label>
+                <input type="password" id="confirm_password" name="confirm_password" required 
+                       placeholder="Confirm your new password"
+                       minlength="8"
+                       style="width: 100%; padding: 12px; border: 2px solid var(--border-color); border-radius: var(--radius-md);">
+            </div>
+            
+            <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 8px;">
+                <i class="fas fa-save"></i> Update Password
+            </button>
+        </form>
+    </div>
+    
+    <!-- System Preferences -->
+    <div class="card" style="margin-bottom: 24px; padding: 32px;">
+        <h2 style="color: var(--primary-aubergine); margin-bottom: 24px; display: flex; align-items: center; gap: 12px;">
+            <i class="fas fa-sliders-h"></i> System Preferences
+        </h2>
+        
+        <div style="display: grid; gap: 20px;">
+            <div style="display: flex; justify-content: space-between; align-items: center; padding: 16px; background: var(--background-light); border-radius: var(--radius-md);">
+                <div>
+                    <strong style="display: block; color: var(--text-dark); margin-bottom: 4px;">Email Notifications</strong>
+                    <small style="color: var(--text-light);">Receive email alerts for new responses</small>
+                </div>
+                <label class="switch">
+                    <input type="checkbox" checked>
+                    <span class="slider"></span>
+                </label>
+            </div>
+            
+            <div style="display: flex; justify-content: space-between; align-items: center; padding: 16px; background: var(--background-light); border-radius: var(--radius-md);">
+                <div>
+                    <strong style="display: block; color: var(--text-dark); margin-bottom: 4px;">Auto-Calculate Scores</strong>
+                    <small style="color: var(--text-light);">Automatically calculate scores when responses complete</small>
+                </div>
+                <label class="switch">
+                    <input type="checkbox" checked>
+                    <span class="slider"></span>
+                </label>
+            </div>
+            
+            <div style="display: flex; justify-content: space-between; align-items: center; padding: 16px; background: var(--background-light); border-radius: var(--radius-md);">
+                <div>
+                    <strong style="display: block; color: var(--text-dark); margin-bottom: 4px;">Dark Mode</strong>
+                    <small style="color: var(--text-light);">Use dark theme for admin panel</small>
+                </div>
+                <label class="switch">
+                    <input type="checkbox">
+                    <span class="slider"></span>
+                </label>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Danger Zone -->
+    <div class="card" style="padding: 32px; border: 2px solid var(--error-color); background: rgba(231, 76, 60, 0.02);">
+        <h2 style="color: var(--error-color); margin-bottom: 24px; display: flex; align-items: center; gap: 12px;">
+            <i class="fas fa-exclamation-triangle"></i> Danger Zone
+        </h2>
+        
+        <div style="display: grid; gap: 16px;">
+            <div style="padding: 16px; background: white; border-radius: var(--radius-md); border: 1px solid var(--border-color);">
+                <strong style="display: block; color: var(--text-dark); margin-bottom: 8px;">Clear All Responses</strong>
+                <p style="color: var(--text-light); margin-bottom: 12px; font-size: 14px;">
+                    Permanently delete all student responses and scores. This action cannot be undone.
+                </p>
+                <button class="btn btn-danger" onclick="confirmClearData()">
+                    <i class="fas fa-trash-alt"></i> Clear All Data
+                </button>
+            </div>
+            
+            <div style="padding: 16px; background: white; border-radius: var(--radius-md); border: 1px solid var(--border-color);">
+                <strong style="display: block; color: var(--text-dark); margin-bottom: 8px;">Export System Data</strong>
+                <p style="color: var(--text-light); margin-bottom: 12px; font-size: 14px;">
+                    Download a complete backup of all system data including pages, questions, and responses.
+                </p>
+                <button class="btn btn-secondary" onclick="exportSystemData()">
+                    <i class="fas fa-download"></i> Export Backup
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+/* Toggle Switch */
+.switch {
+    position: relative;
+    display: inline-block;
+    width: 50px;
+    height: 28px;
+}
+
+.switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #ccc;
+    transition: .4s;
+    border-radius: 34px;
+}
+
+.slider:before {
+    position: absolute;
+    content: "";
+    height: 20px;
+    width: 20px;
+    left: 4px;
+    bottom: 4px;
+    background-color: white;
+    transition: .4s;
+    border-radius: 50%;
+}
+
+input:checked + .slider {
+    background-color: var(--primary-aubergine);
+}
+
+input:checked + .slider:before {
+    transform: translateX(22px);
+}
+</style>
+
+<script>
+function confirmClearData() {
+    if (confirm('⚠️ WARNING: This will permanently delete ALL student responses and scores. This action CANNOT be undone!\n\nType "DELETE ALL" in the next prompt to confirm.')) {
+        const confirmation = prompt('Type "DELETE ALL" to confirm:');
+        if (confirmation === 'DELETE ALL') {
+            showToast('This feature requires backend implementation', 'warning');
+            // TODO: Implement backend endpoint
+            // window.location.href = '/admin/settings/clear-all-data';
+        }
+    }
+}
+
+function exportSystemData() {
+    showToast('Preparing system backup...', 'info');
+    // TODO: Implement backend endpoint
+    // window.location.href = '/admin/settings/export-backup';
+}
+
+// Password confirmation validation
+document.addEventListener('DOMContentLoaded', function() {
+    const form = document.querySelector('form[action="/admin/settings/change-password"]');
+    if (form) {
+        form.addEventListener('submit', function(e) {
+            const newPassword = document.getElementById('new_password').value;
+            const confirmPassword = document.getElementById('confirm_password').value;
+            
+            if (newPassword !== confirmPassword) {
+                e.preventDefault();
+                showToast('Passwords do not match!', 'error');
+                document.getElementById('confirm_password').focus();
+            }
+        });
+    }
+});
+</script>
+{% endblock %}

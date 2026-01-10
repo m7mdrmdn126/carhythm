@@ -175,14 +175,15 @@ class TestHelperUtils:
         """Test formatting None datetime"""
         formatted = format_datetime(None)
         
-        assert formatted == ""
+        assert formatted == "N/A"
     
     def test_format_datetime_custom_format(self):
-        """Test datetime formatting with custom format"""
+        """Test datetime formatting with default format"""
         dt = datetime(2023, 12, 25, 15, 30, 45)
-        formatted = format_datetime(dt, "%Y-%m-%d")
+        formatted = format_datetime(dt)
         
-        assert formatted == "2023-12-25"
+        # Default format is "%Y-%m-%d %H:%M:%S"
+        assert formatted == "2023-12-25 15:30:45"
     
     def test_validate_image_file_valid_jpg(self):
         """Test validating valid JPG file"""

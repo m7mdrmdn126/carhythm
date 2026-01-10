@@ -9,26 +9,29 @@
     <link rel="icon" type="image/png" href="/static/img/logo.png">
 </head>
 <body>
-    <nav class="admin-nav rhythm-wave">
+    <nav class="admin-nav rhythm-wave" role="navigation" aria-label="Admin navigation">
         <div class="nav-container">
             <div class="logo">
                 <img src="/static/img/logo.png" alt="CaRhythm Logo" class="logo-img">
                 <span class="logo-text">CaRhythm</span>
                 <span class="admin-badge badge badge-coral">Admin</span>
             </div>
-            <div class="nav-links">
-                <a href="/admin/dashboard" class="nav-link">📊 Dashboard</a>
-                <a href="/admin/pages" class="nav-link">📄 Pages</a>
-                <a href="/admin/questions" class="nav-link">❓ Questions</a>
-                <a href="/admin/question-pool" class="nav-link">🎯 Question Pool</a>
-                <a href="/admin/categories" class="nav-link">📁 Categories</a>
-                <a href="/admin/results" class="nav-link">📈 Results</a>
-                <a href="/admin/logout" class="nav-link logout">🚪 Logout</a>
+            <div class="nav-links" role="menubar">
+                <a href="/admin/dashboard" class="nav-link" data-page="dashboard" role="menuitem" aria-label="Dashboard"><i class="fas fa-tachometer-alt"></i> Dashboard</a>
+                <a href="/admin/analytics" class="nav-link" data-page="analytics" role="menuitem" aria-label="Analytics"><i class="fas fa-chart-line"></i> Analytics</a>
+                <a href="/admin/pages" class="nav-link" data-page="pages" role="menuitem" aria-label="Manage Pages"><i class="fas fa-file-alt"></i> Pages</a>
+                <a href="/admin/questions" class="nav-link" data-page="questions" role="menuitem" aria-label="Manage Questions"><i class="fas fa-question-circle"></i> Questions</a>
+                <a href="/admin/question-pool" class="nav-link" data-page="question-pool" role="menuitem" aria-label="Question Pool"><i class="fas fa-database"></i> Pool</a>
+                <a href="/admin/categories" class="nav-link" data-page="categories" role="menuitem" aria-label="Manage Categories"><i class="fas fa-folder"></i> Categories</a>
+                <a href="/admin/results" class="nav-link" data-page="results" role="menuitem" aria-label="View Results"><i class="fas fa-chart-bar"></i> Results</a>
+                <a href="/admin/feedbacks" class="nav-link" data-page="feedbacks" role="menuitem" aria-label="User Feedbacks"><i class="fas fa-comments"></i> Feedbacks</a>
+                <a href="/admin/settings" class="nav-link" data-page="settings" role="menuitem" aria-label="Settings"><i class="fas fa-cog"></i> Settings</a>
+                <a href="/admin/logout" class="nav-link logout" role="menuitem" aria-label="Logout"><i class="fas fa-sign-out-alt"></i> Logout</a>
             </div>
         </div>
     </nav>
     
-    <main class="main-content">
+    <main class="main-content" role="main" aria-label="Main content">
         {% block content %}{% endblock %}
     </main>
     
@@ -36,6 +39,57 @@
         <p>&copy; 2025 CaRhythm Admin Panel | <em>Your Career, Your Rhythm</em></p>
     </footer>
     
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    
     <script src="/static/js/admin.js"></script>
+    <script>
+        // Highlight active navigation link
+        document.addEventListener('DOMContentLoaded', function() {
+            const currentPath = window.location.pathname;
+            document.querySelectorAll('.nav-link').forEach(link => {
+                if (link.getAttribute('href') === currentPath || 
+                    (currentPath.includes(link.getAttribute('data-page')) && link.getAttribute('data-page'))) {
+                    link.classList.add('active');
+                    link.setAttribute('aria-current', 'page');
+                }
+            });
+            
+            // Keyboard navigation support
+            document.addEventListener('keydown', function(e) {
+                // Alt + D = Dashboard
+                if (e.altKey && e.key === 'd') {
+                    e.preventDefault();
+                    window.location.href = '/admin/dashboard';
+                }
+                // Alt + R = Results
+                if (e.altKey && e.key === 'r') {
+                    e.preventDefault();
+                    window.location.href = '/admin/results';
+                }
+                // Alt + S = Settings
+                if (e.altKey && e.key === 's') {
+                    e.preventDefault();
+                    window.location.href = '/admin/settings';
+                }
+                // Escape = Close modals
+                if (e.key === 'Escape') {
+                    document.querySelectorAll('.modal').forEach(modal => {
+                        modal.style.display = 'none';
+                        modal.classList.remove('show');
+                    });
+                    document.body.style.overflow = 'auto';
+                }
+            });
+            
+            // Focus management for modals
+            document.querySelectorAll('.modal').forEach(modal => {
+                modal.addEventListener('show', function() {
+                    const firstInput = this.querySelector('input, textarea, select, button');
+                    if (firstInput) firstInput.focus();
+                });
+            });
+        });
+    </script>
 </body>
 </html>

@@ -56,6 +56,13 @@ class QuestionPoolBase(BaseModel):
     # Ordering fields
     ordering_options: Optional[List[str]] = None
     randomize_order: Optional[bool] = True
+    
+    # Arabic Translation fields
+    question_text_ar: Optional[str] = None
+    slider_min_label_ar: Optional[str] = None
+    slider_max_label_ar: Optional[str] = None
+    mcq_options_ar: Optional[List[str]] = None
+    ordering_options_ar: Optional[List[str]] = None
 
     @validator('mcq_options')
     def validate_mcq_options(cls, v, values):
@@ -101,6 +108,13 @@ class QuestionPoolUpdate(BaseModel):
     # Ordering fields
     ordering_options: Optional[List[str]] = None
     randomize_order: Optional[bool] = None
+    
+    # Arabic Translation fields
+    question_text_ar: Optional[str] = None
+    slider_min_label_ar: Optional[str] = None
+    slider_max_label_ar: Optional[str] = None
+    mcq_options_ar: Optional[List[str]] = None
+    ordering_options_ar: Optional[List[str]] = None
 
 class QuestionPool(QuestionPoolBase):
     id: int

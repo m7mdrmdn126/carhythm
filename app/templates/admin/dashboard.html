@@ -4,82 +4,145 @@
 
 {% block content %}
 <div class="main-content">
-    <div style="margin-bottom: 32px;">
-        <h1 style="color: var(--primary-aubergine-dark); margin: 0;">
+    <!-- Welcome Header -->
+    <div style="margin-bottom: 40px;">
+        <h1 style="color: var(--primary-aubergine-dark); margin: 0; font-size: 2.5rem;">
             Welcome back, <span style="color: var(--accent-coral);">{{ admin.username }}</span>! 👋
         </h1>
-        <p style="color: var(--text-light); margin-top: 8px;">Here's what's happening with your assessments</p>
+        <p style="color: var(--text-light); margin-top: 12px; font-size: 1.1rem;">Here's what's happening with your assessments today</p>
     </div>
     
-    <div class="dashboard-grid">
-        <div class="stat-card">
-            <div class="stat-icon">📄</div>
-            <div class="stat-value">{{ stats.total_pages if stats else '0' }}</div>
+    <!-- Statistics Cards -->
+    <div class="dashboard-grid" style="margin-bottom: 48px;">
+        <div class="stat-card" style="background: linear-gradient(135deg, rgba(109, 59, 142, 0.05), rgba(109, 59, 142, 0.02));">
+            <div class="stat-icon" style="color: var(--primary-aubergine);">📄</div>
+            <div class="stat-value" style="color: var(--primary-aubergine);">{{ stats.total_pages if stats else '0' }}</div>
             <div class="stat-label">Total Pages</div>
+            <a href="/admin/pages" style="margin-top: 12px; font-size: 13px; color: var(--primary-aubergine); text-decoration: none; font-weight: 600;">
+                Manage Pages →
+            </a>
         </div>
         
-        <div class="stat-card">
-            <div class="stat-icon">❓</div>
-            <div class="stat-value">{{ stats.total_questions if stats else '0' }}</div>
+        <div class="stat-card" style="background: linear-gradient(135deg, rgba(255, 107, 107, 0.05), rgba(255, 107, 107, 0.02));">
+            <div class="stat-icon" style="color: var(--accent-coral);">❓</div>
+            <div class="stat-value" style="color: var(--accent-coral);">{{ stats.total_questions if stats else '0' }}</div>
             <div class="stat-label">Questions</div>
+            <a href="/admin/questions" style="margin-top: 12px; font-size: 13px; color: var(--accent-coral); text-decoration: none; font-weight: 600;">
+                Manage Questions →
+            </a>
         </div>
         
-        <div class="stat-card">
-            <div class="stat-icon">📊</div>
-            <div class="stat-value">{{ stats.total_responses if stats else '0' }}</div>
+        <div class="stat-card" style="background: linear-gradient(135deg, rgba(39, 174, 96, 0.05), rgba(39, 174, 96, 0.02));">
+            <div class="stat-icon" style="color: var(--success-color);">📊</div>
+            <div class="stat-value" style="color: var(--success-color);">{{ stats.total_responses if stats else '0' }}</div>
             <div class="stat-label">Responses</div>
+            <a href="/admin/results" style="margin-top: 12px; font-size: 13px; color: var(--success-color); text-decoration: none; font-weight: 600;">
+                View Results →
+            </a>
         </div>
         
-        <div class="stat-card">
-            <div class="stat-icon">🎯</div>
-            <div class="stat-value">{{ stats.total_pool_questions if stats else '0' }}</div>
+        <div class="stat-card" style="background: linear-gradient(135deg, rgba(249, 199, 79, 0.05), rgba(249, 199, 79, 0.02));">
+            <div class="stat-icon" style="color: var(--accent-yellow);">🎯</div>
+            <div class="stat-value" style="color: var(--warning-color);">{{ stats.total_pool_questions if stats else '0' }}</div>
             <div class="stat-label">Question Pool</div>
+            <a href="/admin/question-pool" style="margin-top: 12px; font-size: 13px; color: var(--warning-color); text-decoration: none; font-weight: 600;">
+                Manage Pool →
+            </a>
         </div>
         
-        <div class="stat-card">
-            <div class="stat-icon">💬</div>
-            <div class="stat-value">{{ stats.total_feedbacks if stats else '0' }}</div>
+        <div class="stat-card" style="background: linear-gradient(135deg, rgba(156, 39, 176, 0.05), rgba(156, 39, 176, 0.02));">
+            <div class="stat-icon" style="color: #9C27B0;">💬</div>
+            <div class="stat-value" style="color: #9C27B0;">{{ stats.total_feedbacks if stats else '0' }}</div>
             <div class="stat-label">Feedbacks</div>
+            <a href="/admin/feedbacks" style="margin-top: 12px; font-size: 13px; color: #9C27B0; text-decoration: none; font-weight: 600;">
+                View Feedbacks →
+            </a>
         </div>
     </div>
     
-    <div style="margin-top: 48px;">
-        <h2 style="color: var(--primary-aubergine-dark); margin-bottom: 24px;">Quick Actions</h2>
+    <!-- Quick Actions Section -->
+    <div style="margin-top: 56px;">
+        <h2 style="color: var(--primary-aubergine-dark); margin-bottom: 28px; font-size: 1.8rem;">
+            <i class="fas fa-bolt" style="color: var(--accent-yellow);"></i> Quick Actions
+        </h2>
         
         <div class="dashboard-grid" style="grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));">
-            <div class="card" style="padding: 32px; text-align: center; background: linear-gradient(135deg, rgba(109, 59, 142, 0.05), rgba(109, 59, 142, 0.02));">
-                <div style="font-size: 3rem; margin-bottom: 16px;">📄</div>
-                <h3 style="color: var(--primary-aubergine); margin-bottom: 12px;">Manage Pages</h3>
-                <p style="color: var(--text-light); margin-bottom: 24px;">Create and organize examination pages</p>
-                <a href="/admin/pages" class="btn btn-primary">Go to Pages →</a>
+            <!-- Pages Management -->
+            <div class="card" style="padding: 32px; text-align: center; background: linear-gradient(135deg, rgba(109, 59, 142, 0.05), rgba(109, 59, 142, 0.02)); border: 2px solid rgba(109, 59, 142, 0.1);">
+                <div style="font-size: 3.5rem; margin-bottom: 16px;">📄</div>
+                <h3 style="color: var(--primary-aubergine); margin-bottom: 12px; font-size: 1.3rem;">Manage Pages</h3>
+                <p style="color: var(--text-light); margin-bottom: 24px; font-size: 14px;">Create and organize examination pages and modules</p>
+                <a href="/admin/pages" class="btn btn-primary" style="width: 100%;">
+                    <i class="fas fa-arrow-right"></i> Go to Pages
+                </a>
             </div>
             
-            <div class="card" style="padding: 32px; text-align: center; background: linear-gradient(135deg, rgba(255, 107, 107, 0.05), rgba(255, 107, 107, 0.02));">
-                <div style="font-size: 3rem; margin-bottom: 16px;">❓</div>
-                <h3 style="color: var(--primary-aubergine); margin-bottom: 12px;">Manage Questions</h3>
-                <p style="color: var(--text-light); margin-bottom: 24px;">Add and edit assessment questions</p>
-                <a href="/admin/questions" class="btn btn-primary">Go to Questions →</a>
+            <!-- Questions Management -->
+            <div class="card" style="padding: 32px; text-align: center; background: linear-gradient(135deg, rgba(255, 107, 107, 0.05), rgba(255, 107, 107, 0.02)); border: 2px solid rgba(255, 107, 107, 0.1);">
+                <div style="font-size: 3.5rem; margin-bottom: 16px;">❓</div>
+                <h3 style="color: var(--accent-coral); margin-bottom: 12px; font-size: 1.3rem;">Manage Questions</h3>
+                <p style="color: var(--text-light); margin-bottom: 24px; font-size: 14px;">Add and edit assessment questions and answers</p>
+                <a href="/admin/questions" class="btn btn-primary" style="width: 100%;">
+                    <i class="fas fa-arrow-right"></i> Go to Questions
+                </a>
             </div>
             
-            <div class="card" style="padding: 32px; text-align: center; background: linear-gradient(135deg, rgba(249, 199, 79, 0.05), rgba(249, 199, 79, 0.02));">
-                <div style="font-size: 3rem; margin-bottom: 16px;">🎯</div>
-                <h3 style="color: var(--primary-aubergine); margin-bottom: 12px;">Question Pool</h3>
-                <p style="color: var(--text-light); margin-bottom: 24px;">Manage your question library</p>
-                <a href="/admin/question-pool" class="btn btn-primary">Go to Pool →</a>
+            <!-- Question Pool -->
+            <div class="card" style="padding: 32px; text-align: center; background: linear-gradient(135deg, rgba(249, 199, 79, 0.05), rgba(249, 199, 79, 0.02)); border: 2px solid rgba(249, 199, 79, 0.1);">
+                <div style="font-size: 3.5rem; margin-bottom: 16px;">🎯</div>
+                <h3 style="color: var(--warning-color); margin-bottom: 12px; font-size: 1.3rem;">Question Pool</h3>
+                <p style="color: var(--text-light); margin-bottom: 24px; font-size: 14px;">Manage your reusable question library</p>
+                <a href="/admin/question-pool" class="btn btn-primary" style="width: 100%;">
+                    <i class="fas fa-arrow-right"></i> Go to Pool
+                </a>
             </div>
             
-            <div class="card" style="padding: 32px; text-align: center; background: linear-gradient(135deg, rgba(127, 140, 141, 0.05), rgba(127, 140, 141, 0.02));">
-                <div style="font-size: 3rem; margin-bottom: 16px;">📈</div>
-                <h3 style="color: var(--primary-aubergine); margin-bottom: 12px;">View Results</h3>
-                <p style="color: var(--text-light); margin-bottom: 24px;">Review student responses and data</p>
-                <a href="/admin/results" class="btn btn-primary">View Results →</a>
+            <!-- Results -->
+            <div class="card" style="padding: 32px; text-align: center; background: linear-gradient(135deg, rgba(39, 174, 96, 0.05), rgba(39, 174, 96, 0.02)); border: 2px solid rgba(39, 174, 96, 0.1);">
+                <div style="font-size: 3.5rem; margin-bottom: 16px;">📈</div>
+                <h3 style="color: var(--success-color); margin-bottom: 12px; font-size: 1.3rem;">View Results</h3>
+                <p style="color: var(--text-light); margin-bottom: 24px; font-size: 14px;">Review student responses and analytics</p>
+                <a href="/admin/results" class="btn btn-primary" style="width: 100%;">
+                    <i class="fas fa-arrow-right"></i> View Results
+                </a>
             </div>
             
-            <div class="card" style="padding: 32px; text-align: center; background: linear-gradient(135deg, rgba(156, 39, 176, 0.05), rgba(156, 39, 176, 0.02));">
-                <div style="font-size: 3rem; margin-bottom: 16px;">💬</div>
-                <h3 style="color: var(--primary-aubergine); margin-bottom: 12px;">User Feedbacks</h3>
-                <p style="color: var(--text-light); margin-bottom: 24px;">View and analyze user feedback</p>
-                <a href="/admin/feedbacks" class="btn btn-primary">View Feedbacks →</a>
+            <!-- Feedbacks -->
+            <div class="card" style="padding: 32px; text-align: center; background: linear-gradient(135deg, rgba(156, 39, 176, 0.05), rgba(156, 39, 176, 0.02)); border: 2px solid rgba(156, 39, 176, 0.1);">
+                <div style="font-size: 3.5rem; margin-bottom: 16px;">💬</div>
+                <h3 style="color: #9C27B0; margin-bottom: 12px; font-size: 1.3rem;">User Feedbacks</h3>
+                <p style="color: var(--text-light); margin-bottom: 24px; font-size: 14px;">View and analyze user feedback responses</p>
+                <a href="/admin/feedbacks" class="btn btn-primary" style="width: 100%;">
+                    <i class="fas fa-arrow-right"></i> View Feedbacks
+                </a>
+            </div>
+            
+            <!-- Categories -->
+            <div class="card" style="padding: 32px; text-align: center; background: linear-gradient(135deg, rgba(127, 140, 141, 0.05), rgba(127, 140, 141, 0.02)); border: 2px solid rgba(127, 140, 141, 0.1);">
+                <div style="font-size: 3.5rem; margin-bottom: 16px;">📁</div>
+                <h3 style="color: var(--secondary-gray); margin-bottom: 12px; font-size: 1.3rem;">Categories</h3>
+                <p style="color: var(--text-light); margin-bottom: 24px; font-size: 14px;">Organize questions with categories and tags</p>
+                <a href="/admin/categories" class="btn btn-primary" style="width: 100%;">
+                    <i class="fas fa-arrow-right"></i> Manage Categories
+                </a>
+            </div>
+        </div>
+    </div>
+    
+    <!-- System Info -->
+    <div style="margin-top: 56px; padding: 24px; background: rgba(109, 59, 142, 0.03); border-radius: var(--radius-lg); border-left: 4px solid var(--primary-aubergine);">
+        <h3 style="color: var(--primary-aubergine); margin-bottom: 12px;">
+            <i class="fas fa-info-circle"></i> System Information
+        </h3>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; color: var(--text-dark);">
+            <div>
+                <strong>Version:</strong> 2.0.0
+            </div>
+            <div>
+                <strong>Logged in as:</strong> {{ admin.username }}
+            </div>
+            <div>
+                <strong>Total Database Entries:</strong> {{ (stats.total_responses + stats.total_questions) if stats else '0' }}
             </div>
         </div>
     </div>

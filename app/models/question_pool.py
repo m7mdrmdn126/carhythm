@@ -46,6 +46,13 @@ class QuestionPool(Base):
     ordering_options = Column(Text)  # JSON string
     randomize_order = Column(Boolean, default=True)
     
+    # Arabic Translation fields
+    question_text_ar = Column(Text)  # Arabic translation of question text
+    slider_min_label_ar = Column(String(100))  # Arabic slider minimum label
+    slider_max_label_ar = Column(String(100))  # Arabic slider maximum label
+    mcq_options_ar = Column(Text)  # JSON array of Arabic MCQ options
+    ordering_options_ar = Column(Text)  # JSON array of Arabic ordering options
+    
     # Metadata
     created_at = Column(DateTime(timezone=True), server_default=func.now())
     updated_at = Column(DateTime(timezone=True), server_default=func.now(), onupdate=func.now())

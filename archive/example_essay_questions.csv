@@ -1,0 +1,6 @@
+title,question_text,category_name,is_required,essay_char_limit,question_text_ar
+Career Aspirations,Describe your ideal career path and what motivates you to pursue it.,Career Goals,TRUE,1000,صف مسارك المهني المثالي وما الذي يحفزك لمتابعته.
+Biggest Achievement,Tell us about your most significant professional or academic achievement and what you learned from it.,Personal Growth,TRUE,800,أخبرنا عن أهم إنجاز مهني أو أكاديمي لديك وما تعلمته منه.
+Problem Solving Experience,Describe a challenging problem you solved and the approach you took.,Skills Evaluation,TRUE,600,صف مشكلة صعبة قمت بحلها والنهج الذي اتبعته.
+Work Values,What are the most important values you look for in a workplace? Explain why.,Work Preferences,FALSE,500,ما هي أهم القيم التي تبحث عنها في مكان العمل؟ اشرح السبب.
+Learning Experience,Share an experience where you had to learn something completely new. How did you approach it?,Personal Growth,TRUE,700,شارك تجربة كان عليك فيها تعلم شيء جديد تماماً. كيف تعاملت معها؟

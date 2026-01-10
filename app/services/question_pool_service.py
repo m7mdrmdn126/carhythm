@@ -80,6 +80,10 @@ class QuestionPoolService:
             question_data['mcq_correct_answer'] = json.dumps(question_data['mcq_correct_answer'])
         if question_data.get('ordering_options'):
             question_data['ordering_options'] = json.dumps(question_data['ordering_options'])
+        if question_data.get('mcq_options_ar'):
+            question_data['mcq_options_ar'] = json.dumps(question_data['mcq_options_ar'])
+        if question_data.get('ordering_options_ar'):
+            question_data['ordering_options_ar'] = json.dumps(question_data['ordering_options_ar'])
         
         db_question = QuestionPool(**question_data)
         db.add(db_question)
@@ -297,6 +301,9 @@ class QuestionPoolService:
             "slider_max_label": question.slider_max_label,
             "allow_multiple_selection": question.allow_multiple_selection,
             "randomize_order": question.randomize_order,
+            "question_text_ar": question.question_text_ar,
+            "slider_min_label_ar": question.slider_min_label_ar,
+            "slider_max_label_ar": question.slider_max_label_ar,
         }
         
         # Parse JSON fields
@@ -314,5 +321,15 @@ class QuestionPoolService:
             question_dict["ordering_options"] = json.loads(question.ordering_options) if question.ordering_options else None
         except (json.JSONDecodeError, TypeError):
             question_dict["ordering_options"] = None
+        
+        try:
+            question_dict["mcq_options_ar"] = json.loads(question.mcq_options_ar) if question.mcq_options_ar else None
+        except (json.JSONDecodeError, TypeError):
+            question_dict["mcq_options_ar"] = None
+            
+        try:
+            question_dict["ordering_options_ar"] = json.loads(question.ordering_options_ar) if question.ordering_options_ar else None
+        except (json.JSONDecodeError, TypeError):
+            question_dict["ordering_options_ar"] = None
         
         return question_dict

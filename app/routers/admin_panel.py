@@ -96,6 +96,38 @@ async def delete_page(
     question_service.delete_page(db, page_id)
     return RedirectResponse(url="/admin/pages", status_code=302)
 
+@router.post("/pages/update-order")
+async def update_page_order(
+    request: Request,
+    db: Session = Depends(get_db),
+    admin=Depends(require_admin)
+):
+    """Update page order from drag and drop."""
+    try:
+        data = await request.json()
+        page_order = data.get("order", [])
+        
+        # Update each page's order_index
+        for index, page_id in enumerate(page_order):
+            page = question_service.get_page_by_id(db, int(page_id))
+            if page:
+                page_update = PageUpdate(
+                    title=page.title,
+                    order_index=index,
+                    is_active=page.is_active
+                )
+                question_service.update_page(db, int(page_id), page_update)
+        
+        return JSONResponse(content={
+            "success": True,
+            "message": "Page order updated successfully"
+        })
+    except Exception as e:
+        return JSONResponse(content={
+            "success": False,
+            "message": str(e)
+        }, status_code=500)
+
 # Question Management Routes
 
 @router.get("/questions", response_class=HTMLResponse)
@@ -126,16 +158,53 @@ async def manage_questions(
         }
     )
 
+@router.get("/questions/{question_id}/data")
+async def get_question_data(
+    question_id: int,
+    db: Session = Depends(get_db),
+    admin=Depends(require_admin)
+):
+    """API endpoint to get question data for editing."""
+    question = question_service.get_question_by_id(db, question_id)
+    if not question:
+        raise HTTPException(status_code=404, detail="Question not found")
+    
+    return {
+        "id": question.id,
+        "page_id": question.page_id,
+        "question_text": question.question_text,
+        "question_text_ar": question.question_text_ar or "",
+        "question_type": question.question_type.value if hasattr(question.question_type, 'value') else question.question_type,
+        "order_index": question.order_index,
+        "is_required": question.is_required,
+        "slider_min_label": question.slider_min_label or "",
+        "slider_min_label_ar": question.slider_min_label_ar or "",
+        "slider_max_label": question.slider_max_label or "",
+        "slider_max_label_ar": question.slider_max_label_ar or "",
+        "essay_char_limit": question.essay_char_limit,
+        "allow_multiple_selection": question.allow_multiple_selection or False,
+        "randomize_order": question.randomize_order if hasattr(question, 'randomize_order') else True,
+        "scene_title": question.scene_title or "",
+        "scene_title_ar": question.scene_title_ar or "",
+        "scene_narrative": question.scene_narrative or "",
+        "scene_narrative_ar": getattr(question, 'scene_narrative_ar', None) or "",
+        "scene_image_url": question.scene_image_url or "",
+        "scene_theme": question.scene_theme or ""
+    }
+
 @router.post("/questions")
 async def create_question(
     request: Request,
     page_id: int = Form(...),
     question_text: str = Form(...),
+    question_text_ar: str = Form(""),
     question_type: str = Form(...),
     order_index: int = Form(0),
     is_required: bool = Form(False),
     slider_min_label: str = Form(""),
+    slider_min_label_ar: str = Form(""),
     slider_max_label: str = Form(""),
+    slider_max_label_ar: str = Form(""),
     essay_char_limit: Optional[int] = Form(None),
     # MCQ fields
     allow_multiple_selection: bool = Form(False),
@@ -143,7 +212,9 @@ async def create_question(
     randomize_order: bool = Form(True),
     # Story Mode fields
     scene_title: str = Form(""),
+    scene_title_ar: str = Form(""),
     scene_narrative: str = Form(""),
+    scene_narrative_ar: str = Form(""),
     scene_image_url: str = Form(""),
     scene_theme: str = Form(""),
     image: UploadFile = File(None),
@@ -197,11 +268,14 @@ async def create_question(
     question_data = QuestionCreate(
         page_id=page_id,
         question_text=question_text,
+        question_text_ar=question_text_ar if question_text_ar else None,
         question_type=QuestionType(question_type),
         order_index=order_index,
         is_required=is_required,
         slider_min_label=slider_min_label if slider_min_label else None,
+        slider_min_label_ar=slider_min_label_ar if slider_min_label_ar else None,
         slider_max_label=slider_max_label if slider_max_label else None,
+        slider_max_label_ar=slider_max_label_ar if slider_max_label_ar else None,
         essay_char_limit=essay_char_limit,
         mcq_options=mcq_options,
         mcq_correct_answer=mcq_correct_answers,
@@ -210,7 +284,9 @@ async def create_question(
         randomize_order=randomize_order,
         # Story Mode fields
         scene_title=scene_title if scene_title else None,
+        scene_title_ar=scene_title_ar if scene_title_ar else None,
         scene_narrative=scene_narrative if scene_narrative else None,
+        scene_narrative_ar=scene_narrative_ar if scene_narrative_ar else None,
         scene_image_url=scene_image_url if scene_image_url else None,
         scene_theme=scene_theme if scene_theme else None
     )
@@ -227,12 +303,21 @@ async def create_question(
 async def update_question(
     question_id: int,
     question_text: str = Form(...),
+    question_text_ar: str = Form(""),
     question_type: str = Form(...),
     order_index: int = Form(...),
     is_required: bool = Form(False),
     slider_min_label: str = Form(""),
+    slider_min_label_ar: str = Form(""),
     slider_max_label: str = Form(""),
+    slider_max_label_ar: str = Form(""),
     essay_char_limit: Optional[int] = Form(None),
+    scene_title: str = Form(""),
+    scene_title_ar: str = Form(""),
+    scene_narrative: str = Form(""),
+    scene_narrative_ar: str = Form(""),
+    scene_image_url: str = Form(""),
+    scene_theme: str = Form(""),
     image: UploadFile = File(None),
     remove_image: bool = Form(False),
     db: Session = Depends(get_db),
@@ -262,12 +347,21 @@ async def update_question(
     # Update question
     question_update = QuestionUpdate(
         question_text=question_text,
+        question_text_ar=question_text_ar if question_text_ar else None,
         question_type=QuestionType(question_type),
         order_index=order_index,
         is_required=is_required,
         slider_min_label=slider_min_label if slider_min_label else None,
+        slider_min_label_ar=slider_min_label_ar if slider_min_label_ar else None,
         slider_max_label=slider_max_label if slider_max_label else None,
-        essay_char_limit=essay_char_limit
+        slider_max_label_ar=slider_max_label_ar if slider_max_label_ar else None,
+        essay_char_limit=essay_char_limit,
+        scene_title=scene_title if scene_title else None,
+        scene_title_ar=scene_title_ar if scene_title_ar else None,
+        scene_narrative=scene_narrative if scene_narrative else None,
+        scene_narrative_ar=scene_narrative_ar if scene_narrative_ar else None,
+        scene_image_url=scene_image_url if scene_image_url else None,
+        scene_theme=scene_theme if scene_theme else None
     )
     
     question_service.update_question(db, question_id, question_update)
@@ -388,6 +482,38 @@ async def delete_response(
     """Delete a student response."""
     response_service.delete_student_response(db, response_id)
     return RedirectResponse(url="/admin/results", status_code=302)
+
+
+@router.post("/results/bulk-delete")
+async def bulk_delete_results(
+    request: Request,
+    db: Session = Depends(get_db),
+    admin=Depends(require_admin)
+):
+    """Bulk delete selected results."""
+    try:
+        data = await request.json()
+        result_ids = data.get("ids", [])
+        
+        if not result_ids:
+            return JSONResponse(content={
+                "success": False,
+                "message": "No results selected"
+            }, status_code=400)
+        
+        # Delete all selected responses
+        for response_id in result_ids:
+            response_service.delete_student_response(db, response_id)
+        
+        return JSONResponse(content={
+            "success": True,
+            "message": f"Deleted {len(result_ids)} result(s)"
+        })
+    except Exception as e:
+        return JSONResponse(content={
+            "success": False,
+            "message": str(e)
+        }, status_code=500)
 
 
 @router.post("/results/{response_id}/calculate-scores")

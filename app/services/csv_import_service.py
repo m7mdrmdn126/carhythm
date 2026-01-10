@@ -124,7 +124,8 @@ class CSVImportExportService:
             'question_type': 'essay',
             'category_id': category_id,
             'is_required': is_required,
-            'essay_char_limit': char_limit
+            'essay_char_limit': char_limit,
+            'question_text_ar': row.get('question_text_ar', '').strip() or None
         }
     
     @staticmethod
@@ -152,7 +153,10 @@ class CSVImportExportService:
             'category_id': category_id,
             'is_required': is_required,
             'slider_min_label': row.get('slider_min_label', '').strip() or None,
-            'slider_max_label': row.get('slider_max_label', '').strip() or None
+            'slider_max_label': row.get('slider_max_label', '').strip() or None,
+            'question_text_ar': row.get('question_text_ar', '').strip() or None,
+            'slider_min_label_ar': row.get('slider_min_label_ar', '').strip() or None,
+            'slider_max_label_ar': row.get('slider_max_label_ar', '').strip() or None
         }
     
     @staticmethod
@@ -203,6 +207,13 @@ class CSVImportExportService:
         if not correct_answers:
             raise ValueError("At least one correct answer must be specified")
         
+        # Collect Arabic options if provided
+        options_ar = []
+        for i in range(1, 7):
+            option_key = f'option_{i}_ar'
+            if row.get(option_key) and row[option_key].strip():
+                options_ar.append(row[option_key].strip())
+        
         return {
             'title': row['title'].strip(),
             'question_text': row['question_text'].strip(),
@@ -211,7 +222,9 @@ class CSVImportExportService:
             'is_required': is_required,
             'allow_multiple_selection': allow_multiple,
             'mcq_options': options,
-            'mcq_correct_answer': correct_answers
+            'mcq_correct_answer': correct_answers,
+            'question_text_ar': row.get('question_text_ar', '').strip() or None,
+            'mcq_options_ar': options_ar if options_ar else None
         }
     
     @staticmethod
@@ -242,6 +255,13 @@ class CSVImportExportService:
         if len(items) < 2:
             raise ValueError("At least 2 items are required for ordering questions")
         
+        # Collect Arabic items if provided
+        items_ar = []
+        for i in range(1, 7):
+            item_key = f'item_{i}_ar'
+            if row.get(item_key) and row[item_key].strip():
+                items_ar.append(row[item_key].strip())
+        
         return {
             'title': row['title'].strip(),
             'question_text': row['question_text'].strip(),
@@ -249,7 +269,9 @@ class CSVImportExportService:
             'category_id': category_id,
             'is_required': is_required,
             'randomize_order': randomize_order,
-            'ordering_options': items
+            'ordering_options': items,
+            'question_text_ar': row.get('question_text_ar', '').strip() or None,
+            'ordering_options_ar': items_ar if items_ar else None
         }
     
     @staticmethod

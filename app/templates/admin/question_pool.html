@@ -429,7 +429,8 @@ document.getElementById('importForm').addEventListener('submit', async function(
     try {
         const response = await fetch(`/admin/csv-import/${questionType}`, {
             method: 'POST',
-            body: formData
+            body: formData,
+            credentials: 'same-origin'
         });
         
         const result = await response.json();

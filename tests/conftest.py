@@ -62,9 +62,16 @@ def client(test_db):
         yield test_client
     app.dependency_overrides.clear()
 
-@pytest.fixture
+@pytest.fixture(scope="function")
 def test_admin(db_session):
     """Create a test admin user"""
+    # Check if admin already exists
+    from app.utils.security import get_password_hash
+    existing_admin = db_session.query(Admin).filter(Admin.username == "testadmin").first()
+    if existing_admin:
+        db_session.delete(existing_admin)
+        db_session.commit()
+    
     admin = Admin(
         username="testadmin",
         password_hash=get_password_hash("testpass123")

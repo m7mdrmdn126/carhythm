@@ -13,6 +13,7 @@
         <table class="admin-table">
             <thead>
                 <tr>
+                    <th style="width: 40px;"></th>
                     <th>Order</th>
                     <th>Title</th>
                     <th>Description</th>
@@ -23,7 +24,12 @@
             </thead>
             <tbody>
                 {% for page in pages %}
-                <tr>
+                <tr data-page-id="{{ page.id }}">
+                    <td>
+                        <span class="drag-handle" title="Drag to reorder">
+                            <i class="fas fa-grip-vertical"></i>
+                        </span>
+                    </td>
                     <td>{{ page.order_index }}</td>
                     <td>{{ page.title }}</td>
                     <td>{{ page.description or "No description" }}</td>
@@ -34,7 +40,7 @@
                     </td>
                     <td>{{ page.questions|length }} questions</td>
                     <td class="actions">
-                        <button class="btn btn-sm btn-secondary" onclick="editPage({{ page.id }}, '{{ page.title }}', '{{ page.description or '' }}', {{ page.order_index }}, {{ page.is_active|lower }})">Edit</button>
+                        <button class="btn btn-sm btn-secondary" onclick="editPage({{ page.id }}, '{{ page.title }}', '{{ page.description or '' }}', {{ page.order_index }}, {{ page.is_active|lower }}, '{{ page.module_name or '' }}', '{{ page.module_emoji or '' }}', {{ page.chapter_number or 'null' }}, {{ page.estimated_minutes or 'null' }}, '{{ page.completion_message or '' }}')">Edit</button>
                         <a href="/admin/questions?page_id={{ page.id }}" class="btn btn-sm btn-secondary">Questions</a>
                         <form method="post" action="/admin/pages/{{ page.id }}/delete" style="display: inline;" onsubmit="return confirm('Are you sure?')">
                             <button type="submit" class="btn btn-sm btn-danger">Delete</button>
@@ -212,4 +218,69 @@ function hideEditPageModal() {
     document.getElementById('editPageModal').style.display = 'none';
 }
 </script>
+
+<!-- SortableJS for drag-and-drop reordering -->
+<script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.1/Sortable.min.js"></script>
+<script>
+// Initialize drag-and-drop sorting
+document.addEventListener('DOMContentLoaded', function() {
+    const tableBody = document.querySelector('.pages-list tbody');
+    if (tableBody) {
+        new Sortable(tableBody, {
+            animation: 150,
+            handle: '.drag-handle',
+            ghostClass: 'sortable-ghost',
+            onEnd: function(evt) {
+                // Get new order
+                const rows = tableBody.querySelectorAll('tr');
+                const pageOrder = Array.from(rows).map(row => row.dataset.pageId);
+                
+                // Send to backend
+                fetch('/admin/pages/update-order', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ order: pageOrder })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        showToast('Page order updated successfully', 'success');
+                    } else {
+                        showToast(data.message || 'Failed to update order', 'error');
+                        setTimeout(() => window.location.reload(), 1000);
+                    }
+                })
+                .catch(error => {
+                    showToast('Error updating page order', 'error');
+                    console.error('Error:', error);
+                    setTimeout(() => window.location.reload(), 1000);
+                });
+            }
+        });
+    }
+});
+
+function updatePageOrder(pageId, newOrder) {
+    // Deprecated - now using batch update above
+}
+</script>
+
+<style>
+.drag-handle {
+    cursor: grab;
+    color: var(--text-light);
+    padding: 4px 8px;
+}
+
+.drag-handle:active {
+    cursor: grabbing;
+}
+
+.sortable-ghost {
+    opacity: 0.4;
+    background: var(--accent-yellow);
+}
+</style>
 {% endblock %}

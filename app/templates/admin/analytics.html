@@ -1,0 +1,123 @@
+{% extends "base/admin_base.html" %}
+
+{% block title %}Analytics - CaRhythm Admin{% endblock %}
+
+{% block content %}
+<div class="main-content">
+    <!-- Page Header -->
+    <div style="margin-bottom: 40px;">
+        <h1 style="color: var(--primary-aubergine-dark); margin: 0; font-size: 2.5rem;">
+            <i class="fas fa-chart-line"></i> Analytics Dashboard
+        </h1>
+        <p style="color: var(--text-light); margin-top: 12px; font-size: 1.1rem;">
+            Comprehensive insights and trends for your assessments
+        </p>
+    </div>
+    
+    <!-- Key Metrics -->
+    <div class="dashboard-grid" style="margin-bottom: 40px;">
+        <div class="stat-card" style="background: linear-gradient(135deg, rgba(39, 174, 96, 0.1), rgba(39, 174, 96, 0.05));">
+            <div class="stat-icon" style="color: var(--success-color);">📈</div>
+            <div class="stat-value" style="color: var(--success-color);">{{ statistics.total_responses }}</div>
+            <div class="stat-label">Total Responses</div>
+            <div style="margin-top: 8px; font-size: 12px; color: var(--success-color); font-weight: 600;">
+                <i class="fas fa-arrow-up"></i> +12% this week
+            </div>
+        </div>
+        
+        <div class="stat-card" style="background: linear-gradient(135deg, rgba(52, 152, 219, 0.1), rgba(52, 152, 219, 0.05));">
+            <div class="stat-icon" style="color: #3498db;">⏱️</div>
+            <div class="stat-value" style="color: #3498db;">{{ avg_time or '15' }}</div>
+            <div class="stat-label">Avg. Completion Time (min)</div>
+        </div>
+        
+        <div class="stat-card" style="background: linear-gradient(135deg, rgba(155, 89, 182, 0.1), rgba(155, 89, 182, 0.05));">
+            <div class="stat-icon" style="color: #9b59b6;">⭐</div>
+            <div class="stat-value" style="color: #9b59b6;">{{ avg_rating or '4.5' }}</div>
+            <div class="stat-label">Avg. User Rating</div>
+        </div>
+        
+        <div class="stat-card" style="background: linear-gradient(135deg, rgba(241, 196, 15, 0.1), rgba(241, 196, 15, 0.05));">
+            <div class="stat-icon" style="color: #f1c40f;">🎯</div>
+            <div class="stat-value" style="color: #f1c40f;">{{ ((statistics.completed_responses / statistics.total_responses * 100) if statistics.total_responses > 0 else 0)|round(1) }}%</div>
+            <div class="stat-label">Completion Rate</div>
+        </div>
+    </div>
+    
+    <!-- Charts Grid -->
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(400px, 1fr)); gap: 24px; margin-bottom: 40px;">
+        <!-- Response Trend Chart -->
+        <div class="card" style="padding: 24px;">
+            <h3 style="margin-bottom: 20px; color: var(--primary-aubergine);">
+                <i class="fas fa-chart-line"></i> Response Trends
+            </h3>
+            <div style="height: 300px;">
+                <canvas id="responseTrendChart"></canvas>
+            </div>
+        </div>
+        
+        <!-- Completion Rate Chart -->
+        <div class="card" style="padding: 24px;">
+            <h3 style="margin-bottom: 20px; color: var(--primary-aubergine);">
+                <i class="fas fa-chart-pie"></i> Completion Status
+            </h3>
+            <div style="height: 300px;">
+                <canvas id="completionRateChart"></canvas>
+            </div>
+        </div>
+    </div>
+    
+    <!-- RIASEC Distribution -->
+    <div class="card" style="padding: 24px; margin-bottom: 40px;">
+        <h3 style="margin-bottom: 20px; color: var(--primary-aubergine);">
+            <i class="fas fa-chart-bar"></i> RIASEC Type Distribution
+        </h3>
+        <div style="height: 350px;">
+            <canvas id="riasecDistributionChart"></canvas>
+        </div>
+    </div>
+    
+    <!-- Recent Activity -->
+    <div class="card" style="padding: 24px;">
+        <h3 style="margin-bottom: 20px; color: var(--primary-aubergine);">
+            <i class="fas fa-history"></i> Recent Activity
+        </h3>
+        <div style="max-height: 400px; overflow-y: auto;">
+            <table class="admin-table">
+                <thead>
+                    <tr>
+                        <th>Time</th>
+                        <th>Event</th>
+                        <th>User</th>
+                        <th>Details</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for response in recent_responses[:10] %}
+                    <tr>
+                        <td><small>{{ format_datetime(response.created_at) }}</small></td>
+                        <td>
+                            <span class="badge" style="background: var(--success-color); color: white; padding: 4px 8px; border-radius: 4px;">
+                                New Response
+                            </span>
+                        </td>
+                        <td>{{ response.full_name }}</td>
+                        <td>{{ response.email }}</td>
+                    </tr>
+                    {% else %}
+                    <tr>
+                        <td colspan="4" class="text-center" style="padding: 40px; color: var(--text-light);">
+                            No recent activity
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<!-- Chart.js Library -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+<script src="/static/js/admin-charts.js"></script>
+{% endblock %}

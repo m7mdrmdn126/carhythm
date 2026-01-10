@@ -40,10 +40,10 @@ def delete_file(file_path: str) -> bool:
 
 def validate_image_file(file: UploadFile) -> bool:
     """Validate that the uploaded file is an image."""
-    allowed_extensions = {'.jpg', '.jpeg', '.png', '.gif', '.bmp', '.webp'}
-    if not file.filename:
+    if not file or not file.filename:
         return False
     
+    allowed_extensions = {'.jpg', '.jpeg', '.png', '.gif', '.bmp', '.webp'}
     file_extension = os.path.splitext(file.filename)[1].lower()
     return file_extension in allowed_extensions
 

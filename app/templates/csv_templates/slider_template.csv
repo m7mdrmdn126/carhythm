@@ -1,4 +1,4 @@
-title,question_text,category_name,is_required,slider_min_label,slider_max_label
-Communication Skills,Rate your communication skills,Skills Evaluation,TRUE,Poor,Excellent
-Team Collaboration,How well do you work in team environments?,Work Preferences,TRUE,Prefer Solo Work,Love Team Work
-Risk Tolerance,How comfortable are you with taking risks?,Personality Assessment,TRUE,Very Conservative,High Risk Taker
+title,question_text,category_name,is_required,slider_min_label,slider_max_label,question_text_ar,slider_min_label_ar,slider_max_label_ar
+Communication Skills,Rate your communication skills,Skills Evaluation,TRUE,Poor,Excellent,قيّم مهارات التواصل لديك,ضعيف,ممتاز
+Team Collaboration,How well do you work in team environments?,Work Preferences,TRUE,Prefer Solo Work,Love Team Work,كيف تعمل بشكل جيد في بيئات الفريق؟,أفضل العمل الفردي,أحب العمل الجماعي
+Risk Tolerance,How comfortable are you with taking risks?,Personality Assessment,TRUE,Very Conservative,High Risk Taker,ما مدى راحتك في تحمل المخاطر؟,محافظ جداً,متقبل للمخاطرة
